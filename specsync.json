@@ -1,0 +1,13 @@
+{
+  "name": "corvid-pet",
+  "version": "0.1.0",
+  "specs_dir": "specs",
+  "source_dirs": ["src"],
+  "required_sections": [
+    "Purpose",
+    "Public API",
+    "Invariants",
+    "Behavioral Examples",
+    "Change Log"
+  ]
+}

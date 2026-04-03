@@ -1,0 +1,25 @@
+[package]
+name = "corvid-pet"
+version = "0.1.0"
+edition = "2024"
+description = "ASCII corvid companions for CLI tools"
+license = "MIT"
+repository = "https://github.com/CorvidLabs/corvid-pet"
+keywords = ["ascii", "art", "cli", "terminal", "pet"]
+categories = ["command-line-utilities", "visualization"]
+
+[dependencies]
+rand = "0.8"
+colored = { version = "3", optional = true }
+serde = { version = "1", features = ["derive"], optional = true }
+serde_json = { version = "1", optional = true }
+dirs = { version = "5", optional = true }
+ratatui = { version = "0.29", optional = true }
+crossterm = { version = "0.28", optional = true }
+tokio = { version = "1", features = ["rt", "time", "macros"], optional = true }
+
+[features]
+default = []
+color = ["dep:colored"]
+persistence = ["dep:serde", "dep:serde_json", "dep:dirs"]
+live = ["dep:ratatui", "dep:crossterm", "dep:tokio", "dep:serde", "dep:serde_json"]
