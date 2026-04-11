@@ -23,7 +23,9 @@ spec: pet.spec.md
 
 ## Current Status
 
-Implementation complete. Spec promoted to review. Single Minimal art style ships in v1; `art_v2` module provides species-differentiated art for future styles and custom templates.
+Core implementation complete. Spec promoted to review. Single Minimal art style ships in v1; `art_v2` module provides species-differentiated art for future styles and custom templates.
+
+Life simulation system added: Stats (hunger/energy/happiness/health with time-based decay), LifeStage (Egg -> Hatchling -> Fledgling -> Adult -> Elder), Personality (6 traits affecting decay + interactions), and Needs (Feed/Play/Rest/Clean/Pet with cooldowns). Fully optional -- Pet without simulation behaves identically to v1.
 
 ## Notes
 

@@ -10,6 +10,23 @@ use crate::{Mood, Pet, Species};
 #[cfg(feature = "persistence")]
 use std::path::PathBuf;
 
+/// Serializable simulation data.
+#[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "persistence", derive(serde::Serialize, serde::Deserialize))]
+pub struct SimStateData {
+    pub hunger: f32,
+    pub energy: f32,
+    pub happiness: f32,
+    pub health: f32,
+    pub stage: String,
+    pub personality: String,
+    pub age_secs: f64,
+    pub interaction_count: u64,
+    pub born_at: u64,
+    pub last_tick: u64,
+    pub cooldowns: Vec<(String, u64)>,
+}
+
 /// Serializable state of a pet.
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "persistence", derive(serde::Serialize, serde::Deserialize))]
@@ -26,17 +43,37 @@ pub struct PetState {
     /// Timestamp of last save.
     #[cfg_attr(feature = "persistence", serde(default))]
     pub last_saved: Option<u64>,
+    /// Optional simulation state.
+    #[cfg_attr(feature = "persistence", serde(default))]
+    pub sim: Option<SimStateData>,
 }
 
 impl PetState {
     /// Creates a state from a pet.
     pub fn from_pet(pet: &Pet) -> Self {
+        let sim = pet.sim().map(|s| {
+            SimStateData {
+                hunger: s.stats.hunger,
+                energy: s.stats.energy,
+                happiness: s.stats.happiness,
+                health: s.stats.health,
+                stage: s.stage.to_string(),
+                personality: s.personality.to_string(),
+                age_secs: s.age_secs,
+                interaction_count: s.interaction_count,
+                born_at: s.born_at,
+                last_tick: s.last_tick,
+                cooldowns: s.cooldowns.iter().map(|(k, v)| (k.to_string(), *v)).collect(),
+            }
+        });
+
         Self {
             name: pet.name().to_string(),
             species: pet.species().to_string(),
             mood: pet.mood().to_string(),
-            interaction_count: 0,
+            interaction_count: pet.sim().map_or(0, |s| s.interaction_count),
             last_saved: None,
+            sim,
         }
     }
 
@@ -61,6 +98,64 @@ impl PetState {
         };
         pet.set_mood(mood);
 
+        // Restore simulation state if present.
+        if let Some(sim_data) = &self.sim {
+            use crate::life_stage::LifeStage;
+            use crate::needs::Need;
+            use crate::personality::Personality;
+            use crate::sim::SimState;
+            use crate::stats::Stats;
+            use std::collections::HashMap;
+
+            let personality = match sim_data.personality.as_str() {
+                "Shy" => Personality::Shy,
+                "Mischievous" => Personality::Mischievous,
+                "Stoic" => Personality::Stoic,
+                "Affectionate" => Personality::Affectionate,
+                "Greedy" => Personality::Greedy,
+                _ => Personality::Curious,
+            };
+
+            let stage = match sim_data.stage.as_str() {
+                "Hatchling" => LifeStage::Hatchling,
+                "Fledgling" => LifeStage::Fledgling,
+                "Adult" => LifeStage::Adult,
+                "Elder" => LifeStage::Elder,
+                _ => LifeStage::Egg,
+            };
+
+            let mut cooldowns = HashMap::new();
+            for (k, v) in &sim_data.cooldowns {
+                let need = match k.as_str() {
+                    "Feed" => Need::Feed,
+                    "Play" => Need::Play,
+                    "Rest" => Need::Rest,
+                    "Clean" => Need::Clean,
+                    "Pet" => Need::Pet,
+                    _ => continue,
+                };
+                cooldowns.insert(need, *v);
+            }
+
+            let sim = SimState {
+                stats: Stats {
+                    hunger: sim_data.hunger,
+                    energy: sim_data.energy,
+                    happiness: sim_data.happiness,
+                    health: sim_data.health,
+                },
+                stage,
+                personality,
+                age_secs: sim_data.age_secs,
+                interaction_count: sim_data.interaction_count,
+                last_tick: sim_data.last_tick,
+                cooldowns,
+                born_at: sim_data.born_at,
+            };
+
+            pet.sim_state = Some(sim);
+        }
+
         pet
     }
 }
@@ -73,6 +168,7 @@ impl Default for PetState {
             mood: "Neutral".to_string(),
             interaction_count: 0,
             last_saved: None,
+            sim: None,
         }
     }
 }
@@ -214,6 +310,7 @@ mod tests {
             mood: "Happy".to_string(),
             interaction_count: 0,
             last_saved: None,
+            sim: None,
         };
 
         let pet = state.to_pet();

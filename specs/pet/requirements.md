@@ -46,4 +46,3 @@ spec: pet.spec.md
 - Actual terminal manipulation (user handles printing)
 - Sound effects
 - Multiple pets at once
-- Pet "aging" or progression systems
