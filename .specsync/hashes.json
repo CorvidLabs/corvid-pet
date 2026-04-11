@@ -1,0 +1,27 @@
+{
+  "hashes": {
+    "src/persistence.rs": "fb3923b3622f96e32f29f3f0f77d56ef069e15dc3c4a57a304b51461eb508519",
+    "src/life_stage.rs": "5999b3dd6295d8534dd4d0f4dd5dce7785057b2a3da5c059225b5648969d9f1f",
+    "src/sim.rs": "67629deed2ca8455890a08ffbebdb2db5ff1bc4a7e140868342f7b3bdec7ddbd",
+    "specs/pet/tasks.md": "7074c6b5421517791eb6ff365b7042f2b3109ceae02a958decb2d59977629bef",
+    "src/moods.rs": "f73270239ba30660871230b7c88dbd8f9ee53a701764a78100d22b3ea272f410",
+    "src/stats.rs": "66b5fbc69d2262ae3973e42f62d0edd7bf148649cf9ff8bc86b56f9a7a9d2244",
+    "specs/pet/context.md": "105b844fd079113d523412a561c12f0e0e69009dd7e50f793e053c80162edc8b",
+    "specs/pet/requirements.md": "e3a2aa3fc5e5782b3d15bbbc1fdfb911db1d0a806920e73e9b863183ac6eb1e7",
+    "src/live.rs": "37d0e135fee34f703bb059db2cf6e9eeb90f67e3d47913299f89a45c829cabf3",
+    "src/integrations/mod.rs": "dffb261622cfcb67edc5ebcc5ac8ea971f8ac845fd4f6c8956136150d6471602",
+    "src/integrations/specsync.rs": "9d853811a2d87f67010de84c323bd6ca92681df88ed86e4066834451572fa32d",
+    "specs/pet/pet.spec.md": "b21b60a0a41fded487d9cc7e2f7d02d5efbb482a9d8ed37142e4f5a59cd2f25a",
+    "src/templates.rs": "fd18e05a478acb7b43caa321b3678d2a810082905828629e3231dfaaad70d389",
+    "src/animations.rs": "8e8be1100eda93568e35cc4b4ac2adcf24bf7b830e938da0a34ec009c942b408",
+    "src/personality.rs": "b02fc13537b8070c10042ab5f92e834a5951c3ca8a5f60e7bd40dbe53837f711",
+    "src/comments.rs": "fc5a15114b9e0a3b45f8300a8a9543d5f58cace5e4c4741233a24d275c7d4275",
+    "src/species.rs": "0c9880e745c15e403aa5238c6f79be32a101f65e1d9efe7bf0131a0b89976fd2",
+    "src/art_v2.rs": "540dcfe4360e45cd1a741af5e86a22a9eb2adf0d85f5d1f88c08502643fc7cc7",
+    "src/styles.rs": "f2db53cdc160a95583895156933c7af741cd1ce3c19309fbaf45bc2d1cd6b436",
+    "specs/pet/life.spec.md": "0fc502a43310d8e3c94132ca6802a9a8045b47ef306d40c4a8dd19ae78a8ee03",
+    "src/needs.rs": "7c52270819a4180539dacf9b07476482a4aa6215dc2d45bf7b39e8ee9efa2985",
+    "src/lib.rs": "46fdec8b1e1074d236b82232b78f746538861e9c38dd1dc1f166095be4ff4fe8",
+    "src/color.rs": "3aa45a26444908b54b17ccb57d83433cca19b620f55ed9a5683699374f0019df"
+  }
+}
