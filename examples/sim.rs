@@ -1,4 +1,4 @@
-use corvid_pet::{Pet, Personality, Species};
+use corvid_pet::{Personality, Pet, Species};
 
 fn main() {
     println!("corvid-pet — Life Simulation Demo\n");
@@ -61,22 +61,24 @@ fn main() {
     ];
 
     for p in personalities {
-        let pet = Pet::new(String::new(), Species::Crow)
-            .with_simulation(p, now);
+        let pet = Pet::new(String::new(), Species::Crow).with_simulation(p, now);
         println!("  {:?} {} — mood starts: {}", p, pet.name(), pet.mood());
     }
 }
 
 fn show_status(pet: &Pet) {
     println!("{}", pet.render());
-    println!("  {} | Stage: {:?} | Mood: {}",
+    println!(
+        "  {} | Stage: {:?} | Mood: {}",
         pet.name(),
         pet.life_stage().unwrap(),
         pet.mood(),
     );
     if let Some(stats) = pet.stats() {
-        println!("  Hunger: {:.0}  Energy: {:.0}  Happy: {:.0}  Health: {:.0}",
-            stats.hunger, stats.energy, stats.happiness, stats.health);
+        println!(
+            "  Hunger: {:.0}  Energy: {:.0}  Happy: {:.0}  Health: {:.0}",
+            stats.hunger, stats.energy, stats.happiness, stats.health
+        );
     }
     if let Some(age) = pet.age_display() {
         println!("  Age: {age}");
