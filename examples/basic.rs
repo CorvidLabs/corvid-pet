@@ -84,7 +84,11 @@ fn main() {
         println!();
 
         let random = Pet::new("Lucky".to_string(), Species::Crow).with_random_colors();
-        println!("Random colors ({} body, {} bubble):", random.color_scheme().body, random.color_scheme().bubble);
+        println!(
+            "Random colors ({} body, {} bubble):",
+            random.color_scheme().body,
+            random.color_scheme().bubble
+        );
         println!("{}", random.render_colored());
         println!();
     }

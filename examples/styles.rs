@@ -52,10 +52,26 @@ fn main() {
         let colors: &[(&str, PetColor, PetColor)] = &[
             ("Default (Blue/Cyan)", PetColor::Blue, PetColor::Cyan),
             ("Fire (Red/Yellow)", PetColor::Red, PetColor::Yellow),
-            ("Forest (Green/BrightGreen)", PetColor::Green, PetColor::BrightGreen),
-            ("Royal (Magenta/BrightMagenta)", PetColor::Magenta, PetColor::BrightMagenta),
-            ("Storm (BrightBlack/White)", PetColor::BrightBlack, PetColor::White),
-            ("Neon (BrightCyan/BrightYellow)", PetColor::BrightCyan, PetColor::BrightYellow),
+            (
+                "Forest (Green/BrightGreen)",
+                PetColor::Green,
+                PetColor::BrightGreen,
+            ),
+            (
+                "Royal (Magenta/BrightMagenta)",
+                PetColor::Magenta,
+                PetColor::BrightMagenta,
+            ),
+            (
+                "Storm (BrightBlack/White)",
+                PetColor::BrightBlack,
+                PetColor::White,
+            ),
+            (
+                "Neon (BrightCyan/BrightYellow)",
+                PetColor::BrightCyan,
+                PetColor::BrightYellow,
+            ),
         ];
 
         for (label, body, bubble) in colors {

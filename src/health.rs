@@ -222,10 +222,7 @@ impl RepoHealth {
             Mood::Excited => "🎉",
             Mood::Sleepy => "😴",
         };
-        format!(
-            "{} corvid-pet: {:.0}/100 ({})",
-            emoji, self.score, mood
-        )
+        format!("{} corvid-pet: {:.0}/100 ({})", emoji, self.score, mood)
     }
 
     /// Generates markdown for README embedding.
