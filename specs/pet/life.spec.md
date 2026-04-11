@@ -11,8 +11,7 @@ files:
   - src/lib.rs
   - src/persistence.rs
 db_tables: []
-depends_on:
-  - pet
+depends_on: []
 ---
 
 # Life Simulation

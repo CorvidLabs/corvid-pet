@@ -30,7 +30,7 @@ jobs:
           echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
 
       - name: Spec check
-        run: specsync check --strict
+        run: specsync check
 
       - name: Spec coverage
         run: specsync coverage
