@@ -1,4 +1,15 @@
-# SpecSync configuration
+# spec-sync v4 configuration
+# Docs: https://github.com/CorvidLabs/spec-sync
+
+specs_dir = "specs"
+source_dirs = ["src"]
+exclude_dirs = ["__tests__"]
+exclude_patterns = ["**/__tests__/**", "**/*.test.ts", "**/*.spec.ts"]
+required_sections = ["Purpose", "Public API", "Invariants", "Behavioral Examples", "Change Log"]
+
 # Only check type-level exports (struct, enum, trait) — not individual methods.
 # Method-level docs are in spec subsections but don't need strict enforcement.
 export_level = "type"
+
+[lifecycle]
+track_history = false
