@@ -1,12 +1,30 @@
-use corvid_pet::{Mood, Pet, Species};
+use corvid_pet::{ArtStyle, Mood, Pet, Species};
 
 fn main() {
-    println!("Corvid Pet - Minimal Style Demo\n");
+    println!("corvid-pet — Art Style Comparison\n");
 
-    // Show the crow with all moods
-    println!("=== Crow Moods ===\n");
-    let mut pet = Pet::new("Corvin".to_string(), Species::Crow);
+    let species_list = [Species::Crow, Species::Raven, Species::Magpie, Species::Jay];
+    let styles = [ArtStyle::Minimal, ArtStyle::Detailed];
 
+    for style in styles {
+        println!("========================================");
+        println!("  Style: {} ", style.name().to_uppercase());
+        println!("========================================\n");
+
+        for species in species_list {
+            let pet = Pet::new(species.default_name(), species);
+            println!("--- {} ---", species);
+            println!("{}", pet.render_with_style(style));
+            println!();
+        }
+    }
+
+    // Show mood variations in Detailed style
+    println!("========================================");
+    println!("  DETAILED MOOD SHOWCASE (Magpie)");
+    println!("========================================\n");
+
+    let mut pet = Pet::new("Shiny".to_string(), Species::Magpie);
     for mood in [
         Mood::Happy,
         Mood::Sad,
@@ -17,14 +35,7 @@ fn main() {
     ] {
         pet.set_mood(mood);
         println!("{}:", mood);
-        println!("{}\n", pet.render());
-    }
-
-    // Show all species render as crow
-    println!("=== All Species (All Render as Crow) ===\n");
-    for species in [Species::Crow, Species::Raven, Species::Magpie, Species::Jay] {
-        let pet = Pet::new(species.default_name(), species);
-        println!("{} (renders as crow):", species);
-        println!("{}\n", pet.render());
+        println!("{}", pet.render_with_style(ArtStyle::Detailed));
+        println!();
     }
 }

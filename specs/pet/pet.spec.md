@@ -90,7 +90,7 @@ The crate root re-exports these types for convenience:
 | Type | Description |
 |------|-------------|
 | `Pet` | The main companion with name, species, and mood |
-| `ArtStyle` | Art rendering style enum (currently only `Minimal`). Default: Minimal |
+| `ArtStyle` | Art rendering style enum (`Minimal`, `Detailed`). Default: Minimal |
 | `Animation` | Iterator over animation frames |
 | `Spinner` | Progress indicator with animated pet |
 | `Stats` | Vital statistics: hunger, energy, happiness, health |
@@ -322,11 +322,12 @@ Simpler synchronous alternative for interactive pet display.
 |----------|-----------|---------|-------------|
 | `create_validation_spinner` | `pet: &Pet` | `Spinner` | Create spinner with mood-appropriate message |
 
-### Art Style
+### Art Styles
 
-The library ships with a single art style: **Minimal**. This is a compact crow silhouette with a thought bubble that changes based on mood. The Minimal style renders the same crow art regardless of species — species-specific art is planned for future styles.
+The library ships with two built-in art styles:
 
-An `art_v2` module provides species-differentiated ASCII art (crow, raven, magpie, jay) for use by custom templates or future styles, but is not exposed through the `ArtStyle` enum.
+- **Minimal** (default): Compact ~6-line species silhouettes with thought bubbles. Each species has a unique shape (crow has `<(` beak, raven has `>` beak, magpie has `*` markings with tail feathers, jay has crest `/\/\`).
+- **Detailed**: Larger ~12-line species-differentiated art from the `art_v2` module, with distinct body shapes, postures, and mood-specific variations per species.
 
 Custom art can be provided via the `ArtTemplate` and `TemplateRegistry` types in the `templates` module.
 
