@@ -89,9 +89,9 @@ runs:
       uses: actions/cache@v4
       with:
         path: ${{ inputs.state-file }}
-        key: corvid-pet-state-${{ github.repository }}
+        key: corvid-pet-state-${{ github.repository }}-${{ github.run_id }}
         restore-keys: |
-          corvid-pet-state-
+          corvid-pet-state-${{ github.repository }}-
 
     - name: Run corvid-pet
       id: run
