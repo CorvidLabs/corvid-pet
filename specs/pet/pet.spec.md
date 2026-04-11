@@ -74,6 +74,7 @@ The crate root re-exports these types for convenience:
 | `templates` | Custom art templates |
 | `specsync` | SpecSync companion integration |
 
+
 ### Exported Enums
 
 | Type | Description |
