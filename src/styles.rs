@@ -6,10 +6,10 @@
 /// Available art styles.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
 pub enum ArtStyle {
-    /// Detailed, larger art with shading (default).
-    #[default]
+    /// Detailed, larger art with shading.
     Detailed,
-    /// Minimal, compact art style.
+    /// Minimal, compact art style (default).
+    #[default]
     Minimal,
     /// Blocky, geometric style using Unicode box characters.
     Blocky,
@@ -84,7 +84,8 @@ mod detailed {
     / |       | \
    |  |_______|  |
    |__|       |__|
-   "Caw! Looking good!""#.to_string(),
+   "Caw! Looking good!""#
+                .to_string(),
             Mood::Sad => r#"        .-.
        /   \
       |o   o|
@@ -94,7 +95,8 @@ mod detailed {
     / |       | \
    |  |_______|  |
    |__|       |__|
-   "Caw... something's wrong...""#.to_string(),
+   "Caw... something's wrong...""#
+                .to_string(),
             Mood::Neutral => r#"        .-.
        /   \
       |o   o|
@@ -104,7 +106,8 @@ mod detailed {
     / |       | \
    |  |_______|  |
    |__|       |__|
-   "Caw?""#.to_string(),
+   "Caw?""#
+                .to_string(),
             Mood::Confused => r#"        .-.
        /   \
       |o   O|
@@ -114,7 +117,8 @@ mod detailed {
     / |       | \
    |  |_______|  |
    |__|       |__|
-   "Caw??""#.to_string(),
+   "Caw??""#
+                .to_string(),
             Mood::Excited => r#"        .-.
        /   \
       |o   o|
@@ -124,7 +128,8 @@ mod detailed {
     / |       | \
    |  |_______|  |
    |__|       |__|
-   "CAW! CAW! New spec!""#.to_string(),
+   "CAW! CAW! New spec!""#
+                .to_string(),
             Mood::Sleepy => r#"        .-.
        /   \
       |-   -|
@@ -134,7 +139,8 @@ mod detailed {
     / |       | \
    |  |_______|  |
    |__|       |__|
-   "Zzz... caw...""#.to_string(),
+   "Zzz... caw...""#
+                .to_string(),
         }
     }
 
@@ -149,7 +155,8 @@ mod detailed {
     / |         | \
    /  |_________|  \
   (__/         \__)
-   "Quoth: well done.""#.to_string(),
+   "Quoth: well done.""#
+                .to_string(),
             Mood::Sad => r#"         ___
         /   \
        / o o \
@@ -159,7 +166,8 @@ mod detailed {
     / |         | \
    /  |_________|  \
   (__/         \__)
-   "Nevermore... errors.""#.to_string(),
+   "Nevermore... errors.""#
+                .to_string(),
             Mood::Neutral => r#"         ___
         /   \
        / o o \
@@ -169,7 +177,8 @@ mod detailed {
     / |         | \
    /  |_________|  \
   (__/         \__)
-   "Quoth?""#.to_string(),
+   "Quoth?""#
+                .to_string(),
             Mood::Confused => r#"         ___
         /   \
        / o O \
@@ -179,7 +188,8 @@ mod detailed {
     / |         | \
    /  |_________|  \
   (__/         \__)
-   "Quoth the... what?""#.to_string(),
+   "Quoth the... what?""#
+                .to_string(),
             Mood::Excited => r#"         ___
         /   \
        / o o \
@@ -189,7 +199,8 @@ mod detailed {
     / |         | \
    /  |_________|  \
   (__/         \__)
-   "Quoth: excellent news!""#.to_string(),
+   "Quoth: excellent news!""#
+                .to_string(),
             Mood::Sleepy => r#"         ___
         /   \
        / - - \
@@ -199,7 +210,8 @@ mod detailed {
     / |         | \
    /  |_________|  \
   (__/         \__)
-   "Nevermore... zzz...""#.to_string(),
+   "Nevermore... zzz...""#
+                .to_string(),
         }
     }
 
@@ -215,7 +227,8 @@ mod detailed {
        |     |
       /       \
      `-------'
-   "Ooh! Shiny specs!""#.to_string(),
+   "Ooh! Shiny specs!""#
+                .to_string(),
             Mood::Sad => r#"        .---.
        / o o \
       |   -   |
@@ -226,7 +239,8 @@ mod detailed {
        |     |
       /       \
      `-------'
-   "No shiny things found...""#.to_string(),
+   "No shiny things found...""#
+                .to_string(),
             Mood::Neutral => r#"        .---.
        / o o \
       |   <   |
@@ -237,7 +251,8 @@ mod detailed {
        |     |
       /       \
      `-------'
-   "Looking for shiny...""#.to_string(),
+   "Looking for shiny...""#
+                .to_string(),
             Mood::Confused => r#"        .---.
        / o O \
       |   ?   |
@@ -248,7 +263,8 @@ mod detailed {
        |     |
       /       \
      `-------'
-   "Is this shiny?""#.to_string(),
+   "Is this shiny?""#
+                .to_string(),
             Mood::Excited => r#"        .---.
        / o o \
       |   >   |
@@ -259,7 +275,8 @@ mod detailed {
        |     |
       /       \
      `-------'
-   "SO MANY SHINY SPECS!""#.to_string(),
+   "SO MANY SHINY SPECS!""#
+                .to_string(),
             Mood::Sleepy => r#"        .---.
        / - - \
       |   .   |
@@ -270,7 +287,8 @@ mod detailed {
        |     |
       /       \
      `-------'
-   "Zzz... shiny...""#.to_string(),
+   "Zzz... shiny...""#
+                .to_string(),
         }
     }
 
@@ -287,7 +305,8 @@ mod detailed {
         |   |
        /     \
       `-------'
-  "HEY! GREAT JOB!""#.to_string(),
+  "HEY! GREAT JOB!""#
+                .to_string(),
             Mood::Sad => r#"       ,---.
       /\  //\
      / o  o \
@@ -299,7 +318,8 @@ mod detailed {
         |   |
        /     \
       `-------'
-  "HEY... IT'S BROKEN...""#.to_string(),
+  "HEY... IT'S BROKEN...""#
+                .to_string(),
             Mood::Neutral => r#"       ,---.
       /\  //\
      / o  o \
@@ -311,7 +331,8 @@ mod detailed {
         |   |
        /     \
       `-------'
-  "HEY! LISTEN!""#.to_string(),
+  "HEY! LISTEN!""#
+                .to_string(),
             Mood::Confused => r#"       ,---.
       /\  //\
      / o  O \
@@ -323,7 +344,8 @@ mod detailed {
         |   |
        /     \
       `-------'
-  "HEY! WHAT'S THIS?!""#.to_string(),
+  "HEY! WHAT'S THIS?!""#
+                .to_string(),
             Mood::Excited => r#"       ,---.
       /\  //\
      / o  o \
@@ -335,7 +357,8 @@ mod detailed {
         |   |
        /     \
       `-------'
-  "HEY! HEY! NEW SPEC!""#.to_string(),
+  "HEY! HEY! NEW SPEC!""#
+                .to_string(),
             Mood::Sleepy => r#"       ,---.
       /\  //\
      / -  - \
@@ -347,7 +370,8 @@ mod detailed {
         |   |
        /     \
       `-------'
-  "Zzz... hey...""#.to_string(),
+  "Zzz... hey...""#
+                .to_string(),
         }
     }
 }
@@ -357,30 +381,41 @@ mod detailed {
 mod minimal {
     use crate::{Mood, Species};
 
-    pub fn render(species: Species, _mood: Mood) -> String {
-        // Minimal style uses the same base art for all moods
-        // but could vary by mood in the future
+    pub fn render(species: Species, mood: Mood) -> String {
+        let thought = match mood {
+            Mood::Happy => "Caw! ✨",
+            Mood::Sad => "oh no...",
+            Mood::Neutral => "hmm",
+            Mood::Confused => "??",
+            Mood::Excited => "CAW! 🎉",
+            Mood::Sleepy => "zzz...",
+        };
+
         match species {
-            Species::Crow => r#"    _          _
-   /.)        (.\
-  /)\|        |/(\
- //)/          \(\\
-/'"^"          "^"`\"
-            Crow"#.to_string(),
+            Species::Crow => format!(
+                r#"   .oO({thought})
+      _
+    <(o\
+     |/(\
+      \(\\
+      "^`"."#
+            ),
             Species::Raven => r#"    ___        ___
    /   \      /   \
   | o o |    | o o |
    \___/      \___/
     /  \      /  \
    `---'      `---'"
-            Raven"#.to_string(),
+            Raven"#
+                .to_string(),
             Species::Magpie => r#"    .-.
    /o o\
    \ - /
     |-|
    /| |\
   (_| |_)"
-            Magpie"#.to_string(),
+            Magpie"#
+                .to_string(),
             Species::Jay => r#"    ,-.
    /o o\
   / \^/ \
@@ -388,7 +423,8 @@ mod minimal {
     |=|
    /   \
   `-----'"
-            Jay"#.to_string(),
+            Jay"#
+                .to_string(),
         }
     }
 }
@@ -416,13 +452,15 @@ mod blocky {
             _ => "○ ○",
         };
 
-        format!(r#"┌─────────┐
+        format!(
+            r#"┌─────────┐
 │  ╱   ╲  │
 │ {eyes} │
 │  ╲___╱  │
 │    │    │
 └────┴────┘
-   "Caw!""#)
+   "Caw!""#
+        )
     }
 
     fn raven_art(_mood: Mood) -> String {
@@ -432,7 +470,8 @@ mod blocky {
 │  ╲╱_____╲╱  │
 │     │ │     │
 └─────┴─┴─────┘
-   "Quoth""#.to_string()
+   "Quoth""#
+            .to_string()
     }
 
     fn magpie_art(_mood: Mood) -> String {
@@ -442,7 +481,8 @@ mod blocky {
 ║  ╲_____╱   ║
 ║    │ │    ║
 ╚════╧═╧════╝
-  "Shiny!""#.to_string()
+  "Shiny!""#
+            .to_string()
     }
 
     fn jay_art(_mood: Mood) -> String {
@@ -452,7 +492,8 @@ mod blocky {
 │ ╲  ▽▽▽  ╱ │
 │   │   │   │
 ╰───┴───┴───╯
- "HEY!""#.to_string()
+ "HEY!""#
+            .to_string()
     }
 }
 
@@ -554,9 +595,21 @@ mod tests {
 
     #[test]
     fn test_all_styles_all_species() {
-        let styles = [ArtStyle::Detailed, ArtStyle::Minimal, ArtStyle::Blocky, ArtStyle::Emoji];
+        let styles = [
+            ArtStyle::Detailed,
+            ArtStyle::Minimal,
+            ArtStyle::Blocky,
+            ArtStyle::Emoji,
+        ];
         let species = [Species::Crow, Species::Raven, Species::Magpie, Species::Jay];
-        let moods = [Mood::Happy, Mood::Sad, Mood::Neutral, Mood::Confused, Mood::Excited, Mood::Sleepy];
+        let moods = [
+            Mood::Happy,
+            Mood::Sad,
+            Mood::Neutral,
+            Mood::Confused,
+            Mood::Excited,
+            Mood::Sleepy,
+        ];
 
         for style in &styles {
             for s in &species {
