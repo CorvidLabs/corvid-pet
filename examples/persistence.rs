@@ -59,7 +59,12 @@ fn main() {
 
         let loaded = persistence::load_pet(pet_id).unwrap();
         let restored = loaded.to_pet();
-        println!("Loaded from disk: {} the {} ({})", restored.name(), restored.species(), restored.mood());
+        println!(
+            "Loaded from disk: {} the {} ({})",
+            restored.name(),
+            restored.species(),
+            restored.mood()
+        );
 
         // List all saved pets
         let pets = persistence::list_pets().unwrap();
@@ -75,7 +80,12 @@ fn main() {
         println!("(Run with --features persistence for JSON serialization and disk save/load)");
         println!("\nWithout the feature, PetState round-trip still works:");
         let restored = state.to_pet();
-        println!("  Restored: {} the {} ({})", restored.name(), restored.species(), restored.mood());
+        println!(
+            "  Restored: {} the {} ({})",
+            restored.name(),
+            restored.species(),
+            restored.mood()
+        );
         println!("  Stage: {:?}", restored.life_stage());
     }
 }
