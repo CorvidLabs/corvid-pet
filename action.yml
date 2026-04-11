@@ -111,7 +111,8 @@ runs:
 
         # Auto-detect event from job status if set to "auto"
         if [ "$CORVID_EVENT" = "auto" ]; then
-          case "${CORVID_JOB_STATUS,,}" in
+          JOB_STATUS_LOWER=$(echo "$CORVID_JOB_STATUS" | tr '[:upper:]' '[:lower:]')
+          case "$JOB_STATUS_LOWER" in
             success)  CORVID_EVENT="success" ;;
             failure)  CORVID_EVENT="failure" ;;
             cancelled) CORVID_EVENT="warning" ;;
