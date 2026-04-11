@@ -1,0 +1,4 @@
+# SpecSync configuration
+# Only check type-level exports (struct, enum, trait) — not individual methods.
+# Method-level docs are in spec subsections but don't need strict enforcement.
+export_level = "type"
