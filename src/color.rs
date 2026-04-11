@@ -24,30 +24,17 @@ pub fn colorize(art: &str, _species: crate::Species) -> String {
 fn colorize_crow(art: &str) -> String {
     use colored::Colorize as _;
 
-    // Eye characters for all moods: ^ ; o ? * -
-    let is_eye_line = |line: &str| line.contains("<(") && line.contains("\\");
-
-    // Crows are primarily black/dark gray with a subtle sheen
+    // Color the entire crow in dark blue-black with a subtle sheen
     art.lines()
         .map(|line| {
-            if is_eye_line(line) {
-                // Eye line — color the eye char bright white, rest dark
-                let colored = line.bright_black().to_string();
-                // Highlight the thought bubble content
-                if let (Some(start), Some(end)) = (line.find(".oO("), line.rfind(')')) {
-                    let before = line[..start].bright_black().to_string();
-                    let bubble = line[start..=end].white().to_string();
-                    let after = line[end + 1..].bright_black().to_string();
-                    format!("{before}{bubble}{after}")
-                } else {
-                    colored
-                }
-            } else if line.contains('"') || line.contains("Caw") || line.contains("caw") {
-                // Speech/comment line - yellow for personality
-                line.yellow().to_string()
+            // Thought bubble gets a different color from the bird body
+            if let (Some(start), Some(end)) = (line.find(".oO("), line.rfind(')')) {
+                let bird_part = line[..start].blue().to_string();
+                let bubble = line[start..=end].cyan().to_string();
+                let after = line[end + 1..].blue().to_string();
+                format!("{bird_part}{bubble}{after}")
             } else {
-                // Body - dark
-                line.bright_black().to_string()
+                line.blue().to_string()
             }
         })
         .collect::<Vec<_>>()
