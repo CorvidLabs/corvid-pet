@@ -53,91 +53,37 @@ pub fn ascii_art_closed_eyes(species: super::Species, mood: Mood) -> String {
 
 // MARK: - Crow ASCII Art
 
-fn crow_art(mood: Mood) -> String {
+fn eye(mood: Mood) -> &'static str {
     match mood {
-        Mood::Happy => r#"        .-.
-       /   \
-      |o   o|
-      |  ^  |
-      | \|/ |
-     /|  `-'  |\
-    / |       | \
-   |  |_______|  |
-   |__|       |__|
-   "Caw! Looking good!""#
-            .to_string(),
-        Mood::Sad => r#"        .-.
-       /   \
-      |o   o|
-      |  -  |
-      | \|/ |
-     /|  `-'  |\
-    / |       | \
-   |  |_______|  |
-   |__|       |__|
-   "Caw... something's wrong...""#
-            .to_string(),
-        Mood::Neutral => r#"        .-.
-       /   \
-      |o   o|
-      |  <  |
-      | \|/ |
-     /|  `-'  |\
-    / |       | \
-   |  |_______|  |
-   |__|       |__|
-   "Caw?""#
-            .to_string(),
-        Mood::Confused => r#"        .-.
-       /   \
-      |o   O|
-      |  ?  |
-      | \|/ |
-     /|  `-'  |\
-    / |       | \
-   |  |_______|  |
-   |__|       |__|
-   "Caw??""#
-            .to_string(),
-        Mood::Excited => r#"        .-.
-       /   \
-      |o   o|
-      |  ^  |
-      | \|/ |
-     /|  `-'  |\
-    / |       | \
-   |  |_______|  |
-   |__|       |__|
-   "CAW! CAW! New spec!""#
-            .to_string(),
-        Mood::Sleepy => r#"        .-.
-       /   \
-      |-   -|
-      |  .  |
-      | \|/ |
-     /|  `-'  |\
-    / |       | \
-   |  |_______|  |
-   |__|       |__|
-   "Zzz... caw...""#
-            .to_string(),
+        Mood::Happy => "^",
+        Mood::Sad => "o",
+        Mood::Neutral => "o",
+        Mood::Confused => "?",
+        Mood::Excited => "*",
+        Mood::Sleepy => "-",
     }
 }
 
+fn crow_art(mood: Mood) -> String {
+    let eye = eye(mood);
+    format!(
+        r#"      _
+    <({eye}\
+     |/(\
+      \(\\
+      "^`"."#
+    )
+}
+
 fn crow_art_open(_mood: Mood) -> String {
-    // For crow, open eyes are the default
     crow_art(Mood::Neutral)
 }
 
 fn crow_art_closed(_mood: Mood) -> String {
-    r#"        .-.
-       /   \
-      |-   -|
-      |  <  |
-      | \|/ |
-     /|  `-'  |\
-    / |       | \
-   |  |_______|  |
-   |__|       |__|"#
+    r#"      _
+    <(-\
+     |/(\
+      \(\\
+      "^`"."#
         .to_string()
 }
