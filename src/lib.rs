@@ -39,6 +39,9 @@ pub use species::Species;
 pub use stats::Stats;
 pub use styles::ArtStyle;
 
+// Convenient re-exports for spec-sync integration
+pub use integrations::specsync::{SpecSyncCompanion, ValidationOutcome};
+
 /// Lifecycle events that can trigger pet reactions.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Event {
