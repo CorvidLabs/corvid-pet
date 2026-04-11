@@ -81,9 +81,7 @@ impl PetState {
 
     /// Converts this state back into a pet.
     pub fn to_pet(&self) -> Pet {
-        let species = match self.species.as_str() {
-            _ => Species::Crow,
-        };
+        let species = Species::Crow;
 
         let mut pet = Pet::new(self.name.clone(), species);
 
