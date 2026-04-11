@@ -30,6 +30,7 @@ pub mod styles;
 pub mod templates;
 
 pub use animations::{Animation, Spinner};
+pub use color::{ColorScheme, PetColor};
 pub use life_stage::LifeStage;
 pub use moods::Mood;
 pub use needs::{InteractionResult, Need};
@@ -38,7 +39,6 @@ pub use personality::Personality;
 pub use sim::SimState;
 pub use species::Species;
 pub use stats::Stats;
-pub use color::{ColorScheme, PetColor};
 pub use styles::ArtStyle;
 
 // Convenient re-exports
