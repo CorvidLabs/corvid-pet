@@ -93,24 +93,24 @@ mod minimal {
     }
 
     fn crow(mood: Mood) -> String {
-        let (eye_l, eye_r) = eyes(mood);
+        let eye = eye(mood);
         format!(
             r#"      _
-    <({eye_l}\
-     |/({eye_r}\
+    <({eye}\
+     |/(\
       \(\\
       "^`"."#
         )
     }
 
-    fn eyes(mood: Mood) -> (&'static str, &'static str) {
+    fn eye(mood: Mood) -> &'static str {
         match mood {
-            Mood::Happy => ("^", "^"),
-            Mood::Sad => ("o", "o"),
-            Mood::Neutral => ("o", "o"),
-            Mood::Confused => ("o", "O"),
-            Mood::Excited => ("*", "*"),
-            Mood::Sleepy => ("-", "-"),
+            Mood::Happy => "^",
+            Mood::Sad => "o",
+            Mood::Neutral => "o",
+            Mood::Confused => "?",
+            Mood::Excited => "*",
+            Mood::Sleepy => "-",
         }
     }
 }
