@@ -58,7 +58,21 @@ mod minimal {
     pub fn render(species: Species, mood: Mood) -> String {
         let thought = thought_bubble(mood);
         let body = species_art(species, mood);
-        format!("   .oO({thought})\n{body}")
+        let bubble = format!(".oO({thought})");
+        // Place thought bubble beside the bird's head (line 1), not above
+        let lines: Vec<&str> = body.lines().collect();
+        if lines.len() > 1 {
+            let head_line = lines[1];
+            let padded = format!("{:<10}{}", head_line, bubble);
+            let owned_lines: Vec<String> = lines
+                .iter()
+                .enumerate()
+                .map(|(i, l)| if i == 1 { padded.clone() } else { l.to_string() })
+                .collect();
+            owned_lines.join("\n")
+        } else {
+            format!("{body}  {bubble}")
+        }
     }
 
     fn thought_bubble(mood: Mood) -> &'static str {
