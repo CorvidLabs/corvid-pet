@@ -1,6 +1,6 @@
 ---
 module: life
-version: 1
+version: 2
 status: draft
 files:
   - src/stats.rs
@@ -48,12 +48,14 @@ pub struct Stats {
 
 impl Stats {
     pub fn new() -> Self;              // All stats at 100.0
-    pub fn tick(&mut self, elapsed_secs: f64);  // Apply decay
+    pub fn tick(&mut self, elapsed_secs: f64, hunger_mult: f32, energy_mult: f32, happiness_mult: f32);  // Apply decay with multipliers
     pub fn clamp(&mut self);           // Clamp all to 0.0..=100.0
     pub fn overall(&self) -> f32;      // Weighted average (health 40%, happiness 25%, hunger 20%, energy 15%)
     pub fn critical_needs(&self) -> Vec<Need>;  // Stats below 20.0
     pub fn dominant_mood(&self) -> Mood;  // Derive mood from stat levels
 }
+
+impl Default for Stats { fn default() -> Self; }  // Delegates to new()
 ```
 
 ### Life Stages
@@ -67,6 +69,7 @@ impl Stats {
 | `Elder` | Indefinite | 0.7x all decay | Wise, slower metabolism, bonus quips |
 
 ```rust
+#[derive(Default)]  // Default: Egg
 pub enum LifeStage {
     Egg,
     Hatchling,
@@ -82,7 +85,11 @@ impl LifeStage {
     pub fn energy_multiplier(&self) -> f32;
     pub fn happiness_multiplier(&self) -> f32;
     pub fn can_interact(&self) -> bool;  // false for Egg
+    pub fn for_age(age_secs: f64) -> LifeStage;  // Determine stage from total age
+    pub fn progress(&self, age_secs: f64) -> f32; // 0.0-1.0 progress through current stage
 }
+
+impl Display for LifeStage { ... }  // "Egg", "Hatchling", "Fledgling", "Adult", "Elder"
 ```
 
 Adult -> Elder transition triggers at 24 hours total age (configurable).
@@ -101,6 +108,7 @@ Each pet gets a personality at creation (or randomly assigned). Personality affe
 | `Greedy` | +0.3/min hunger decay | Feed 1.5x effective | Food-obsessed |
 
 ```rust
+#[derive(Default)]  // Default: Curious
 pub enum Personality {
     Curious,
     Shy,
@@ -118,6 +126,8 @@ impl Personality {
     pub fn interaction_modifier(&self, need: Need) -> f32;  // Multiplier on interaction effect
     pub fn description(&self) -> &str;
 }
+
+impl Display for Personality { ... }  // "Curious", "Shy", "Mischievous", "Stoic", "Affectionate", "Greedy"
 ```
 
 ### Needs (Interactions)
@@ -140,10 +150,14 @@ pub enum Need {
 }
 
 impl Need {
-    pub fn apply(&self, stats: &mut Stats, personality: &Personality, stage: &LifeStage);
+    pub fn apply(&self, stats: &mut Stats, personality: &Personality, stage: &LifeStage) -> (f32, f32, f32, f32);  // Returns (hunger_delta, energy_delta, happiness_delta, health_delta)
     pub fn cooldown_secs(&self) -> u64;
     pub fn description(&self) -> &str;
+    pub fn success_message(&self, personality: &Personality) -> String;  // Personality-flavored success text
+    pub fn cooldown_message(&self) -> &str;  // Message when on cooldown
 }
+
+impl Display for Need { ... }  // "Feed", "Play", "Rest", "Clean", "Pet"
 ```
 
 ### Simulation State
@@ -161,13 +175,15 @@ pub struct SimState {
 }
 
 impl SimState {
-    pub fn new(personality: Personality) -> Self;
+    pub fn new(personality: Personality, now_secs: u64) -> Self;
     pub fn tick(&mut self, now_secs: u64);   // Advance simulation to `now`
     pub fn interact(&mut self, need: Need, now_secs: u64) -> InteractionResult;
     pub fn can_interact(&self, need: Need, now_secs: u64) -> bool;
     pub fn stage_progress(&self) -> f32;     // 0.0-1.0 progress to next stage
     pub fn is_alive(&self) -> bool;          // health > 0
+    pub fn health(&self) -> f32;             // Shortcut to stats.health
     pub fn status_summary(&self) -> String;  // One-line status
+    pub fn age_display(&self) -> String;     // Human-readable age ("2h 15m old")
 }
 ```
 
@@ -176,9 +192,12 @@ impl SimState {
 ```rust
 pub struct InteractionResult {
     pub success: bool,
-    pub message: String,       // Personality-flavored response
-    pub stat_changes: Stats,   // Delta applied
-    pub stage_changed: bool,   // Did a stage transition happen
+    pub message: String,           // Personality-flavored response
+    pub hunger_delta: f32,         // Change applied to hunger
+    pub energy_delta: f32,         // Change applied to energy
+    pub happiness_delta: f32,      // Change applied to happiness
+    pub health_delta: f32,         // Change applied to health
+    pub stage_changed: bool,       // Did a stage transition happen
 }
 ```
 
@@ -188,16 +207,16 @@ The `Pet` struct gains an optional `SimState`:
 
 ```rust
 impl Pet {
-    pub fn with_simulation(self, personality: Personality) -> Self;
+    pub fn with_simulation(self, personality: Personality, now_secs: u64) -> Self;
     pub fn tick(&mut self, now_secs: u64);
-    pub fn feed(&mut self) -> Option<InteractionResult>;
-    pub fn play(&mut self) -> Option<InteractionResult>;
-    pub fn rest(&mut self) -> Option<InteractionResult>;
-    pub fn clean(&mut self) -> Option<InteractionResult>;
-    pub fn pet_me(&mut self) -> Option<InteractionResult>;
+    pub fn feed(&mut self, now_secs: u64) -> Option<InteractionResult>;
+    pub fn play(&mut self, now_secs: u64) -> Option<InteractionResult>;
+    pub fn rest(&mut self, now_secs: u64) -> Option<InteractionResult>;
+    pub fn clean(&mut self, now_secs: u64) -> Option<InteractionResult>;
+    pub fn pet_me(&mut self, now_secs: u64) -> Option<InteractionResult>;
     pub fn stats(&self) -> Option<&Stats>;
-    pub fn life_stage(&self) -> Option<&LifeStage>;
-    pub fn personality(&self) -> Option<&Personality>;
+    pub fn life_stage(&self) -> Option<LifeStage>;
+    pub fn pet_personality(&self) -> Option<Personality>;
     pub fn sim(&self) -> Option<&SimState>;
     pub fn age_display(&self) -> Option<String>;  // "2h 15m old"
 }
@@ -221,7 +240,7 @@ Methods return `None` if simulation is not enabled (backwards compatible).
 
 ### Scenario: New pet lifecycle
 
-- **Given** `Pet::new("Pip", Species::Crow).with_simulation(Personality::Curious)`
+- **Given** `Pet::new("Pip", Species::Crow).with_simulation(Personality::Curious, now)`
 - **When** created
 - **Then** stage is `Egg`, all stats 100.0, age 0
 - **When** 5 minutes pass and `tick()` called
@@ -307,3 +326,4 @@ pub struct SimStateData {
 | Date | Change |
 |------|--------|
 | 2026-04-11 | Initial spec draft |
+| 2026-04-11 | v2: Added all undocumented exports — SimState::health(), SimState::age_display(), LifeStage::for_age(), LifeStage::progress(), Need::success_message(), Need::cooldown_message(), Display impls, Default impls, InteractionResult field corrections (individual deltas not Stats), Stats::tick() multiplier params |
