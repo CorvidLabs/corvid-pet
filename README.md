@@ -149,6 +149,31 @@ Define your own ASCII art via JSON templates:
 }
 ```
 
+## CI/CD
+
+We use GitHub Actions with `ubuntu-latest` runners for fast, consistent builds.
+
+### Workflow
+
+Every PR and push to `main` triggers:
+- **Format check** (`cargo fmt --check`)
+- **Linting** (`cargo clippy` with all features)
+- **Build & test** (`cargo build` and `cargo test --all-features`)
+- **Examples** (`cargo build --examples --all-features`)
+
+### Caching
+
+Builds are cached using GitHub Actions cache:
+- `~/.cargo/registry` - Dependencies
+- `~/.cargo/git` - Git sources
+- `target` - Build artifacts
+
+PRs restore cache from `main` branch builds, then create their own for subsequent commits.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and contribution guidelines.
+
 ## License
 
 MIT License - See [LICENSE](LICENSE) for details.
