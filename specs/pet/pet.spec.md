@@ -12,6 +12,7 @@ files:
   - src/templates.rs
   - src/color.rs
   - src/persistence.rs
+  - src/health.rs
   - src/live.rs
   - src/stats.rs
   - src/life_stage.rs
@@ -20,6 +21,7 @@ files:
   - src/sim.rs
   - src/integrations/mod.rs
   - src/integrations/specsync.rs
+  - src/bin/corvid-pet.rs
 db_tables: []
 depends_on: []
 ---
@@ -50,14 +52,16 @@ The crate root re-exports these types for convenience:
 | `Species` | `species` |
 | `Stats` | `stats` |
 | `ArtStyle` | `styles` |
+| `RepoHealth` | `health` |
 
 ### Exported Modules
 
 | Module | Description |
 |--------|-------------|
 | `animations` | Animation and spinner types |
-| `color` | ANSI color support |
+| `color` | ANSI color support and custom color schemes |
 | `comments` | Random species/mood quips |
+| `health` | Repo health tracking from CI/CD events |
 | `integrations` | Third-party integrations |
 | `life_stage` | Life stage progression |
 | `live` | Real-time TUI display |
@@ -80,6 +84,7 @@ The crate root re-exports these types for convenience:
 | `Species` | Corvid species: Crow (clever, problem solver). Default: Crow |
 | `Mood` | Emotional states: Happy, Sad, Neutral, Confused, Excited, Sleepy. Default: Neutral |
 | `Event` | Lifecycle events: Success, Failure, Warning, Progress, Idle |
+| `PetColor` | Named ANSI colors: Black, Red, Green, Yellow, Blue, Magenta, Cyan, White, plus bright variants. Implements Display, FromStr |
 | `PersistenceError` | Error enum for persistence operations: NoDataDir, Io, Serde |
 | `ValidationOutcome` | Spec validation result: Success, Warning, Failure, Generated, Idle |
 
@@ -103,6 +108,10 @@ The crate root re-exports these types for convenience:
 | `SimStateData` | Serializable simulation data for persistence |
 | `LivePetApp` | Async TUI application for real-time pet interaction |
 | `SimpleLivePet` | Simple synchronous interactive pet display |
+| `ColorScheme` | User-configurable color scheme with body and bubble colors |
+| `ColorSchemeData` | Serializable color scheme data for persistence (body/bubble as strings) |
+| `HealthEvent` | A single recorded CI/CD event with event type, timestamp, and optional context |
+| `RepoHealth` | Aggregated repo health state: tracks events, scores, streaks, and derives mood |
 | `SpecSyncCompanion` | Pet companion that reacts to spec validation outcomes |
 
 ### Pet Methods
@@ -193,11 +202,32 @@ The crate root re-exports these types for convenience:
 | `fmt` | (Display trait) | `fmt::Result` | Display as style name |
 | `from_str` | (FromStr trait) | `Result<Self, String>` | Parse from string ("minimal") |
 
-### Color Module Functions
+### Color Module
+
+#### PetColor Methods
+
+| Method | Parameters | Returns | Description |
+|----------|-----------|---------|-------------|
+| `random` | `()` | `Self` | Returns a random color |
+| `fmt` | (Display trait) | `fmt::Result` | Display as lowercase name (e.g. "red", "bright-blue") |
+| `from_str` | (FromStr trait) | `Result<Self, String>` | Parse from string, accepts aliases ("purple" → Magenta, "gray" → BrightBlack) |
+
+`PetColor::ALL` — constant slice of all 16 color variants.
+
+#### ColorScheme Methods
+
+| Method | Parameters | Returns | Description |
+|----------|-----------|---------|-------------|
+| `new` | `body: PetColor, bubble: PetColor` | `Self` | Create a new color scheme |
+| `default_for` | `species: Species` | `Self` | Default scheme for species (Crow: blue body, cyan bubble) |
+| `random` | `()` | `Self` | Random body and bubble colors |
+
+#### Color Functions
 
 | Function | Parameters | Returns | Description |
 |----------|-----------|---------|-------------|
 | `color::colorize` | `art: &str, species: Species` | `String` | Apply ANSI colors by species. No-op without `color` feature |
+| `color::colorize_with_scheme` | `art: &str, scheme: &ColorScheme` | `String` | Apply ANSI colors using custom scheme. No-op without `color` feature |
 
 ### Templates Module
 
@@ -313,6 +343,43 @@ Simpler synchronous alternative for interactive pet display.
 | Function | Parameters | Returns | Description |
 |----------|-----------|---------|-------------|
 | `create_validation_spinner` | `pet: &Pet` | `Spinner` | Create spinner with mood-appropriate message |
+
+### Health Module
+
+#### RepoHealth Methods
+
+| Method | Parameters | Returns | Description |
+|----------|-----------|---------|-------------|
+| `new` | `pet_name: String` | `Self` | Create health tracker (starts at score 100) |
+| `record` | `&mut self, event: Event, timestamp: u64, context: Option<String>` | `()` | Record a CI/CD event, update score and streak |
+| `mood` | `&self` | `Mood` | Derive mood from health score (90+: Happy/Excited, 70-89: Neutral, 50-69: Confused, <50: Sad) |
+| `summary` | `&self` | `String` | Human-readable health summary line |
+| `pr_comment` | `&self, event: Event, context: &str` | `String` | Markdown PR comment with pet art, quote, and health stats |
+| `badge_line` | `&self` | `String` | Short status line with emoji for badges |
+| `readme_badge` | `&self` | `String` | Markdown block for README embedding (between corvid-pet:start/end comments) |
+| `default` | (Default trait) | `Self` | Default health (pet name "Corvin", score 100) |
+
+#### Health Functions (require `persistence` feature)
+
+| Function | Parameters | Returns | Description |
+|----------|-----------|---------|-------------|
+| `health::load_health` | `path: &Path` | `Result<RepoHealth, Box<dyn Error>>` | Load health state from JSON file |
+| `health::save_health` | `health: &RepoHealth, path: &Path` | `Result<(), Box<dyn Error>>` | Save health state to JSON file |
+
+### CLI Binary (`src/bin/corvid-pet.rs`)
+
+Command-line interface for interacting with corvid pets. Built with clap.
+
+| Command | Description |
+|---------|-------------|
+| `show` | Display the pet's ASCII art (default command) |
+| `feed` | Feed the pet |
+| `play` | Play with the pet |
+| `status` | Show pet status and stats |
+| `sim` | Run interactive simulation |
+| `health` | Show repo health or record events |
+
+Global flags: `--name`, `--no-color`, `--color`, `--bubble-color`.
 
 ### Art Styles
 
