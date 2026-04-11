@@ -379,9 +379,9 @@ mod detailed {
 // MARK: - Minimal Style
 
 mod minimal {
-    use crate::{Mood, Species};
+    use crate::Mood;
 
-    pub fn render(species: Species, mood: Mood) -> String {
+    pub fn render(_species: crate::Species, mood: Mood) -> String {
         let thought = match mood {
             Mood::Happy => "Caw! ✨",
             Mood::Sad => "oh no...",
@@ -391,41 +391,14 @@ mod minimal {
             Mood::Sleepy => "zzz...",
         };
 
-        match species {
-            Species::Crow => format!(
-                r#"   .oO({thought})
+        format!(
+            r#"   .oO({thought})
       _
     <(o\
-     |/(\
+     |/(\\
       \(\\
       "^`"."#
-            ),
-            Species::Raven => r#"    ___        ___
-   /   \      /   \
-  | o o |    | o o |
-   \___/      \___/
-    /  \      /  \
-   `---'      `---'"
-            Raven"#
-                .to_string(),
-            Species::Magpie => r#"    .-.
-   /o o\
-   \ - /
-    |-|
-   /| |\
-  (_| |_)"
-            Magpie"#
-                .to_string(),
-            Species::Jay => r#"    ,-.
-   /o o\
-  / \^/ \
-   \ | /
-    |=|
-   /   \
-  `-----'"
-            Jay"#
-                .to_string(),
-        }
+        )
     }
 }
 
