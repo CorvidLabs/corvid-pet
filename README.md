@@ -28,10 +28,10 @@ println!("{}", pet.render());
 
 ```
       _
-    <(o\          .oO(hmm)
+    <(o\  .oO(hmm)
      |/(\
       \(\\
-      "^`".
+      " "\\
 ```
 
 ## Examples
