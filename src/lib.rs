@@ -17,17 +17,27 @@ pub mod art_v2;
 pub mod color;
 pub mod comments;
 pub mod integrations;
+pub mod life_stage;
 pub mod live;
 pub mod moods;
+pub mod needs;
+pub mod personality;
 pub mod persistence;
+pub mod sim;
 pub mod species;
+pub mod stats;
 pub mod styles;
 pub mod templates;
 
 pub use animations::{Animation, Spinner};
+pub use life_stage::LifeStage;
 pub use moods::Mood;
+pub use needs::{InteractionResult, Need};
 pub use persistence::PetState;
+pub use personality::Personality;
+pub use sim::SimState;
 pub use species::Species;
+pub use stats::Stats;
 pub use styles::ArtStyle;
 
 /// Lifecycle events that can trigger pet reactions.
@@ -51,6 +61,8 @@ pub struct Pet {
     name: String,
     species: Species,
     mood: Mood,
+    /// Optional life simulation state. None = static pet (backwards compat).
+    sim_state: Option<SimState>,
 }
 
 impl Pet {
@@ -68,6 +80,7 @@ impl Pet {
             name,
             species,
             mood: Mood::Neutral,
+            sim_state: None,
         }
     }
 
@@ -145,6 +158,83 @@ impl Pet {
             Event::Idle => Mood::Sleepy,
         };
         self.set_mood(new_mood);
+    }
+
+    // -- Life simulation methods --
+
+    /// Enables life simulation with the given personality.
+    /// `now_secs` is the current unix timestamp.
+    pub fn with_simulation(mut self, personality: Personality, now_secs: u64) -> Self {
+        self.sim_state = Some(SimState::new(personality, now_secs));
+        self
+    }
+
+    /// Advances the simulation clock. No-op if simulation is not enabled.
+    pub fn tick(&mut self, now_secs: u64) {
+        if let Some(sim) = &mut self.sim_state {
+            sim.tick(now_secs);
+            self.mood = sim.stats.dominant_mood();
+        }
+    }
+
+    /// Feed the pet. Returns None if simulation is not enabled.
+    pub fn feed(&mut self, now_secs: u64) -> Option<InteractionResult> {
+        self.do_interact(Need::Feed, now_secs)
+    }
+
+    /// Play with the pet.
+    pub fn play(&mut self, now_secs: u64) -> Option<InteractionResult> {
+        self.do_interact(Need::Play, now_secs)
+    }
+
+    /// Let the pet rest.
+    pub fn rest(&mut self, now_secs: u64) -> Option<InteractionResult> {
+        self.do_interact(Need::Rest, now_secs)
+    }
+
+    /// Clean/groom the pet.
+    pub fn clean(&mut self, now_secs: u64) -> Option<InteractionResult> {
+        self.do_interact(Need::Clean, now_secs)
+    }
+
+    /// Give the pet quick affection.
+    pub fn pet_me(&mut self, now_secs: u64) -> Option<InteractionResult> {
+        self.do_interact(Need::Pet, now_secs)
+    }
+
+    /// Internal helper for interactions.
+    fn do_interact(&mut self, need: Need, now_secs: u64) -> Option<InteractionResult> {
+        let sim = self.sim_state.as_mut()?;
+        let result = sim.interact(need, now_secs);
+        if result.success {
+            self.mood = sim.stats.dominant_mood();
+        }
+        Some(result)
+    }
+
+    /// Returns a reference to the current stats, if simulation is enabled.
+    pub fn stats(&self) -> Option<&Stats> {
+        self.sim_state.as_ref().map(|s| &s.stats)
+    }
+
+    /// Returns the current life stage, if simulation is enabled.
+    pub fn life_stage(&self) -> Option<LifeStage> {
+        self.sim_state.as_ref().map(|s| s.stage)
+    }
+
+    /// Returns the pet's personality, if simulation is enabled.
+    pub fn pet_personality(&self) -> Option<Personality> {
+        self.sim_state.as_ref().map(|s| s.personality)
+    }
+
+    /// Returns a reference to the full simulation state.
+    pub fn sim(&self) -> Option<&SimState> {
+        self.sim_state.as_ref()
+    }
+
+    /// Returns a human-readable age string, if simulation is enabled.
+    pub fn age_display(&self) -> Option<String> {
+        self.sim_state.as_ref().map(|s| s.age_display())
     }
 }
 
@@ -289,5 +379,63 @@ mod tests {
         let pet = Pet::default();
         assert_eq!(pet.species(), Species::Crow);
         assert_eq!(pet.mood(), Mood::Neutral);
+    }
+
+    // -- Simulation integration tests --
+
+    #[test]
+    fn test_pet_without_sim_returns_none() {
+        let pet = Pet::new("Test".to_string(), Species::Crow);
+        assert!(pet.stats().is_none());
+        assert!(pet.life_stage().is_none());
+        assert!(pet.pet_personality().is_none());
+        assert!(pet.age_display().is_none());
+    }
+
+    #[test]
+    fn test_pet_with_sim_starts_as_egg() {
+        let pet = Pet::new("Pip".to_string(), Species::Crow)
+            .with_simulation(Personality::Curious, 1000);
+        assert_eq!(pet.life_stage(), Some(LifeStage::Egg));
+        assert!(pet.stats().is_some());
+        assert_eq!(pet.stats().unwrap().hunger, 100.0);
+    }
+
+    #[test]
+    fn test_pet_tick_updates_mood() {
+        let mut pet = Pet::new("Pip".to_string(), Species::Crow)
+            .with_simulation(Personality::Curious, 1000);
+        // Fast-forward past egg into hatchling, then let stats decay a lot
+        pet.tick(1000 + 300); // Hatch
+        pet.tick(1000 + 300 + 86400); // 24h of decay
+        // With 24h of decay, hunger should be very low -> Sad mood
+        assert_eq!(pet.mood(), Mood::Sad);
+    }
+
+    #[test]
+    fn test_pet_feed_works() {
+        let mut pet = Pet::new("Pip".to_string(), Species::Crow)
+            .with_simulation(Personality::Curious, 1000);
+        pet.tick(1400); // Past egg
+        let result = pet.feed(1401);
+        assert!(result.is_some());
+        assert!(result.unwrap().success);
+    }
+
+    #[test]
+    fn test_pet_feed_returns_none_without_sim() {
+        let mut pet = Pet::new("Test".to_string(), Species::Crow);
+        assert!(pet.feed(1000).is_none());
+    }
+
+    #[test]
+    fn test_pet_sim_round_trip() {
+        let pet = Pet::new("Pip".to_string(), Species::Crow)
+            .with_simulation(Personality::Greedy, 1000);
+        let state = PetState::from_pet(&pet);
+        assert!(state.sim.is_some());
+        let pet2 = state.to_pet();
+        assert_eq!(pet2.pet_personality(), Some(Personality::Greedy));
+        assert_eq!(pet2.life_stage(), Some(LifeStage::Egg));
     }
 }

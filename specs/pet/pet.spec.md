@@ -14,6 +14,11 @@ files:
   - src/color.rs
   - src/persistence.rs
   - src/live.rs
+  - src/stats.rs
+  - src/life_stage.rs
+  - src/personality.rs
+  - src/needs.rs
+  - src/sim.rs
 db_tables: []
 depends_on: []
 ---
@@ -42,6 +47,12 @@ ASCII corvid companion library for CLI tools. Provides animated ASCII pets that 
 | `ArtStyle` | Art rendering style enum (currently only `Minimal`) |
 | `Animation` | Iterator over animation frames |
 | `Spinner` | Progress indicator with animated pet |
+| `Stats` | Vital statistics: hunger, energy, happiness, health |
+| `LifeStage` | Life progression: Egg, Hatchling, Fledgling, Adult, Elder |
+| `Personality` | Trait affecting behavior: Curious, Shy, Mischievous, Stoic, Affectionate, Greedy |
+| `Need` | Interactions: Feed, Play, Rest, Clean, Pet |
+| `SimState` | Full simulation state coordinating stats, stages, personality, needs |
+| `InteractionResult` | Result of performing an interaction |
 
 ### Exported Pet Methods
 
@@ -57,6 +68,18 @@ ASCII corvid companion library for CLI tools. Provides animated ASCII pets that 
 | `animate_hop` | `&self` | `Animation` | Iterator yielding hop animation frames |
 | `spinner` | `&self, message: &str` | `Spinner` | Create progress spinner with pet animation |
 | `react` | `&mut self, event: Event` | `()` | Auto-set mood based on event |
+| `with_simulation` | `self, personality: Personality, now_secs: u64` | `Self` | Enable life simulation |
+| `tick` | `&mut self, now_secs: u64` | `()` | Advance simulation clock |
+| `feed` | `&mut self, now_secs: u64` | `Option<InteractionResult>` | Feed the pet |
+| `play` | `&mut self, now_secs: u64` | `Option<InteractionResult>` | Play with the pet |
+| `rest` | `&mut self, now_secs: u64` | `Option<InteractionResult>` | Let the pet rest |
+| `clean` | `&mut self, now_secs: u64` | `Option<InteractionResult>` | Groom the pet |
+| `pet_me` | `&mut self, now_secs: u64` | `Option<InteractionResult>` | Quick affection |
+| `stats` | `&self` | `Option<&Stats>` | Current vital statistics |
+| `life_stage` | `&self` | `Option<LifeStage>` | Current life stage |
+| `pet_personality` | `&self` | `Option<Personality>` | Pet's personality trait |
+| `sim` | `&self` | `Option<&SimState>` | Full simulation state |
+| `age_display` | `&self` | `Option<String>` | Human-readable age |
 
 ### Exported Species Methods
 
@@ -155,3 +178,4 @@ Custom art can be provided via the `ArtTemplate` and `TemplateRegistry` types in
 |------|--------|
 | 2026-04-02 | Initial spec draft |
 | 2026-04-11 | Updated to review status; documented single Minimal style; added ArtStyle, render_with_style, render_colored to API; added art_v2 and templates modules to file list |
+| 2026-04-11 | Added life simulation system: Stats, LifeStage, Personality, Need, SimState. Pet gains optional simulation with tick/interact API. Full backwards compatibility |
