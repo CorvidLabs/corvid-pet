@@ -1,12 +1,12 @@
-use corvid_pet::{Mood, PetState, Personality, Pet, Species};
+use corvid_pet::{Mood, Personality, Pet, PetState, Species};
 
 fn main() {
     println!("corvid-pet — Persistence Demo\n");
 
     // Create a pet with simulation enabled
     let now = 1_700_000_000u64;
-    let mut pet = Pet::new("Corvin".to_string(), Species::Crow)
-        .with_simulation(Personality::Curious, now);
+    let mut pet =
+        Pet::new("Corvin".to_string(), Species::Crow).with_simulation(Personality::Curious, now);
 
     // Interact with the pet
     pet.tick(now + 300); // Hatch from egg

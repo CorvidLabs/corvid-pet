@@ -67,7 +67,13 @@ mod minimal {
             let owned_lines: Vec<String> = lines
                 .iter()
                 .enumerate()
-                .map(|(i, l)| if i == 1 { padded.clone() } else { l.to_string() })
+                .map(|(i, l)| {
+                    if i == 1 {
+                        padded.clone()
+                    } else {
+                        l.to_string()
+                    }
+                })
                 .collect();
             owned_lines.join("\n")
         } else {
