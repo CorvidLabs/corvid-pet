@@ -1,0 +1,233 @@
+name: "corvid-pet"
+description: "ASCII corvid companion that tracks your repo's health and reacts to CI/CD events"
+author: "CorvidLabs"
+
+branding:
+  icon: "heart"
+  color: "purple"
+
+inputs:
+  mode:
+    description: "Action mode: pr-comment, health-check, greet, release, badge"
+    required: true
+    default: "pr-comment"
+  event:
+    description: "Event type: auto (detect from job status), success, failure, warning, progress, idle"
+    required: false
+    default: "auto"
+  pet-name:
+    description: "Name for your corvid companion"
+    required: false
+    default: "Corvin"
+  color:
+    description: "Body color (e.g. red, green, blue, magenta, cyan, bright-red)"
+    required: false
+    default: ""
+  bubble-color:
+    description: "Thought bubble color (e.g. cyan, yellow, bright-green)"
+    required: false
+    default: ""
+  random-colors:
+    description: "Use random colors each run"
+    required: false
+    default: "false"
+  state-file:
+    description: "Path to the health state JSON file"
+    required: false
+    default: ".corvid-pet.json"
+  context:
+    description: "Additional context for comments (e.g. CI summary)"
+    required: false
+    default: ""
+  comment-on-pr:
+    description: "Whether to post a comment on the PR (requires GITHUB_TOKEN)"
+    required: false
+    default: "true"
+  update-readme:
+    description: "Whether to update the README badge (for badge mode)"
+    required: false
+    default: "false"
+  github-token:
+    description: "GitHub token for posting comments"
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  mood:
+    description: "The pet's current mood"
+    value: ${{ steps.run.outputs.mood }}
+  score:
+    description: "The repo health score (0-100)"
+    value: ${{ steps.run.outputs.score }}
+  comment:
+    description: "The generated comment markdown"
+    value: ${{ steps.run.outputs.comment }}
+  art:
+    description: "The ASCII art output"
+    value: ${{ steps.run.outputs.art }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install Rust toolchain
+      uses: dtolnay/rust-toolchain@stable
+      if: ${{ !env.CORVID_PET_BIN }}
+
+    - name: Cache corvid-pet binary
+      uses: actions/cache@v4
+      id: cache-bin
+      with:
+        path: ~/.cargo/bin/corvid-pet
+        key: corvid-pet-${{ runner.os }}-${{ hashFiles('Cargo.toml', 'Cargo.lock') }}
+
+    - name: Install corvid-pet CLI
+      if: steps.cache-bin.outputs.cache-hit != 'true' && !env.CORVID_PET_BIN
+      shell: bash
+      run: cargo install corvid-pet --features cli
+
+    - name: Restore health state from cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ inputs.state-file }}
+        key: corvid-pet-state-${{ github.repository }}
+        restore-keys: |
+          corvid-pet-state-
+
+    - name: Run corvid-pet
+      id: run
+      shell: bash
+      env:
+        CORVID_MODE: ${{ inputs.mode }}
+        CORVID_EVENT: ${{ inputs.event }}
+        CORVID_NAME: ${{ inputs.pet-name }}
+        CORVID_STATE: ${{ inputs.state-file }}
+        CORVID_CONTEXT: ${{ inputs.context }}
+        CORVID_COLOR: ${{ inputs.color }}
+        CORVID_BUBBLE_COLOR: ${{ inputs.bubble-color }}
+        CORVID_RANDOM_COLORS: ${{ inputs.random-colors }}
+        CORVID_JOB_STATUS: ${{ job.status }}
+      run: |
+        BIN="${CORVID_PET_BIN:-corvid-pet}"
+
+        # Auto-detect event from job status if set to "auto"
+        if [ "$CORVID_EVENT" = "auto" ]; then
+          case "${CORVID_JOB_STATUS,,}" in
+            success)  CORVID_EVENT="success" ;;
+            failure)  CORVID_EVENT="failure" ;;
+            cancelled) CORVID_EVENT="warning" ;;
+            *)        CORVID_EVENT="progress" ;;
+          esac
+        fi
+
+        # Build color flags
+        COLOR_FLAGS=""
+        if [ "$CORVID_RANDOM_COLORS" = "true" ]; then
+          COLOR_FLAGS="--random-colors"
+        else
+          if [ -n "$CORVID_COLOR" ]; then
+            COLOR_FLAGS="--color $CORVID_COLOR"
+          fi
+          if [ -n "$CORVID_BUBBLE_COLOR" ]; then
+            COLOR_FLAGS="$COLOR_FLAGS --bubble-color $CORVID_BUBBLE_COLOR"
+          fi
+        fi
+
+        case "$CORVID_MODE" in
+          pr-comment)
+            # Record the event
+            $BIN react "$CORVID_EVENT" --state "$CORVID_STATE" --name "$CORVID_NAME" $COLOR_FLAGS ${CORVID_CONTEXT:+--context "$CORVID_CONTEXT"} --no-color
+
+            # Generate PR comment
+            COMMENT=$($BIN comment "$CORVID_EVENT" --state "$CORVID_STATE" --name "$CORVID_NAME" --context "$CORVID_CONTEXT")
+            echo "comment<<CORVID_EOF" >> "$GITHUB_OUTPUT"
+            echo "$COMMENT" >> "$GITHUB_OUTPUT"
+            echo "CORVID_EOF" >> "$GITHUB_OUTPUT"
+            ;;
+
+          health-check)
+            $BIN react "$CORVID_EVENT" --state "$CORVID_STATE" --name "$CORVID_NAME" $COLOR_FLAGS ${CORVID_CONTEXT:+--context "$CORVID_CONTEXT"} --no-color
+            HEALTH_JSON=$($BIN health --state "$CORVID_STATE" --name "$CORVID_NAME" --json)
+            echo "health=$HEALTH_JSON" >> "$GITHUB_OUTPUT"
+            ;;
+
+          greet)
+            COMMENT=$($BIN comment success --state "$CORVID_STATE" --name "$CORVID_NAME" --context "Welcome! Thanks for contributing. 🐦")
+            echo "comment<<CORVID_EOF" >> "$GITHUB_OUTPUT"
+            echo "$COMMENT" >> "$GITHUB_OUTPUT"
+            echo "CORVID_EOF" >> "$GITHUB_OUTPUT"
+            ;;
+
+          release)
+            COMMENT=$($BIN comment success --state "$CORVID_STATE" --name "$CORVID_NAME" --context "🎉 New release! $CORVID_CONTEXT")
+            echo "comment<<CORVID_EOF" >> "$GITHUB_OUTPUT"
+            echo "$COMMENT" >> "$GITHUB_OUTPUT"
+            echo "CORVID_EOF" >> "$GITHUB_OUTPUT"
+            ;;
+
+          badge)
+            BADGE=$($BIN badge --state "$CORVID_STATE" --name "$CORVID_NAME")
+            echo "badge<<CORVID_EOF" >> "$GITHUB_OUTPUT"
+            echo "$BADGE" >> "$GITHUB_OUTPUT"
+            echo "CORVID_EOF" >> "$GITHUB_OUTPUT"
+            ;;
+        esac
+
+        # Extract mood and score for outputs
+        HEALTH_JSON=$($BIN health --state "$CORVID_STATE" --name "$CORVID_NAME" --json 2>/dev/null || echo '{}')
+        MOOD=$(echo "$HEALTH_JSON" | grep -o '"mood":"[^"]*"' | head -1 | cut -d'"' -f4 || echo "neutral")
+        SCORE=$(echo "$HEALTH_JSON" | grep -o '"score":[0-9.]*' | head -1 | cut -d: -f2 || echo "100")
+        echo "mood=$MOOD" >> "$GITHUB_OUTPUT"
+        echo "score=$SCORE" >> "$GITHUB_OUTPUT"
+
+        # Show art
+        ART=$($BIN show --no-color --name "$CORVID_NAME" $COLOR_FLAGS)
+        echo "art<<CORVID_EOF" >> "$GITHUB_OUTPUT"
+        echo "$ART" >> "$GITHUB_OUTPUT"
+        echo "CORVID_EOF" >> "$GITHUB_OUTPUT"
+
+    - name: Post PR comment
+      if: inputs.comment-on-pr == 'true' && (inputs.mode == 'pr-comment' || inputs.mode == 'greet') && github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ inputs.github-token }}
+        script: |
+          const comment = `${{ steps.run.outputs.comment }}`;
+          if (comment) {
+            // Check for existing corvid-pet comment and update it
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body && c.body.includes('corvid-pet'));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: comment,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment,
+              });
+            }
+          }
+
+    - name: Update README badge
+      if: inputs.update-readme == 'true' && inputs.mode == 'badge'
+      shell: bash
+      run: |
+        BADGE=$(${{ env.CORVID_PET_BIN || 'corvid-pet' }} badge --state "${{ inputs.state-file }}" --name "${{ inputs.pet-name }}")
+        if grep -q "corvid-pet:start" README.md 2>/dev/null; then
+          # Replace existing badge section
+          sed -i.bak '/<!-- corvid-pet:start -->/,/<!-- corvid-pet:end -->/c\'"$BADGE" README.md
+          rm -f README.md.bak
+        else
+          # Append badge section
+          echo "" >> README.md
+          echo "$BADGE" >> README.md
+        fi

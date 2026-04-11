@@ -22,9 +22,16 @@ dirs = { version = "5", optional = true }
 ratatui = { version = "0.29", optional = true }
 crossterm = { version = "0.28", optional = true }
 tokio = { version = "1", features = ["rt", "time", "macros"], optional = true }
+clap = { version = "4", features = ["derive"], optional = true }
+chrono = { version = "0.4", optional = true }
 
 [features]
 default = []
 color = ["dep:colored"]
 persistence = ["dep:serde", "dep:serde_json", "dep:dirs"]
 live = ["dep:ratatui", "dep:crossterm", "dep:tokio", "dep:serde", "dep:serde_json"]
+cli = ["dep:clap", "dep:chrono", "color", "persistence"]
+
+[[bin]]
+name = "corvid-pet"
+required-features = ["cli"]

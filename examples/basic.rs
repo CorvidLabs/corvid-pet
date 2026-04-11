@@ -1,5 +1,8 @@
 use corvid_pet::{Event, Mood, Pet, Species};
 
+#[cfg(feature = "color")]
+use corvid_pet::{ColorScheme, PetColor};
+
 fn main() {
     println!("corvid-pet — Meet the Crow!\n");
 
@@ -60,6 +63,29 @@ fn main() {
         println!("{}", pet.render());
 
         println!("  \"{}\"", pet.comment());
+        println!();
+    }
+
+    // Demonstrate custom colors
+    #[cfg(feature = "color")]
+    {
+        println!("=== Custom Colors ===\n");
+
+        let custom = Pet::new("Ruby".to_string(), Species::Crow)
+            .with_colors(ColorScheme::new(PetColor::Red, PetColor::Yellow));
+        println!("Red body, yellow bubble:");
+        println!("{}", custom.render_colored());
+        println!();
+
+        let green = Pet::new("Jade".to_string(), Species::Crow)
+            .with_colors(ColorScheme::new(PetColor::Green, PetColor::BrightGreen));
+        println!("Green body, bright-green bubble:");
+        println!("{}", green.render_colored());
+        println!();
+
+        let random = Pet::new("Lucky".to_string(), Species::Crow).with_random_colors();
+        println!("Random colors ({} body, {} bubble):", random.color_scheme().body, random.color_scheme().bubble);
+        println!("{}", random.render_colored());
         println!();
     }
 }
