@@ -19,9 +19,9 @@ files:
   - src/personality.rs
   - src/needs.rs
   - src/sim.rs
+  - src/bin/corvid-pet.rs
   - src/integrations/mod.rs
   - src/integrations/specsync.rs
-  - src/bin/corvid-pet.rs
 db_tables: []
 depends_on: []
 ---
@@ -42,6 +42,8 @@ The crate root re-exports these types for convenience:
 |------|--------------|
 | `Animation` | `animations` |
 | `Spinner` | `animations` |
+| `ColorScheme` | `color` |
+| `PetColor` | `color` |
 | `LifeStage` | `life_stage` |
 | `Mood` | `moods` |
 | `InteractionResult` | `needs` |
@@ -93,6 +95,10 @@ The crate root re-exports these types for convenience:
 | Type | Description |
 |------|-------------|
 | `Pet` | The main companion with name, species, and mood |
+| `ColorScheme` | User-configurable color scheme with body and bubble colors |
+| `ColorSchemeData` | Serializable color scheme data for persistence (body/bubble as strings) |
+| `HealthEvent` | A single recorded CI/CD event with type, timestamp, and optional context |
+| `RepoHealth` | Aggregated repo health state tracking CI events, score, streak, and mood |
 | `ArtStyle` | Art rendering style enum (`Minimal`). Default: Minimal |
 | `Animation` | Iterator over animation frames |
 | `Spinner` | Progress indicator with animated pet |
@@ -108,10 +114,6 @@ The crate root re-exports these types for convenience:
 | `SimStateData` | Serializable simulation data for persistence |
 | `LivePetApp` | Async TUI application for real-time pet interaction |
 | `SimpleLivePet` | Simple synchronous interactive pet display |
-| `ColorScheme` | User-configurable color scheme with body and bubble colors |
-| `ColorSchemeData` | Serializable color scheme data for persistence (body/bubble as strings) |
-| `HealthEvent` | A single recorded CI/CD event with event type, timestamp, and optional context |
-| `RepoHealth` | Aggregated repo health state: tracks events, scores, streaks, and derives mood |
 | `SpecSyncCompanion` | Pet companion that reacts to spec validation outcomes |
 
 ### Pet Methods
