@@ -87,10 +87,7 @@ impl SpecSyncCompanion {
     /// Reacts to validation results (convenience method for spec-sync integration).
     ///
     /// Takes the number of errors and warnings and determines the appropriate outcome.
-    pub fn react_to_results(&mut self,
-        errors: usize,
-        warnings: usize,
-    ) {
+    pub fn react_to_results(&mut self, errors: usize, warnings: usize) {
         let outcome = if errors > 0 {
             ValidationOutcome::Failure
         } else if warnings > 0 {
@@ -114,10 +111,7 @@ impl SpecSyncCompanion {
     /// Returns a summary message based on current state.
     pub fn summary(&self) -> String {
         match self.pet.mood() {
-            Mood::Happy => format!(
-                "✓ {} specs validated successfully!",
-                self.validation_count
-            ),
+            Mood::Happy => format!("✓ {} specs validated successfully!", self.validation_count),
             Mood::Sad => "✗ Validation failed. Check the errors above.".to_string(),
             Mood::Confused => "⚠ Validation passed with warnings.".to_string(),
             Mood::Excited => "✨ New specs generated!".to_string(),

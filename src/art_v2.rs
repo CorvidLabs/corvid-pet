@@ -51,7 +51,8 @@ fn crow_ascii(mood: Mood) -> String {
         _ => "   /| |\\   ",
     };
 
-    format!(r#"         ."-".
+    format!(
+        r#"         ."-".
         /     \
        /       \
       | {eyes} |
@@ -63,7 +64,8 @@ fn crow_ascii(mood: Mood) -> String {
       |_______|
       /     \
 {body}
-      `"-'`-'"`"#)
+      `"-'`-'"`"#
+    )
 }
 
 fn raven_ascii(mood: Mood) -> String {
@@ -83,7 +85,8 @@ fn raven_ascii(mood: Mood) -> String {
         _ => r#"  |       |"#,
     };
 
-    format!(r#"        _____
+    format!(
+        r#"        _____
        /     \
       /       \
      |  {eyes}  |
@@ -95,7 +98,8 @@ fn raven_ascii(mood: Mood) -> String {
      |___|_|___|
         |   |
        /     \
-      `"'"`"`"`"#)
+      `"'"`"`"`"#
+    )
 }
 
 fn magpie_ascii(mood: Mood) -> String {
@@ -109,15 +113,22 @@ fn magpie_ascii(mood: Mood) -> String {
     };
 
     let tail_art = match tail {
-        "fanned" | "raised" => r#"       /\ /\ /\
-      /  | |  \"#,
-        "droop" | "folded" => r#"       | | | |
-      \  | |  /"#,
-        _ => r#"       | | | |
-      |  | |  |"#,
+        "fanned" | "raised" => {
+            r#"       /\ /\ /\
+      /  | |  \"#
+        }
+        "droop" | "folded" => {
+            r#"       | | | |
+      \  | |  /"#
+        }
+        _ => {
+            r#"       | | | |
+      |  | |  |"#
+        }
     };
 
-    format!(r#"         .---.
+    format!(
+        r#"         .---.
         /     \
        /       \
       |  {eyes}  |
@@ -127,7 +138,8 @@ fn magpie_ascii(mood: Mood) -> String {
     / |    |    | \
    /  |____|____|  \
 {tail_art}
-        `"-'`-'"#)
+        `"-'`-'"#
+    )
 }
 
 fn jay_ascii(mood: Mood) -> String {
@@ -147,7 +159,8 @@ fn jay_ascii(mood: Mood) -> String {
         _ => r#"       /\\   //\\"#,
     };
 
-    format!(r#"       ,---,
+    format!(
+        r#"       ,---,
 {crest_art}
      /  {eyes}  \
     |    {beak}    |
@@ -157,7 +170,8 @@ fn jay_ascii(mood: Mood) -> String {
      |____|____|
         |  |
        /    \
-      `"--'--'"#)
+      `"--'--'"#
+    )
 }
 
 // MARK: - Unicode Art
@@ -181,7 +195,14 @@ mod tests {
     #[test]
     fn test_all_combinations() {
         for species in [Species::Crow, Species::Raven, Species::Magpie, Species::Jay] {
-            for mood in [Mood::Happy, Mood::Sad, Mood::Neutral, Mood::Confused, Mood::Excited, Mood::Sleepy] {
+            for mood in [
+                Mood::Happy,
+                Mood::Sad,
+                Mood::Neutral,
+                Mood::Confused,
+                Mood::Excited,
+                Mood::Sleepy,
+            ] {
                 let art = render(species, mood, false);
                 assert!(!art.is_empty(), "Empty art for {:?} {:?}", species, mood);
             }

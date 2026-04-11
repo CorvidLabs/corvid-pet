@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "LICENSE"
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "LICENSE"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Check & Test
+    runs-on: self-hosted
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Cache cargo registry & build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-
+
+      - name: Format check
+        run: cargo fmt --check
+
+      - name: Clippy (default features)
+        run: cargo clippy -- -D warnings
+
+      - name: Clippy (all features)
+        run: cargo clippy --all-features -- -D warnings
+
+      - name: Build (default features)
+        run: cargo build
+
+      - name: Build (all features)
+        run: cargo build --all-features
+
+      - name: Tests
+        run: cargo test --all-features
+
+      - name: Build examples
+        run: cargo build --examples --all-features
+
+  review:
+    name: PR Review
+    runs-on: self-hosted
+    needs: [check]
+    if: always() && github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Approve or request changes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BUILD_RESULT: ${{ needs.check.result }}
+        run: |
+          if [ "$BUILD_RESULT" = "success" ]; then
+            gh pr review "$PR_NUMBER" \
+              --approve \
+              --body "All CI checks passed (fmt, clippy, build, tests)."
+          else
+            gh pr review "$PR_NUMBER" \
+              --request-changes \
+              --body "CI checks failed. Please review the build logs and fix the issues before merging."
+          fi

@@ -117,7 +117,14 @@ impl TemplateRegistry {
 
         for species in [Species::Crow, Species::Raven, Species::Magpie, Species::Jay] {
             let mut moods_map = HashMap::new();
-            for mood in [Mood::Happy, Mood::Sad, Mood::Neutral, Mood::Confused, Mood::Excited, Mood::Sleepy] {
+            for mood in [
+                Mood::Happy,
+                Mood::Sad,
+                Mood::Neutral,
+                Mood::Confused,
+                Mood::Excited,
+                Mood::Sleepy,
+            ] {
                 moods_map.insert(mood, moods::ascii_art(species, mood));
             }
             map.insert(species, moods_map);
@@ -129,7 +136,8 @@ impl TemplateRegistry {
     /// Registers a template.
     pub fn register(&mut self, template: ArtTemplate) {
         // Remove any existing template with same name/species
-        self.templates.retain(|t| !(t.name == template.name && t.species == template.species));
+        self.templates
+            .retain(|t| !(t.name == template.name && t.species == template.species));
         self.templates.push(template);
     }
 
@@ -166,7 +174,9 @@ impl TemplateRegistry {
 pub fn example_crow_template() -> ArtTemplate {
     let mut template = ArtTemplate::new("Cyber Crow".to_string(), Species::Crow);
 
-    template.set_mood(Mood::Happy, r#"
+    template.set_mood(
+        Mood::Happy,
+        r#"
     .-.
    /   \
   |o   o|  [OK]
@@ -174,9 +184,14 @@ pub fn example_crow_template() -> ArtTemplate {
    \___/
     | |
    /   \
-"#.trim().to_string());
+"#
+        .trim()
+        .to_string(),
+    );
 
-    template.set_mood(Mood::Sad, r#"
+    template.set_mood(
+        Mood::Sad,
+        r#"
     .-.
    /   \
   |o   o|  [ERR]
@@ -184,9 +199,13 @@ pub fn example_crow_template() -> ArtTemplate {
    \___/
     | |
    /   \
-"#.trim().to_string());
+"#
+        .trim()
+        .to_string(),
+    );
 
-    template.closed_eyes = Some(r#"
+    template.closed_eyes = Some(
+        r#"
     .-.
    /   \
   |-   -|
@@ -194,7 +213,10 @@ pub fn example_crow_template() -> ArtTemplate {
    \___/
     | |
    /   \
-"#.trim().to_string());
+"#
+        .trim()
+        .to_string(),
+    );
 
     template
 }
@@ -215,7 +237,10 @@ mod tests {
         let mut template = ArtTemplate::new("Test".to_string(), Species::Crow);
         template.set_mood(Mood::Happy, "happy art".to_string());
 
-        assert_eq!(template.get_mood(Mood::Happy), Some(&"happy art".to_string()));
+        assert_eq!(
+            template.get_mood(Mood::Happy),
+            Some(&"happy art".to_string())
+        );
         assert_eq!(template.get_mood(Mood::Sad), None);
     }
 

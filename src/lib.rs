@@ -21,8 +21,8 @@ pub mod life_stage;
 pub mod live;
 pub mod moods;
 pub mod needs;
-pub mod personality;
 pub mod persistence;
+pub mod personality;
 pub mod sim;
 pub mod species;
 pub mod stats;
@@ -394,8 +394,8 @@ mod tests {
 
     #[test]
     fn test_pet_with_sim_starts_as_egg() {
-        let pet = Pet::new("Pip".to_string(), Species::Crow)
-            .with_simulation(Personality::Curious, 1000);
+        let pet =
+            Pet::new("Pip".to_string(), Species::Crow).with_simulation(Personality::Curious, 1000);
         assert_eq!(pet.life_stage(), Some(LifeStage::Egg));
         assert!(pet.stats().is_some());
         assert_eq!(pet.stats().unwrap().hunger, 100.0);
@@ -403,8 +403,8 @@ mod tests {
 
     #[test]
     fn test_pet_tick_updates_mood() {
-        let mut pet = Pet::new("Pip".to_string(), Species::Crow)
-            .with_simulation(Personality::Curious, 1000);
+        let mut pet =
+            Pet::new("Pip".to_string(), Species::Crow).with_simulation(Personality::Curious, 1000);
         // Fast-forward past egg into hatchling, then let stats decay a lot
         pet.tick(1000 + 300); // Hatch
         pet.tick(1000 + 300 + 86400); // 24h of decay
@@ -414,8 +414,8 @@ mod tests {
 
     #[test]
     fn test_pet_feed_works() {
-        let mut pet = Pet::new("Pip".to_string(), Species::Crow)
-            .with_simulation(Personality::Curious, 1000);
+        let mut pet =
+            Pet::new("Pip".to_string(), Species::Crow).with_simulation(Personality::Curious, 1000);
         pet.tick(1400); // Past egg
         let result = pet.feed(1401);
         assert!(result.is_some());
@@ -430,8 +430,8 @@ mod tests {
 
     #[test]
     fn test_pet_sim_round_trip() {
-        let pet = Pet::new("Pip".to_string(), Species::Crow)
-            .with_simulation(Personality::Greedy, 1000);
+        let pet =
+            Pet::new("Pip".to_string(), Species::Crow).with_simulation(Personality::Greedy, 1000);
         let state = PetState::from_pet(&pet);
         assert!(state.sim.is_some());
         let pet2 = state.to_pet();

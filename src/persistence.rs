@@ -51,20 +51,22 @@ pub struct PetState {
 impl PetState {
     /// Creates a state from a pet.
     pub fn from_pet(pet: &Pet) -> Self {
-        let sim = pet.sim().map(|s| {
-            SimStateData {
-                hunger: s.stats.hunger,
-                energy: s.stats.energy,
-                happiness: s.stats.happiness,
-                health: s.stats.health,
-                stage: s.stage.to_string(),
-                personality: s.personality.to_string(),
-                age_secs: s.age_secs,
-                interaction_count: s.interaction_count,
-                born_at: s.born_at,
-                last_tick: s.last_tick,
-                cooldowns: s.cooldowns.iter().map(|(k, v)| (k.to_string(), *v)).collect(),
-            }
+        let sim = pet.sim().map(|s| SimStateData {
+            hunger: s.stats.hunger,
+            energy: s.stats.energy,
+            happiness: s.stats.happiness,
+            health: s.stats.health,
+            stage: s.stage.to_string(),
+            personality: s.personality.to_string(),
+            age_secs: s.age_secs,
+            interaction_count: s.interaction_count,
+            born_at: s.born_at,
+            last_tick: s.last_tick,
+            cooldowns: s
+                .cooldowns
+                .iter()
+                .map(|(k, v)| (k.to_string(), *v))
+                .collect(),
         });
 
         Self {
@@ -333,7 +335,14 @@ mod tests {
     #[test]
     fn test_all_species_round_trip() {
         for species in [Species::Crow, Species::Raven, Species::Magpie, Species::Jay] {
-            for mood in [Mood::Happy, Mood::Sad, Mood::Neutral, Mood::Confused, Mood::Excited, Mood::Sleepy] {
+            for mood in [
+                Mood::Happy,
+                Mood::Sad,
+                Mood::Neutral,
+                Mood::Confused,
+                Mood::Excited,
+                Mood::Sleepy,
+            ] {
                 let mut pet = Pet::new("Test".to_string(), species);
                 pet.set_mood(mood);
 

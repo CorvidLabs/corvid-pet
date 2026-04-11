@@ -1,7 +1,7 @@
 ---
 module: pet
 version: 1
-status: review
+status: active
 files:
   - src/lib.rs
   - src/species.rs

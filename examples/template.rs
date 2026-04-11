@@ -1,4 +1,4 @@
-use corvid_pet::templates::{example_crow_template, ArtTemplate, TemplateRegistry};
+use corvid_pet::templates::{ArtTemplate, TemplateRegistry, example_crow_template};
 use corvid_pet::{Mood, Pet, Species};
 
 fn main() {
@@ -64,9 +64,15 @@ fn main() {
     registry.register(my_template);
 
     println!("My Crow - Happy:");
-    println!("{}", registry.render(Species::Crow, Mood::Happy, Some("My Crow")));
+    println!(
+        "{}",
+        registry.render(Species::Crow, Mood::Happy, Some("My Crow"))
+    );
     println!();
 
     println!("My Crow - Sad:");
-    println!("{}", registry.render(Species::Crow, Mood::Sad, Some("My Crow")));
+    println!(
+        "{}",
+        registry.render(Species::Crow, Mood::Sad, Some("My Crow"))
+    );
 }

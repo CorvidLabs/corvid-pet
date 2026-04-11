@@ -92,25 +92,39 @@ impl Need {
     pub fn success_message(&self, personality: &Personality) -> String {
         match (self, personality) {
             (Need::Feed, Personality::Greedy) => "NOM NOM NOM! More please!".to_string(),
-            (Need::Feed, Personality::Mischievous) => "Eats it... then steals yours too.".to_string(),
+            (Need::Feed, Personality::Mischievous) => {
+                "Eats it... then steals yours too.".to_string()
+            }
             (Need::Feed, Personality::Shy) => "Nibbles quietly... thank you.".to_string(),
             (Need::Feed, _) => "Munch munch! That hit the spot.".to_string(),
 
-            (Need::Play, Personality::Mischievous) => "CHAOS! Knocks everything over! Best game ever!".to_string(),
-            (Need::Play, Personality::Curious) => "Ooh, what's this? And this? And THAT?!".to_string(),
+            (Need::Play, Personality::Mischievous) => {
+                "CHAOS! Knocks everything over! Best game ever!".to_string()
+            }
+            (Need::Play, Personality::Curious) => {
+                "Ooh, what's this? And this? And THAT?!".to_string()
+            }
             (Need::Play, Personality::Shy) => "Peeks out... okay, that was fun.".to_string(),
             (Need::Play, _) => "Flaps around happily! Caw!".to_string(),
 
             (Need::Rest, Personality::Stoic) => "Rests. Efficiently.".to_string(),
-            (Need::Rest, Personality::Affectionate) => "Snuggles up close and dozes off...".to_string(),
+            (Need::Rest, Personality::Affectionate) => {
+                "Snuggles up close and dozes off...".to_string()
+            }
             (Need::Rest, _) => "Tucks beak under wing... zzz...".to_string(),
 
-            (Need::Clean, Personality::Mischievous) => "Holds still for exactly 3 seconds.".to_string(),
-            (Need::Clean, Personality::Affectionate) => "Preens happily and nuzzles you!".to_string(),
+            (Need::Clean, Personality::Mischievous) => {
+                "Holds still for exactly 3 seconds.".to_string()
+            }
+            (Need::Clean, Personality::Affectionate) => {
+                "Preens happily and nuzzles you!".to_string()
+            }
             (Need::Clean, _) => "Ruffles feathers contentedly.".to_string(),
 
             (Need::Pet, Personality::Shy) => "...allows a brief head pat.".to_string(),
-            (Need::Pet, Personality::Affectionate) => "Leans into your hand! More pets!".to_string(),
+            (Need::Pet, Personality::Affectionate) => {
+                "Leans into your hand! More pets!".to_string()
+            }
             (Need::Pet, Personality::Stoic) => "Tolerates this. Barely.".to_string(),
             (Need::Pet, _) => "Happy little chirp!".to_string(),
         }
@@ -156,7 +170,8 @@ mod tests {
     #[test]
     fn test_play_costs_energy() {
         let mut stats = Stats::new();
-        let (_, de, dhap, _) = Need::Play.apply(&mut stats, &Personality::Curious, &LifeStage::Adult);
+        let (_, de, dhap, _) =
+            Need::Play.apply(&mut stats, &Personality::Curious, &LifeStage::Adult);
         assert!(de < 0.0);
         assert!(dhap > 0.0);
     }

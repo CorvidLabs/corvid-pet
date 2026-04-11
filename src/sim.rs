@@ -73,7 +73,8 @@ impl SimState {
             let happiness_mult = self.stage.happiness_multiplier();
 
             // Apply base decay.
-            self.stats.tick(elapsed, hunger_mult, energy_mult, happiness_mult);
+            self.stats
+                .tick(elapsed, hunger_mult, energy_mult, happiness_mult);
 
             // Apply personality additive modifiers (already per-second).
             let dt = elapsed.min(86400.0) as f32;

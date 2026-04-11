@@ -1,5 +1,5 @@
-use corvid_pet::integrations::specsync::{SpecSyncCompanion, ValidationOutcome};
 use corvid_pet::Species;
+use corvid_pet::integrations::specsync::{SpecSyncCompanion, ValidationOutcome};
 
 fn main() {
     println!("Spec Buddy - spec-sync integration demo\n");
@@ -42,19 +42,22 @@ fn main() {
     let mut companion2 = SpecSyncCompanion::new(Species::Raven);
 
     companion2.react_to_results(0, 0); // Success
-    println!("Results(0 errors, 0 warnings): {} - {}",
+    println!(
+        "Results(0 errors, 0 warnings): {} - {}",
         companion2.pet().mood(),
         companion2.summary()
     );
 
     companion2.react_to_results(0, 2); // Warning
-    println!("Results(0 errors, 2 warnings): {} - {}",
+    println!(
+        "Results(0 errors, 2 warnings): {} - {}",
         companion2.pet().mood(),
         companion2.summary()
     );
 
     companion2.react_to_results(1, 0); // Failure
-    println!("Results(1 error, 0 warnings): {} - {}",
+    println!(
+        "Results(1 error, 0 warnings): {} - {}",
         companion2.pet().mood(),
         companion2.summary()
     );

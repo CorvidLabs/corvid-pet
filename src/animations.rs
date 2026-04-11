@@ -79,26 +79,18 @@ impl Animation {
             0 | 5 => base_art,
             1 | 3 => {
                 // Slight hop - indent by 2
-                let shifted: Vec<String> = lines
-                    .iter()
-                    .map(|line| format!("  {}", line))
-                    .collect();
+                let shifted: Vec<String> = lines.iter().map(|line| format!("  {}", line)).collect();
                 shifted.join("\n")
             }
             2 => {
                 // Peak hop - indent by 4
-                let shifted: Vec<String> = lines
-                    .iter()
-                    .map(|line| format!("    {}", line))
-                    .collect();
+                let shifted: Vec<String> =
+                    lines.iter().map(|line| format!("    {}", line)).collect();
                 shifted.join("\n")
             }
             4 => {
                 // Landing - indent by 1
-                let shifted: Vec<String> = lines
-                    .iter()
-                    .map(|line| format!(" {}", line))
-                    .collect();
+                let shifted: Vec<String> = lines.iter().map(|line| format!(" {}", line)).collect();
                 shifted.join("\n")
             }
             _ => base_art,
