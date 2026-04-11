@@ -79,7 +79,7 @@ The crate root re-exports these types for convenience:
 |------|-------------|
 | `Species` | Corvid species: Crow (clever, problem solver). Default: Crow |
 | `Mood` | Emotional states: Happy, Sad, Neutral, Confused, Excited, Sleepy. Default: Neutral |
-| `Event` | Lifecycle events: SpecPassed, SpecFailed, ValidationWarning, NewSpecGenerated, Idle |
+| `Event` | Lifecycle events: Success, Failure, Warning, Progress, Idle |
 | `PersistenceError` | Error enum for persistence operations: NoDataDir, Io, Serde |
 | `ValidationOutcome` | Spec validation result: Success, Warning, Failure, Generated, Idle |
 
@@ -326,7 +326,7 @@ Custom art can be provided via the `ArtTemplate` and `TemplateRegistry` types in
 
 1. `Pet::render()` always returns ASCII art ≤ 15 lines height and ≤ 40 chars width
 2. `Pet::comment()` always returns a quip appropriate for current species and mood
-3. `Pet::react()` maps events to moods consistently: SpecPassed→Happy, SpecFailed→Sad, ValidationWarning→Confused, NewSpecGenerated→Excited, Idle→Sleepy
+3. `Pet::react()` maps events to moods consistently: Success→Happy, Failure→Sad, Warning→Confused, Progress→Excited, Idle→Sleepy
 4. `Animation` iterator yields at least 2 frames and at most 10 frames per animation
 5. `Spinner::tick()` advances through frames cyclically until `finish()` is called
 6. All ASCII art in the Minimal style uses only printable ASCII characters (no Unicode, no ANSI codes in stored art)
@@ -340,10 +340,10 @@ Custom art can be provided via the `ArtTemplate` and `TemplateRegistry` types in
 - **When** `pet.render()` is called
 - **Then** returns ASCII art of a crow in neutral mood
 
-### Scenario: React to spec pass
+### Scenario: React to success event
 
 - **Given** a pet in neutral mood
-- **When** `pet.react(Event::SpecPassed)` is called
+- **When** `pet.react(Event::Success)` is called
 - **Then** pet's mood changes to `Mood::Happy`
 - **And** `pet.comment()` returns a happy crow-themed quip
 

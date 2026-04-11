@@ -43,10 +43,10 @@ fn main() {
     let mut pet = Pet::new("Corvin".to_string(), Species::Crow);
 
     let events = [
-        (Event::SpecPassed, "Spec passed!"),
-        (Event::SpecFailed, "Spec failed..."),
-        (Event::ValidationWarning, "Warnings found"),
-        (Event::NewSpecGenerated, "New spec generated!"),
+        (Event::Success, "Tests passed!"),
+        (Event::Failure, "Build failed..."),
+        (Event::Warning, "Warnings found"),
+        (Event::Progress, "Step completed!"),
         (Event::Idle, "System idle"),
     ];
 

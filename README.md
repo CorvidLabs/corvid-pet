@@ -8,6 +8,7 @@ Bring a little personality to your command-line tools with animated ASCII pets t
 
 - **Crow Companion**: Clever problem-solver with unique art and personality
 - **Six Moods**: Happy, Sad, Neutral, Confused, Excited, Sleepy
+- **Generic Events**: Success, Failure, Warning, Progress, Idle — works with any tool
 - **Minimal Art Style**: Compact ~6-line silhouettes with thought bubbles
 - **Animations**: Blink and hop animations for bringing pets to life
 - **Progress Spinners**: Animated companions for long-running operations
@@ -19,11 +20,20 @@ Bring a little personality to your command-line tools with animated ASCII pets t
 
 ## Quick Start
 
-```rust
-use corvid_pet::{Pet, Species, Mood};
+```toml
+[dependencies]
+corvid-pet = "1"
+```
 
-let pet = Pet::new("Corvin".to_string(), Species::Crow);
+```rust
+use corvid_pet::{Pet, Species, Mood, Event};
+
+let mut pet = Pet::new("Corvin".to_string(), Species::Crow);
 println!("{}", pet.render());
+
+// React to events from your tool
+pet.react(Event::Success);
+println!("{}", pet.comment());
 ```
 
 ```
@@ -33,6 +43,18 @@ println!("{}", pet.render());
       \(\\
       "^`".
 ```
+
+## Events
+
+Pets react to generic lifecycle events that any CLI tool can emit:
+
+| Event | Mood | Use case |
+|-------|------|----------|
+| `Success` | Happy | Tests passed, build succeeded, deploy complete |
+| `Failure` | Sad | Tests failed, build broken, errors found |
+| `Warning` | Confused | Linting warnings, deprecations, partial success |
+| `Progress` | Excited | Step completed, file generated, milestone reached |
+| `Idle` | Sleepy | Waiting for input, watching for changes |
 
 ## Examples
 
@@ -86,18 +108,22 @@ println!("{}", pet.render()); // Mood reflects stats
 
 ## Feature Flags
 
-- `color` — ANSI color support via [colored](https://crates.io/crates/colored)
-- `persistence` — Save/load pet state to disk (uses serde + dirs)
-- `live` — Real-time TUI mode (uses ratatui + crossterm + tokio)
+| Feature | Description | Dependencies |
+|---------|-------------|--------------|
+| `color` | ANSI color support | [colored](https://crates.io/crates/colored) |
+| `persistence` | Save/load pet state to disk | serde, serde_json, dirs |
+| `live` | Real-time TUI mode | ratatui, crossterm, tokio |
 
 ```toml
 [dependencies]
-corvid-pet = { version = "0.1", features = ["color", "persistence"] }
+corvid-pet = { version = "1", features = ["color", "persistence"] }
 ```
 
-## Integration with spec-sync
+## Integrations
 
-This crate integrates with [spec-sync](https://github.com/CorvidLabs/spec-sync) for visual feedback during spec validation:
+### spec-sync
+
+Built-in integration with [spec-sync](https://github.com/CorvidLabs/spec-sync) for visual feedback during spec validation:
 
 ```rust
 use corvid_pet::integrations::specsync::{SpecSyncCompanion, ValidationOutcome};

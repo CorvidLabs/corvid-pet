@@ -74,10 +74,10 @@ impl SpecSyncCompanion {
         self.validation_count += 1;
 
         let event = match outcome {
-            ValidationOutcome::Success => Event::SpecPassed,
-            ValidationOutcome::Warning => Event::ValidationWarning,
-            ValidationOutcome::Failure => Event::SpecFailed,
-            ValidationOutcome::Generated => Event::NewSpecGenerated,
+            ValidationOutcome::Success => Event::Success,
+            ValidationOutcome::Warning => Event::Warning,
+            ValidationOutcome::Failure => Event::Failure,
+            ValidationOutcome::Generated => Event::Progress,
             ValidationOutcome::Idle => Event::Idle,
         };
 

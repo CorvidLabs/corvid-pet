@@ -43,17 +43,21 @@ pub use styles::ArtStyle;
 pub use integrations::specsync::{SpecSyncCompanion, ValidationOutcome};
 
 /// Lifecycle events that can trigger pet reactions.
+///
+/// These are generic events that any CLI tool can emit.
+/// For tool-specific mappings, see the integration modules
+/// (e.g. [`integrations::specsync`]).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Event {
-    /// Spec validation passed.
-    SpecPassed,
-    /// Spec validation failed.
-    SpecFailed,
-    /// Validation produced warnings.
-    ValidationWarning,
-    /// A new spec was generated.
-    NewSpecGenerated,
-    /// System is idle.
+    /// An operation completed successfully.
+    Success,
+    /// An operation failed.
+    Failure,
+    /// An operation produced warnings.
+    Warning,
+    /// Forward progress was made (e.g. a build step completed, a file was generated).
+    Progress,
+    /// The system is idle / waiting for input.
     Idle,
 }
 
@@ -153,10 +157,10 @@ impl Pet {
     /// Reacts to an event by changing mood appropriately.
     pub fn react(&mut self, event: Event) {
         let new_mood = match event {
-            Event::SpecPassed => Mood::Happy,
-            Event::SpecFailed => Mood::Sad,
-            Event::ValidationWarning => Mood::Confused,
-            Event::NewSpecGenerated => Mood::Excited,
+            Event::Success => Mood::Happy,
+            Event::Failure => Mood::Sad,
+            Event::Warning => Mood::Confused,
+            Event::Progress => Mood::Excited,
             Event::Idle => Mood::Sleepy,
         };
         self.set_mood(new_mood);
@@ -272,30 +276,30 @@ mod tests {
     }
 
     #[test]
-    fn test_react_spec_passed() {
+    fn test_react_success() {
         let mut pet = Pet::new("Test".to_string(), Species::Crow);
-        pet.react(Event::SpecPassed);
+        pet.react(Event::Success);
         assert_eq!(pet.mood(), Mood::Happy);
     }
 
     #[test]
-    fn test_react_spec_failed() {
+    fn test_react_failure() {
         let mut pet = Pet::new("Test".to_string(), Species::Crow);
-        pet.react(Event::SpecFailed);
+        pet.react(Event::Failure);
         assert_eq!(pet.mood(), Mood::Sad);
     }
 
     #[test]
-    fn test_react_validation_warning() {
+    fn test_react_warning() {
         let mut pet = Pet::new("Test".to_string(), Species::Crow);
-        pet.react(Event::ValidationWarning);
+        pet.react(Event::Warning);
         assert_eq!(pet.mood(), Mood::Confused);
     }
 
     #[test]
-    fn test_react_new_spec() {
+    fn test_react_progress() {
         let mut pet = Pet::new("Test".to_string(), Species::Crow);
-        pet.react(Event::NewSpecGenerated);
+        pet.react(Event::Progress);
         assert_eq!(pet.mood(), Mood::Excited);
     }
 

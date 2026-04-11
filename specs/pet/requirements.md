@@ -14,7 +14,7 @@ spec: pet.spec.md
 
 - `Species` enum includes: Crow, Raven, Magpie, Jay
 - `Mood` enum includes: Happy, Sad, Neutral, Confused, Excited, Sleepy
-- `Event` enum includes: SpecPassed, SpecFailed, ValidationWarning, NewSpecGenerated, Idle
+- `Event` enum includes: Success, Failure, Warning, Progress, Idle
 - `Pet::new()` creates pet with given name and species, defaulting to Neutral mood
 - `Pet::render()` returns ASCII art using the Minimal style (single crow with thought bubble)
 - `ArtStyle` enum has a single variant: `Minimal`
@@ -36,7 +36,7 @@ spec: pet.spec.md
 - No Unicode in ASCII art (portability)
 - No async/await in core library (sync API)
 - Terminal colors are optional (via feature flag or separate method)
-- Library must compile on stable Rust 1.70+
+- Library must compile on stable Rust 1.85+ (edition 2024)
 
 ## Out of Scope
 
