@@ -19,18 +19,6 @@ inputs:
     description: "Name for your corvid companion"
     required: false
     default: "Corvin"
-  color:
-    description: "Body color (e.g. red, green, blue, magenta, cyan, bright-red)"
-    required: false
-    default: ""
-  bubble-color:
-    description: "Thought bubble color (e.g. cyan, yellow, bright-green)"
-    required: false
-    default: ""
-  random-colors:
-    description: "Use random colors each run"
-    required: false
-    default: "false"
   state-file:
     description: "Path to the health state JSON file"
     required: false
@@ -104,9 +92,6 @@ runs:
         CORVID_NAME: ${{ inputs.pet-name }}
         CORVID_STATE: ${{ inputs.state-file }}
         CORVID_CONTEXT: ${{ inputs.context }}
-        CORVID_COLOR: ${{ inputs.color }}
-        CORVID_BUBBLE_COLOR: ${{ inputs.bubble-color }}
-        CORVID_RANDOM_COLORS: ${{ inputs.random-colors }}
         CORVID_JOB_STATUS: ${{ job.status }}
       run: |
         BIN="${CORVID_PET_BIN:-corvid-pet}"
@@ -122,23 +107,10 @@ runs:
           esac
         fi
 
-        # Build color flags
-        COLOR_FLAGS=""
-        if [ "$CORVID_RANDOM_COLORS" = "true" ]; then
-          COLOR_FLAGS="--random-colors"
-        else
-          if [ -n "$CORVID_COLOR" ]; then
-            COLOR_FLAGS="--color $CORVID_COLOR"
-          fi
-          if [ -n "$CORVID_BUBBLE_COLOR" ]; then
-            COLOR_FLAGS="$COLOR_FLAGS --bubble-color $CORVID_BUBBLE_COLOR"
-          fi
-        fi
-
         case "$CORVID_MODE" in
           pr-comment)
             # Record the event
-            $BIN react "$CORVID_EVENT" --state "$CORVID_STATE" --name "$CORVID_NAME" $COLOR_FLAGS ${CORVID_CONTEXT:+--context "$CORVID_CONTEXT"} --no-color
+            $BIN react "$CORVID_EVENT" --state "$CORVID_STATE" --name "$CORVID_NAME" ${CORVID_CONTEXT:+--context "$CORVID_CONTEXT"} --no-color
 
             # Generate PR comment
             COMMENT=$($BIN comment "$CORVID_EVENT" --state "$CORVID_STATE" --name "$CORVID_NAME" --context "$CORVID_CONTEXT")
@@ -148,7 +120,7 @@ runs:
             ;;
 
           health-check)
-            $BIN react "$CORVID_EVENT" --state "$CORVID_STATE" --name "$CORVID_NAME" $COLOR_FLAGS ${CORVID_CONTEXT:+--context "$CORVID_CONTEXT"} --no-color
+            $BIN react "$CORVID_EVENT" --state "$CORVID_STATE" --name "$CORVID_NAME" ${CORVID_CONTEXT:+--context "$CORVID_CONTEXT"} --no-color
             HEALTH_JSON=$($BIN health --state "$CORVID_STATE" --name "$CORVID_NAME" --json)
             echo "health=$HEALTH_JSON" >> "$GITHUB_OUTPUT"
             ;;
@@ -183,7 +155,7 @@ runs:
         echo "score=$SCORE" >> "$GITHUB_OUTPUT"
 
         # Show art
-        ART=$($BIN show --no-color --name "$CORVID_NAME" $COLOR_FLAGS)
+        ART=$($BIN show --no-color --name "$CORVID_NAME")
         echo "art<<CORVID_EOF" >> "$GITHUB_OUTPUT"
         echo "$ART" >> "$GITHUB_OUTPUT"
         echo "CORVID_EOF" >> "$GITHUB_OUTPUT"
