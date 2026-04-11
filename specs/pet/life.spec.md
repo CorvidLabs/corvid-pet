@@ -2,7 +2,14 @@
 module: life
 version: 2
 status: draft
-files: []
+files:
+  - src/stats.rs
+  - src/life_stage.rs
+  - src/personality.rs
+  - src/needs.rs
+  - src/sim.rs
+  - src/lib.rs
+  - src/persistence.rs
 db_tables: []
 depends_on: []
 ---
