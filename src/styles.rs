@@ -13,16 +13,12 @@ pub enum ArtStyle {
 impl ArtStyle {
     /// Returns ASCII art for the given mood.
     pub fn render(&self, _species: super::Species, mood: super::Mood) -> String {
-        match self {
-            ArtStyle::Minimal => minimal::render(mood),
-        }
+        minimal::render(mood)
     }
 
     /// Returns the style name.
     pub fn name(&self) -> &'static str {
-        match self {
-            ArtStyle::Minimal => "minimal",
-        }
+        "minimal"
     }
 }
 

@@ -24,6 +24,7 @@ use crate::{Mood, Pet};
 
 /// State for the live pet application.
 #[derive(Debug)]
+#[allow(dead_code)]
 pub struct LivePetApp {
     pet: Pet,
     running: bool,
@@ -53,12 +54,9 @@ impl LivePetApp {
             event::{self},
             terminal::{disable_raw_mode, enable_raw_mode},
         };
-        use ratatui::{
-            backend::CrosstermBackend,
-            Terminal,
-        };
+        use ratatui::{Terminal, backend::CrosstermBackend};
         use std::io;
-        use tokio::time::{interval, Duration};
+        use tokio::time::{Duration, interval};
 
         // Setup terminal
         enable_raw_mode()?;
@@ -113,6 +111,7 @@ impl LivePetApp {
         Err("Live mode requires the 'live' feature".into())
     }
 
+    #[allow(dead_code)]
     fn on_tick(&mut self) {
         self.frame_count += 1;
 
@@ -127,6 +126,7 @@ impl LivePetApp {
         }
     }
 
+    #[allow(dead_code)]
     #[cfg(feature = "live")]
     fn handle_event(&mut self, event: crossterm::event::Event) {
         use crossterm::event::{Event, KeyCode, KeyEventKind};
@@ -151,15 +151,10 @@ impl LivePetApp {
     }
 
     #[cfg(not(feature = "live"))]
-    fn handle_event(&mut self,
-        _event: (),
-    ) {
-    }
+    fn handle_event(&mut self, _event: ()) {}
 
     #[cfg(feature = "live")]
-    fn draw(&self,
-        frame: &mut ratatui::Frame,
-    ) {
+    fn draw(&self, frame: &mut ratatui::Frame) {
         use ratatui::{
             layout::{Alignment, Constraint, Direction, Layout},
             widgets::{Block, Borders, Paragraph, Wrap},
@@ -209,6 +204,7 @@ impl LivePetApp {
 }
 
 /// A simpler non-async version for synchronous contexts.
+#[allow(dead_code)]
 pub struct SimpleLivePet {
     pet: Pet,
 }
@@ -238,7 +234,7 @@ impl SimpleLivePet {
             crossterm::cursor::Hide
         )?;
 
-        Self::draw_frame(&mut stdout,&self.pet)?;
+        Self::draw_frame(&mut stdout, &self.pet)?;
 
         loop {
             if event::poll(std::time::Duration::from_millis(100))? {
@@ -260,7 +256,7 @@ impl SimpleLivePet {
                         crossterm::terminal::Clear(crossterm::terminal::ClearType::All),
                         crossterm::cursor::MoveTo(0, 0)
                     )?;
-                    Self::draw_frame(&mut stdout,&self.pet)?;
+                    Self::draw_frame(&mut stdout, &self.pet)?;
                 }
             }
         }
@@ -273,14 +269,14 @@ impl SimpleLivePet {
     }
 
     #[cfg(feature = "live")]
-    fn draw_frame(stdout: &mut std::io::Stdout, pet: &Pet) -> Result<(), Box<dyn std::error::Error>> {
+    fn draw_frame(
+        stdout: &mut std::io::Stdout,
+        pet: &Pet,
+    ) -> Result<(), Box<dyn std::error::Error>> {
         use std::io::Write;
 
         // Use crossterm cursor positioning for proper layout
-        use crossterm::{
-            cursor::MoveTo,
-            execute,
-        };
+        use crossterm::{cursor::MoveTo, execute};
 
         // Print header with explicit cursor positioning
         execute!(stdout, MoveTo(0, 0))?;
