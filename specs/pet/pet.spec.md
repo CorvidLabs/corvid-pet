@@ -77,7 +77,7 @@ The crate root re-exports these types for convenience:
 
 | Type | Description |
 |------|-------------|
-| `Species` | Corvid species: Crow (clever, problem solver), Raven (wise, ominous), Magpie (shiny-obsessed), Jay (loud, opinionated). Default: Crow |
+| `Species` | Corvid species: Crow (clever, problem solver). Default: Crow |
 | `Mood` | Emotional states: Happy, Sad, Neutral, Confused, Excited, Sleepy. Default: Neutral |
 | `Event` | Lifecycle events: SpecPassed, SpecFailed, ValidationWarning, NewSpecGenerated, Idle |
 | `PersistenceError` | Error enum for persistence operations: NoDataDir, Io, Serde |
@@ -88,7 +88,7 @@ The crate root re-exports these types for convenience:
 | Type | Description |
 |------|-------------|
 | `Pet` | The main companion with name, species, and mood |
-| `ArtStyle` | Art rendering style enum (`Minimal`, `Detailed`). Default: Minimal |
+| `ArtStyle` | Art rendering style enum (`Minimal`). Default: Minimal |
 | `Animation` | Iterator over animation frames |
 | `Spinner` | Progress indicator with animated pet |
 | `Stats` | Vital statistics: hunger, energy, happiness, health |
@@ -143,7 +143,7 @@ The crate root re-exports these types for convenience:
 |----------|-----------|---------|-------------|
 | `default_name` | `&self` | `String` | Get default name for species |
 | `personality` | `&self` | `&str` | Get personality description |
-| `fmt` | (Display trait) | `fmt::Result` | Display as "Crow", "Raven", "Magpie", "Jay" |
+| `fmt` | (Display trait) | `fmt::Result` | Display as "Crow" |
 
 ### Mood Display
 
@@ -318,7 +318,7 @@ Simpler synchronous alternative for interactive pet display.
 
 The library ships with one built-in art style:
 
-- **Minimal** (default): Compact ~6-line species silhouettes with thought bubbles. Each species has a unique shape (crow has `<(` beak, raven has `>` beak, magpie has `*` markings with tail feathers, jay has crest `/\/\`).
+- **Minimal** (default): Compact ~6-line crow silhouette with thought bubbles. The crow has a distinctive `<(` beak shape.
 
 Custom art can be provided via the `ArtTemplate` and `TemplateRegistry` types in the `templates` module.
 
@@ -330,7 +330,7 @@ Custom art can be provided via the `ArtTemplate` and `TemplateRegistry` types in
 4. `Animation` iterator yields at least 2 frames and at most 10 frames per animation
 5. `Spinner::tick()` advances through frames cyclically until `finish()` is called
 6. All ASCII art in the Minimal style uses only printable ASCII characters (no Unicode, no ANSI codes in stored art)
-7. `Species::default_name()` returns unique names per species: "Corvin", "Nevermore", "Shiny", "Jay"
+7. `Species::default_name()` returns the default name: "Corvin" for Crow
 
 ## Behavioral Examples
 
@@ -390,3 +390,4 @@ Custom art can be provided via the `ArtTemplate` and `TemplateRegistry` types in
 | 2026-04-11 | Updated to review status; documented single Minimal style; added ArtStyle, render_with_style, render_colored to API; added art_v2 and templates modules to file list |
 | 2026-04-11 | Added life simulation system: Stats, LifeStage, Personality, Need, SimState. Pet gains optional simulation with tick/interact API. Full backwards compatibility |
 | 2026-04-11 | v2: Comprehensive API documentation — added all undocumented exports: Pet accessor methods, moods/comments/color/art_v2 module functions, templates module types, persistence module types and functions, live module types, integrations/specsync module types, Display/Default/FromStr trait impls |
+| 2026-04-11 | v3: Strip to Crow-only with Minimal style — removed art_v2 module, Raven/Magpie/Jay species, Detailed art style |
