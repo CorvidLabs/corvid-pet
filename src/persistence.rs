@@ -128,10 +128,10 @@ pub fn list_pets() -> Result<Vec<String>, PersistenceError> {
     let mut pets = Vec::new();
     for entry in fs::read_dir(&dir)? {
         let entry = entry?;
-        if let Some(name) = entry.file_name().to_str() {
-            if name.ends_with(".json") {
-                pets.push(name[..name.len() - 5].to_string());
-            }
+        if let Some(name) = entry.file_name().to_str()
+            && let Some(stripped) = name.strip_suffix(".json")
+        {
+            pets.push(stripped.to_string());
         }
     }
 

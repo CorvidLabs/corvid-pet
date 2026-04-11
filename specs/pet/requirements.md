@@ -16,7 +16,9 @@ spec: pet.spec.md
 - `Mood` enum includes: Happy, Sad, Neutral, Confused, Excited, Sleepy
 - `Event` enum includes: SpecPassed, SpecFailed, ValidationWarning, NewSpecGenerated, Idle
 - `Pet::new()` creates pet with given name and species, defaulting to Neutral mood
-- `Pet::render()` returns ASCII art matching current species and mood
+- `Pet::render()` returns ASCII art using the Minimal style (single crow with thought bubble)
+- `ArtStyle` enum has a single variant: `Minimal`
+- `Pet::render_with_style()` accepts an `ArtStyle` for forward-compatible style selection
 - `Pet::set_mood()` changes mood and affects subsequent renders and comments
 - `Pet::comment()` returns a random quip from species+mood appropriate pool
 - At least 3 unique comments per species per mood (72 total minimum)
@@ -38,11 +40,10 @@ spec: pet.spec.md
 
 ## Out of Scope
 
-- Persistent state (saving pet to disk)
+- Multiple art styles (v1 ships with Minimal only; style enum is extensible)
 - Network features
 - Complex animation beyond frame cycling
 - Actual terminal manipulation (user handles printing)
 - Sound effects
-- Custom ASCII art from users
 - Multiple pets at once
 - Pet "aging" or progression systems
