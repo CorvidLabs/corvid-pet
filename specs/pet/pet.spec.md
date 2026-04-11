@@ -52,6 +52,28 @@ The crate root re-exports these types for convenience:
 | `Stats` | `stats` |
 | `ArtStyle` | `styles` |
 
+### Exported Modules
+
+| Module | Description |
+|--------|-------------|
+| `animations` | Animation and spinner types |
+| `art_v2` | Species-differentiated ASCII art |
+| `color` | ANSI color support |
+| `comments` | Random species/mood quips |
+| `integrations` | Third-party integrations |
+| `life_stage` | Life stage progression |
+| `live` | Real-time TUI display |
+| `moods` | Mood-specific ASCII art |
+| `needs` | Interaction system |
+| `persistence` | Save/load pet state |
+| `personality` | Personality traits |
+| `sim` | Simulation state machine |
+| `species` | Corvid species definitions |
+| `stats` | Vital statistics |
+| `styles` | Art rendering styles |
+| `templates` | Custom art templates |
+| `specsync` | SpecSync companion integration |
+
 ### Exported Enums
 
 | Type | Description |
@@ -59,6 +81,8 @@ The crate root re-exports these types for convenience:
 | `Species` | Corvid species: Crow (clever, problem solver), Raven (wise, ominous), Magpie (shiny-obsessed), Jay (loud, opinionated). Default: Crow |
 | `Mood` | Emotional states: Happy, Sad, Neutral, Confused, Excited, Sleepy. Default: Neutral |
 | `Event` | Lifecycle events: SpecPassed, SpecFailed, ValidationWarning, NewSpecGenerated, Idle |
+| `PersistenceError` | Error enum for persistence operations: NoDataDir, Io, Serde |
+| `ValidationOutcome` | Spec validation result: Success, Warning, Failure, Generated, Idle |
 
 ### Exported Structs
 
@@ -74,6 +98,13 @@ The crate root re-exports these types for convenience:
 | `Need` | Interactions: Feed, Play, Rest, Clean, Pet |
 | `SimState` | Full simulation state coordinating stats, stages, personality, needs |
 | `InteractionResult` | Result of performing an interaction |
+| `ArtTemplate` | Custom art template with mood-specific ASCII art |
+| `TemplateRegistry` | Registry of art templates for rendering |
+| `PetState` | Serializable snapshot of pet state for persistence |
+| `SimStateData` | Serializable simulation data for persistence |
+| `LivePetApp` | Async TUI application for real-time pet interaction |
+| `SimpleLivePet` | Simple synchronous interactive pet display |
+| `SpecSyncCompanion` | Pet companion that reacts to spec validation outcomes |
 
 ### Pet Methods
 
