@@ -16,7 +16,7 @@ spec: pet.spec.md
 - [x] Add unit tests for core functionality
 - [x] Run `cargo build` to verify compilation
 - [x] Run `cargo test` to verify tests pass
-- [ ] Update spec status to `review` after implementation
+- [x] Update spec status to `review` after implementation
 
 ## Done
 

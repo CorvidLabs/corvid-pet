@@ -141,12 +141,11 @@ impl TemplateRegistry {
     /// Renders art for a species and mood, using templates if available.
     pub fn render(&self, species: Species, mood: Mood, template_name: Option<&str>) -> String {
         // Try specific template first
-        if let Some(name) = template_name {
-            if let Some(template) = self.find(name) {
-                if let Some(art) = template.render(species, mood) {
-                    return art;
-                }
-            }
+        if let Some(name) = template_name
+            && let Some(template) = self.find(name)
+            && let Some(art) = template.render(species, mood)
+        {
+            return art;
         }
 
         // Fall back to defaults

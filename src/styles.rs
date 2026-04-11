@@ -46,11 +46,11 @@ mod minimal {
 
     pub fn render(mood: Mood) -> String {
         let thought = match mood {
-            Mood::Happy => "Caw! ✨",
+            Mood::Happy => "Caw! ^v^",
             Mood::Sad => "oh no...",
             Mood::Neutral => "hmm",
             Mood::Confused => "??",
-            Mood::Excited => "CAW! 🎉",
+            Mood::Excited => "CAW CAW!",
             Mood::Sleepy => "zzz...",
         };
 

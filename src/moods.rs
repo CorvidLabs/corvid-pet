@@ -1,11 +1,12 @@
 /// Emotional states for the corvid companion.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
 pub enum Mood {
     /// All specs passing, feeling good.
     Happy,
     /// Errors found, feeling down.
     Sad,
     /// Just hanging out, default state.
+    #[default]
     Neutral,
     /// Validation warnings, puzzled.
     Confused,
@@ -13,12 +14,6 @@ pub enum Mood {
     Excited,
     /// Idle, resting.
     Sleepy,
-}
-
-impl Default for Mood {
-    fn default() -> Self {
-        Mood::Neutral
-    }
 }
 
 impl std::fmt::Display for Mood {

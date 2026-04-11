@@ -150,9 +150,6 @@ impl LivePetApp {
         }
     }
 
-    #[cfg(not(feature = "live"))]
-    fn handle_event(&mut self, _event: ()) {}
-
     #[cfg(feature = "live")]
     fn draw(&self, frame: &mut ratatui::Frame) {
         use ratatui::{
@@ -237,27 +234,27 @@ impl SimpleLivePet {
         Self::draw_frame(&mut stdout, &self.pet)?;
 
         loop {
-            if event::poll(std::time::Duration::from_millis(100))? {
-                if let Event::Key(key) = event::read()? {
-                    match key.code {
-                        KeyCode::Char('q') => break,
-                        KeyCode::Char('h') => self.pet.set_mood(Mood::Happy),
-                        KeyCode::Char('s') => self.pet.set_mood(Mood::Sad),
-                        KeyCode::Char('n') => self.pet.set_mood(Mood::Neutral),
-                        KeyCode::Char('c') => self.pet.set_mood(Mood::Confused),
-                        KeyCode::Char('e') => self.pet.set_mood(Mood::Excited),
-                        KeyCode::Char('z') => self.pet.set_mood(Mood::Sleepy),
-                        _ => {}
-                    }
-
-                    // Clear and redraw
-                    crossterm::execute!(
-                        stdout,
-                        crossterm::terminal::Clear(crossterm::terminal::ClearType::All),
-                        crossterm::cursor::MoveTo(0, 0)
-                    )?;
-                    Self::draw_frame(&mut stdout, &self.pet)?;
+            if event::poll(std::time::Duration::from_millis(100))?
+                && let Event::Key(key) = event::read()?
+            {
+                match key.code {
+                    KeyCode::Char('q') => break,
+                    KeyCode::Char('h') => self.pet.set_mood(Mood::Happy),
+                    KeyCode::Char('s') => self.pet.set_mood(Mood::Sad),
+                    KeyCode::Char('n') => self.pet.set_mood(Mood::Neutral),
+                    KeyCode::Char('c') => self.pet.set_mood(Mood::Confused),
+                    KeyCode::Char('e') => self.pet.set_mood(Mood::Excited),
+                    KeyCode::Char('z') => self.pet.set_mood(Mood::Sleepy),
+                    _ => {}
                 }
+
+                // Clear and redraw
+                crossterm::execute!(
+                    stdout,
+                    crossterm::terminal::Clear(crossterm::terminal::ClearType::All),
+                    crossterm::cursor::MoveTo(0, 0)
+                )?;
+                Self::draw_frame(&mut stdout, &self.pet)?;
             }
         }
 

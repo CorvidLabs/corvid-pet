@@ -9,8 +9,11 @@ spec: pet.spec.md
 - **No terminal control**: Library returns strings, user handles actual printing
 - **Frame-based animation**: Simple iterator pattern for animations, not time-based
 - **Static ASCII art**: All art compiled into binary as static strings, not loaded at runtime
-- **Feature-gated colors**: ANSI colors optional via feature flag
+- **Single style (Minimal)**: v1 ships with one art style — a compact crow with thought bubble. The `ArtStyle` enum is extensible for future styles
+- **Feature-gated colors**: ANSI colors optional via `color` feature flag
+- **Feature-gated persistence**: Pet state saving via `persistence` feature flag
 - **Iterator animations**: Animation yields `Vec<String>` frames that caller displays
+- **Custom templates**: `TemplateRegistry` allows user-defined art via JSON (requires `persistence` feature for serialization)
 
 ## Files to Read First
 
@@ -20,7 +23,7 @@ spec: pet.spec.md
 
 ## Current Status
 
-Draft spec created. Implementation pending.
+Implementation complete. Spec promoted to review. Single Minimal art style ships in v1; `art_v2` module provides species-differentiated art for future styles and custom templates.
 
 ## Notes
 

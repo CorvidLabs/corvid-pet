@@ -1,7 +1,8 @@
 /// Corvid species with unique personalities and characteristics.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
 pub enum Species {
     /// Clever problem solver - the default companion.
+    #[default]
     Crow,
     /// Wise and ominous, but helpful.
     Raven,
@@ -31,12 +32,6 @@ impl Species {
             Species::Magpie => "curious and shiny-obsessed",
             Species::Jay => "loud and opinionated",
         }
-    }
-}
-
-impl Default for Species {
-    fn default() -> Self {
-        Species::Crow
     }
 }
 

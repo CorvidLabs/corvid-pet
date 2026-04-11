@@ -1,13 +1,19 @@
 ---
 module: pet
 version: 1
-status: draft
+status: review
 files:
   - src/lib.rs
   - src/species.rs
   - src/moods.rs
   - src/animations.rs
   - src/comments.rs
+  - src/styles.rs
+  - src/art_v2.rs
+  - src/templates.rs
+  - src/color.rs
+  - src/persistence.rs
+  - src/live.rs
 db_tables: []
 depends_on: []
 ---
@@ -33,6 +39,7 @@ ASCII corvid companion library for CLI tools. Provides animated ASCII pets that 
 | Type | Description |
 |------|-------------|
 | `Pet` | The main companion with name, species, and mood |
+| `ArtStyle` | Art rendering style enum (currently only `Minimal`) |
 | `Animation` | Iterator over animation frames |
 | `Spinner` | Progress indicator with animated pet |
 
@@ -41,7 +48,9 @@ ASCII corvid companion library for CLI tools. Provides animated ASCII pets that 
 | Method | Parameters | Returns | Description |
 |----------|-----------|---------|-------------|
 | `new` | `name: String, species: Species` | `Self` | Create a new pet companion |
-| `render` | `&self` | `String` | Get ASCII art for current species and mood |
+| `render` | `&self` | `String` | Get ASCII art for current species and mood (uses Minimal style) |
+| `render_with_style` | `&self, style: ArtStyle` | `String` | Get ASCII art using a specific style |
+| `render_colored` | `&self` | `String` | Get colored ASCII art (requires `color` feature) |
 | `set_mood` | `&mut self, mood: Mood` | `()` | Change pet's emotional state |
 | `comment` | `&self` | `String` | Get random mood/species-appropriate quip |
 | `animate_blink` | `&self` | `Animation` | Iterator yielding blink animation frames |
@@ -72,6 +81,14 @@ ASCII corvid companion library for CLI tools. Provides animated ASCII pets that 
 | `finish` | `&mut self` | `String` | Return final frame with completion message |
 | `finish_with_pet` | `&mut self` | `String` | Return pet render with completion |
 
+### Art Style
+
+The library ships with a single art style: **Minimal**. This is a compact crow silhouette with a thought bubble that changes based on mood. The Minimal style renders the same crow art regardless of species — species-specific art is planned for future styles.
+
+An `art_v2` module provides species-differentiated ASCII art (crow, raven, magpie, jay) for use by custom templates or future styles, but is not exposed through the `ArtStyle` enum.
+
+Custom art can be provided via the `ArtTemplate` and `TemplateRegistry` types in the `templates` module.
+
 ## Invariants
 
 1. `Pet::render()` always returns ASCII art ≤ 15 lines height and ≤ 40 chars width
@@ -79,7 +96,7 @@ ASCII corvid companion library for CLI tools. Provides animated ASCII pets that 
 3. `Pet::react()` maps events to moods consistently: SpecPassed→Happy, SpecFailed→Sad, ValidationWarning→Confused, NewSpecGenerated→Excited, Idle→Sleepy
 4. `Animation` iterator yields at least 2 frames and at most 10 frames per animation
 5. `Spinner::tick()` advances through frames cyclically until `finish()` is called
-6. All ASCII art uses only printable ASCII characters (no Unicode, no ANSI codes in stored art)
+6. All ASCII art in the Minimal style uses only printable ASCII characters (no Unicode, no ANSI codes in stored art). The `art_v2` module may use Unicode when `use_unicode: true` is passed
 7. `Species::default_name()` returns unique names per species: "Corvin", "Nevermore", "Shiny", "Jay"
 
 ## Behavioral Examples
@@ -137,3 +154,4 @@ ASCII corvid companion library for CLI tools. Provides animated ASCII pets that 
 | Date | Change |
 |------|--------|
 | 2026-04-02 | Initial spec draft |
+| 2026-04-11 | Updated to review status; documented single Minimal style; added ArtStyle, render_with_style, render_colored to API; added art_v2 and templates modules to file list |

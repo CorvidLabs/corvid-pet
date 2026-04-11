@@ -68,17 +68,17 @@ fn crow_ascii(mood: Mood) -> String {
 
 fn raven_ascii(mood: Mood) -> String {
     let (eyes, beak, wings) = match mood {
-        Mood::Happy => ("◕   ◕", " > ", "spread"),
-        Mood::Sad => ("◕   ◕", " - ", "drooping"),
-        Mood::Neutral => ("◕   ◕", " v ", "folded"),
-        Mood::Confused => ("◕   ◯", " ? ", "twitch"),
-        Mood::Excited => ("◕   ◕", " > ", "raised"),
+        Mood::Happy => ("o   o", " > ", "spread"),
+        Mood::Sad => ("o   o", " - ", "drooping"),
+        Mood::Neutral => ("o   o", " v ", "folded"),
+        Mood::Confused => ("o   O", " ? ", "twitch"),
+        Mood::Excited => ("o   o", " > ", "raised"),
         Mood::Sleepy => ("-   -", " v ", "tucked"),
     };
 
     let wing_art = match wings {
-        "spread" => r#" ╱         ╲"#,
-        "raised" => r#" ╱         ╲"#,
+        "spread" => r#" /         \"#,
+        "raised" => r#" /         \"#,
         "drooping" => r#"  \\       /"#,
         _ => r#"  |       |"#,
     };
@@ -100,11 +100,11 @@ fn raven_ascii(mood: Mood) -> String {
 
 fn magpie_ascii(mood: Mood) -> String {
     let (eyes, beak, tail) = match mood {
-        Mood::Happy => ("◕   ◕", " > ", "fanned"),
-        Mood::Sad => ("◕   ◕", " - ", "droop"),
-        Mood::Neutral => ("◕   ◕", " < ", "long"),
-        Mood::Confused => ("◕   ◯", " ? ", "twitch"),
-        Mood::Excited => ("◕   ◕", " > ", "raised"),
+        Mood::Happy => ("o   o", " > ", "fanned"),
+        Mood::Sad => ("o   o", " - ", "droop"),
+        Mood::Neutral => ("o   o", " < ", "long"),
+        Mood::Confused => ("o   O", " ? ", "twitch"),
+        Mood::Excited => ("o   o", " > ", "raised"),
         Mood::Sleepy => ("-   -", " . ", "folded"),
     };
 
@@ -132,11 +132,11 @@ fn magpie_ascii(mood: Mood) -> String {
 
 fn jay_ascii(mood: Mood) -> String {
     let (eyes, beak, crest) = match mood {
-        Mood::Happy => ("◕   ◕", " > ", "up"),
-        Mood::Sad => ("◕   ◕", " - ", "flat"),
-        Mood::Neutral => ("◕   ◕", " < ", "slight"),
-        Mood::Confused => ("◕   ◯", " ? ", "ruffled"),
-        Mood::Excited => ("◕   ◕", " > ", "raised"),
+        Mood::Happy => ("o   o", " > ", "up"),
+        Mood::Sad => ("o   o", " - ", "flat"),
+        Mood::Neutral => ("o   o", " < ", "slight"),
+        Mood::Confused => ("o   O", " ? ", "ruffled"),
+        Mood::Excited => ("o   o", " > ", "raised"),
         Mood::Sleepy => ("-   -", " . ", "down"),
     };
 
