@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use clap::{Parser, Subcommand, ValueEnum};
@@ -160,7 +160,7 @@ fn now_secs() -> u64 {
         .as_secs()
 }
 
-fn load_or_create(path: &PathBuf, name: &str) -> RepoHealth {
+fn load_or_create(path: &Path, name: &str) -> RepoHealth {
     if path.exists() {
         health::load_health(path).unwrap_or_else(|e| {
             eprintln!("Warning: could not load {}: {}", path.display(), e);
