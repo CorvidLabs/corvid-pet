@@ -6,10 +6,10 @@
 /// Available art styles.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
 pub enum ArtStyle {
-    /// Detailed, larger art with shading (default).
-    #[default]
+    /// Detailed, larger art with shading.
     Detailed,
-    /// Minimal, compact art style.
+    /// Minimal, compact art style (default).
+    #[default]
     Minimal,
     /// Blocky, geometric style using Unicode box characters.
     Blocky,
@@ -59,7 +59,7 @@ impl std::str::FromStr for ArtStyle {
     }
 }
 
-// MARK: - Detailed Style (original)
+// MARK: - Detailed Style (improved v2)
 
 mod detailed {
     use crate::{Mood, Species};
@@ -74,281 +74,145 @@ mod detailed {
     }
 
     fn crow_art(mood: Mood) -> String {
-        match mood {
-            Mood::Happy => r#"        .-.
-       /   \
-      |o   o|
-      |  ^  |
-      | \|/ |
-     /|  `-'  |\
-    / |       | \
-   |  |_______|  |
-   |__|       |__|
-   "Caw! Looking good!""#.to_string(),
-            Mood::Sad => r#"        .-.
-       /   \
-      |o   o|
-      |  -  |
-      | \|/ |
-     /|  `-'  |\
-    / |       | \
-   |  |_______|  |
-   |__|       |__|
-   "Caw... something's wrong...""#.to_string(),
-            Mood::Neutral => r#"        .-.
-       /   \
-      |o   o|
-      |  <  |
-      | \|/ |
-     /|  `-'  |\
-    / |       | \
-   |  |_______|  |
-   |__|       |__|
-   "Caw?""#.to_string(),
-            Mood::Confused => r#"        .-.
-       /   \
-      |o   O|
-      |  ?  |
-      | \|/ |
-     /|  `-'  |\
-    / |       | \
-   |  |_______|  |
-   |__|       |__|
-   "Caw??""#.to_string(),
-            Mood::Excited => r#"        .-.
-       /   \
-      |o   o|
-      |  ^  |
-      | \|/ |
-     /|  `-'  |\
-    / |       | \
-   |  |_______|  |
-   |__|       |__|
-   "CAW! CAW! New spec!""#.to_string(),
-            Mood::Sleepy => r#"        .-.
-       /   \
-      |-   -|
-      |  .  |
-      | \|/ |
-     /|  `-'  |\
-    / |       | \
-   |  |_______|  |
-   |__|       |__|
-   "Zzz... caw...""#.to_string(),
-        }
+        let (eyes, beak, posture) = match mood {
+            Mood::Happy => ("o   o", " ^ ", "alert"),
+            Mood::Sad => ("o   o", " - ", "hunched"),
+            Mood::Neutral => ("o   o", " < ", "perched"),
+            Mood::Confused => ("o   O", " ? ", "tilted"),
+            Mood::Excited => ("o   o", " > ", "wings"),
+            Mood::Sleepy => ("-   -", " . ", "roosting"),
+        };
+
+        let wings = match posture {
+            "wings" => "  \\   /  ",
+            _ => "   | |   ",
+        };
+
+        let body = match posture {
+            "hunched" | "roosting" => "    | |    ",
+            _ => "   /| |\\   ",
+        };
+
+        format!(
+            r#"         ."-".
+        /     \
+       /       \
+      | {eyes} |
+      |   {beak}   |
+      |  \\|/  |
+     /|   |   |\
+    / |   |   | \
+   {wings}
+      |_______|
+      /     \
+{body}
+      `"-'`-'"`"#
+        )
     }
 
     fn raven_art(mood: Mood) -> String {
-        match mood {
-            Mood::Happy => r#"         ___
-        /   \
-       / o o \
-      |   >   |
-      |  \|/  |
-     /|   `-'   |\
-    / |         | \
-   /  |_________|  \
-  (__/         \__)
-   "Quoth: well done.""#.to_string(),
-            Mood::Sad => r#"         ___
-        /   \
-       / o o \
-      |   -   |
-      |  \|/  |
-     /|   `-'   |\
-    / |         | \
-   /  |_________|  \
-  (__/         \__)
-   "Nevermore... errors.""#.to_string(),
-            Mood::Neutral => r#"         ___
-        /   \
-       / o o \
-      |   v   |
-      |  \|/  |
-     /|   `-'   |\
-    / |         | \
-   /  |_________|  \
-  (__/         \__)
-   "Quoth?""#.to_string(),
-            Mood::Confused => r#"         ___
-        /   \
-       / o O \
-      |   ?   |
-      |  \|/  |
-     /|   `-'   |\
-    / |         | \
-   /  |_________|  \
-  (__/         \__)
-   "Quoth the... what?""#.to_string(),
-            Mood::Excited => r#"         ___
-        /   \
-       / o o \
-      |   >   |
-      |  \|/  |
-     /|   `-'   |\
-    / |         | \
-   /  |_________|  \
-  (__/         \__)
-   "Quoth: excellent news!""#.to_string(),
-            Mood::Sleepy => r#"         ___
-        /   \
-       / - - \
-      |   v   |
-      |  \|/  |
-     /|   `-'   |\
-    / |         | \
-   /  |_________|  \
-  (__/         \__)
-   "Nevermore... zzz...""#.to_string(),
-        }
+        let (eyes, beak, wings) = match mood {
+            Mood::Happy => ("◕   ◕", " > ", "spread"),
+            Mood::Sad => ("◕   ◕", " - ", "drooping"),
+            Mood::Neutral => ("◕   ◕", " v ", "folded"),
+            Mood::Confused => ("◕   ◯", " ? ", "twitch"),
+            Mood::Excited => ("◕   ◕", " > ", "raised"),
+            Mood::Sleepy => ("-   -", " v ", "tucked"),
+        };
+
+        let wing_art = match wings {
+            "spread" | "raised" => r#" ╱         ╲"#,
+            "drooping" => r#"  \\       /"#,
+            _ => r#"  |       |"#,
+        };
+
+        format!(
+            r#"        _____
+       /     \
+      /       \
+     |  {eyes}  |
+     |    {beak}    |
+    /|   \\|/   |\
+   / |    |    | \
+{wing_art}
+    \ |    |    | /
+     |___|_|___|
+        |   |
+       /     \
+      `"'"`"`"`"#
+        )
     }
 
     fn magpie_art(mood: Mood) -> String {
-        match mood {
-            Mood::Happy => r#"        .---.
-       / o o \
-      |   ^   |
-      |  \|/  |
-     /|   `-'   |\
-   (*|         |*)
-    --|_______|--
-       |     |
-      /       \
-     `-------'
-   "Ooh! Shiny specs!""#.to_string(),
-            Mood::Sad => r#"        .---.
-       / o o \
-      |   -   |
-      |  \|/  |
-     /|   `-'   |\
-   (*|         |*)
-    --|_______|--
-       |     |
-      /       \
-     `-------'
-   "No shiny things found...""#.to_string(),
-            Mood::Neutral => r#"        .---.
-       / o o \
-      |   <   |
-      |  \|/  |
-     /|   `-'   |\
-   (*|         |*)
-    --|_______|--
-       |     |
-      /       \
-     `-------'
-   "Looking for shiny...""#.to_string(),
-            Mood::Confused => r#"        .---.
-       / o O \
-      |   ?   |
-      |  \|/  |
-     /|   `-'   |\
-   (*|         |*)
-    --|_______|--
-       |     |
-      /       \
-     `-------'
-   "Is this shiny?""#.to_string(),
-            Mood::Excited => r#"        .---.
-       / o o \
-      |   >   |
-      |  \|/  |
-     /|   `-'   |\
-   (*|         |*)
-    --|_______|--
-       |     |
-      /       \
-     `-------'
-   "SO MANY SHINY SPECS!""#.to_string(),
-            Mood::Sleepy => r#"        .---.
-       / - - \
-      |   .   |
-      |  \|/  |
-     /|   `-'   |\
-   (*|         |*)
-    --|_______|--
-       |     |
-      /       \
-     `-------'
-   "Zzz... shiny...""#.to_string(),
-        }
+        let (eyes, beak, tail) = match mood {
+            Mood::Happy => ("◕   ◕", " > ", "fanned"),
+            Mood::Sad => ("◕   ◕", " - ", "droop"),
+            Mood::Neutral => ("◕   ◕", " < ", "long"),
+            Mood::Confused => ("◕   ◯", " ? ", "twitch"),
+            Mood::Excited => ("◕   ◕", " > ", "raised"),
+            Mood::Sleepy => ("-   -", " . ", "folded"),
+        };
+
+        let tail_art = match tail {
+            "fanned" | "raised" => {
+                r#"       /\ /\ /\
+      /  | |  \"#
+            }
+            "droop" | "folded" => {
+                r#"       | | | |
+      \  | |  /"#
+            }
+            _ => {
+                r#"       | | | |
+      |  | |  |"#
+            }
+        };
+
+        format!(
+            r#"         .---.
+        /     \
+       /       \
+      |  {eyes}  |
+      |    {beak}    |
+      |   \\|/   |
+     /|    |    |\
+    / |    |    | \
+   /  |____|____|  \
+{tail_art}
+        `"-'`-'"#
+        )
     }
 
     fn jay_art(mood: Mood) -> String {
-        match mood {
-            Mood::Happy => r#"       ,---.
-      /\  //\
-     / o  o \
-    |   ^    |
-   ~/|  \|/  |\~
-  (_/|   `-'   |\_)
-     |         |
-     |_________|
-        |   |
-       /     \
-      `-------'
-  "HEY! GREAT JOB!""#.to_string(),
-            Mood::Sad => r#"       ,---.
-      /\  //\
-     / o  o \
-    |   -    |
-   ~/|  \|/  |\~
-  (_/|   `-'   |\_)
-     |         |
-     |_________|
-        |   |
-       /     \
-      `-------'
-  "HEY... IT'S BROKEN...""#.to_string(),
-            Mood::Neutral => r#"       ,---.
-      /\  //\
-     / o  o \
-    |   <    |
-   ~/|  \|/  |\~
-  (_/|   `-'   |\_)
-     |         |
-     |_________|
-        |   |
-       /     \
-      `-------'
-  "HEY! LISTEN!""#.to_string(),
-            Mood::Confused => r#"       ,---.
-      /\  //\
-     / o  O \
-    |   ?    |
-   ~/|  \|/  |\~
-  (_/|   `-'   |\_)
-     |         |
-     |_________|
-        |   |
-       /     \
-      `-------'
-  "HEY! WHAT'S THIS?!""#.to_string(),
-            Mood::Excited => r#"       ,---.
-      /\  //\
-     / o  o \
-    |   >    |
-   ~/|  \|/  |\~
-  (_/|   `-'   |\_)
-     |         |
-     |_________|
-        |   |
-       /     \
-      `-------'
-  "HEY! HEY! NEW SPEC!""#.to_string(),
-            Mood::Sleepy => r#"       ,---.
-      /\  //\
-     / -  - \
-    |   .    |
-   ~/|  \|/  |\~
-  (_/|   `-'   |\_)
-     |         |
-     |_________|
-        |   |
-       /     \
-      `-------'
-  "Zzz... hey...""#.to_string(),
-        }
+        let (eyes, beak, crest) = match mood {
+            Mood::Happy => ("◕   ◕", " > ", "up"),
+            Mood::Sad => ("◕   ◕", " - ", "flat"),
+            Mood::Neutral => ("◕   ◕", " < ", "slight"),
+            Mood::Confused => ("◕   ◯", " ? ", "ruffled"),
+            Mood::Excited => ("◕   ◕", " > ", "raised"),
+            Mood::Sleepy => ("-   -", " . ", "down"),
+        };
+
+        let crest_art = match crest {
+            "up" | "raised" => r#"       /\\   //\\"#,
+            "flat" | "down" => r#"      /        \\"#,
+            "ruffled" => r#"      /\\/\\  /\\/\\\\"#,
+            _ => r#"       /\\   //\\"#,
+        };
+
+        format!(
+            r#"       ,---,
+{crest_art}
+     /  {eyes}  \
+    |    {beak}    |
+   ~/|   \\|/   |\\~
+  (_/|    |    |\\_)
+     |    |    |
+     |____|____|
+        |  |
+       /    \
+      `"--'--'"#
+        )
     }
 }
 
@@ -357,39 +221,67 @@ mod detailed {
 mod minimal {
     use crate::{Mood, Species};
 
-    pub fn render(species: Species, _mood: Mood) -> String {
-        // Minimal style uses the same base art for all moods
-        // but could vary by mood in the future
+    pub fn render(species: Species, mood: Mood) -> String {
         match species {
-            Species::Crow => r#"    _          _
-   /.)        (.\
-  /)\|        |/(\
- //)/          \(\\
-/'"^"          "^"`\"
-            Crow"#.to_string(),
-            Species::Raven => r#"    ___        ___
+            Species::Crow => crow_art(mood),
+            Species::Raven => raven_art(mood),
+            Species::Magpie => magpie_art(mood),
+            Species::Jay => jay_art(mood),
+        }
+    }
+
+    fn crow_art(mood: Mood) -> String {
+        let thought = match mood {
+            Mood::Happy => "Caw! ✨",
+            Mood::Sad => "oh no...",
+            Mood::Neutral => "hmm",
+            Mood::Confused => "??",
+            Mood::Excited => "CAW! 🎉",
+            Mood::Sleepy => "zzz...",
+        };
+
+        format!(
+            r#"   .oO({thought})
+      _
+    <(o\
+     |/(\
+      \(\\
+      "^`\"."#
+        )
+    }
+
+    fn raven_art(_mood: Mood) -> String {
+        r#"    ___        ___
    /   \      /   \
   | o o |    | o o |
    \___/      \___/
     /  \      /  \
    `---'      `---'"
-            Raven"#.to_string(),
-            Species::Magpie => r#"    .-.
+            Raven"#
+            .to_string()
+    }
+
+    fn magpie_art(_mood: Mood) -> String {
+        r#"    .-.
    /o o\
    \ - /
     |-|
    /| |\
   (_| |_)"
-            Magpie"#.to_string(),
-            Species::Jay => r#"    ,-.
+            Magpie"#
+            .to_string()
+    }
+
+    fn jay_art(_mood: Mood) -> String {
+        r#"    ,-.
    /o o\
   / \^/ \
    \ | /
     |=|
    /   \
   `-----'"
-            Jay"#.to_string(),
-        }
+            Jay"#
+            .to_string()
     }
 }
 
@@ -416,13 +308,15 @@ mod blocky {
             _ => "○ ○",
         };
 
-        format!(r#"┌─────────┐
+        format!(
+            r#"┌─────────┐
 │  ╱   ╲  │
 │ {eyes} │
 │  ╲___╱  │
 │    │    │
 └────┴────┘
-   "Caw!""#)
+   "Caw!""#
+        )
     }
 
     fn raven_art(_mood: Mood) -> String {
@@ -432,7 +326,8 @@ mod blocky {
 │  ╲╱_____╲╱  │
 │     │ │     │
 └─────┴─┴─────┘
-   "Quoth""#.to_string()
+   "Quoth""#
+            .to_string()
     }
 
     fn magpie_art(_mood: Mood) -> String {
@@ -442,7 +337,8 @@ mod blocky {
 ║  ╲_____╱   ║
 ║    │ │    ║
 ╚════╧═╧════╝
-  "Shiny!""#.to_string()
+  "Shiny!""#
+            .to_string()
     }
 
     fn jay_art(_mood: Mood) -> String {
@@ -452,7 +348,8 @@ mod blocky {
 │ ╲  ▽▽▽  ╱ │
 │   │   │   │
 ╰───┴───┴───╯
- "HEY!""#.to_string()
+ "HEY!""#
+            .to_string()
     }
 }
 
@@ -506,7 +403,7 @@ mod tests {
         let style = ArtStyle::Detailed;
         let art = style.render(Species::Crow, Mood::Happy);
         assert!(!art.is_empty());
-        assert!(art.contains(".-.") || art.contains("Crow"));
+        assert!(art.contains(".\"-.") || art.contains("o   o"));
     }
 
     #[test]
@@ -554,9 +451,21 @@ mod tests {
 
     #[test]
     fn test_all_styles_all_species() {
-        let styles = [ArtStyle::Detailed, ArtStyle::Minimal, ArtStyle::Blocky, ArtStyle::Emoji];
+        let styles = [
+            ArtStyle::Detailed,
+            ArtStyle::Minimal,
+            ArtStyle::Blocky,
+            ArtStyle::Emoji,
+        ];
         let species = [Species::Crow, Species::Raven, Species::Magpie, Species::Jay];
-        let moods = [Mood::Happy, Mood::Sad, Mood::Neutral, Mood::Confused, Mood::Excited, Mood::Sleepy];
+        let moods = [
+            Mood::Happy,
+            Mood::Sad,
+            Mood::Neutral,
+            Mood::Confused,
+            Mood::Excited,
+            Mood::Sleepy,
+        ];
 
         for style in &styles {
             for s in &species {

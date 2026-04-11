@@ -25,10 +25,10 @@ pub mod styles;
 pub mod templates;
 
 pub use animations::{Animation, Spinner};
-pub use species::Species;
 pub use moods::Mood;
-pub use styles::ArtStyle;
 pub use persistence::PetState;
+pub use species::Species;
+pub use styles::ArtStyle;
 
 /// Lifecycle events that can trigger pet reactions.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -87,8 +87,9 @@ impl Pet {
     }
 
     /// Returns ASCII art for the current species and mood.
+    /// Uses the clean minimal style by default.
     pub fn render(&self) -> String {
-        moods::ascii_art(self.species, self.mood)
+        styles::ArtStyle::Minimal.render(self.species, self.mood)
     }
 
     /// Returns ASCII art using a specific style.
@@ -104,10 +105,7 @@ impl Pet {
     }
 
     /// Returns colored ASCII art using a specific style.
-    pub fn render_colored_with_style(
-        &self,
-        style: styles::ArtStyle,
-    ) -> String {
+    pub fn render_colored_with_style(&self, style: styles::ArtStyle) -> String {
         let art = style.render(self.species, self.mood);
         color::colorize(&art, self.species)
     }
@@ -221,7 +219,7 @@ mod tests {
         let pet = Pet::new("Test".to_string(), Species::Crow);
         let art = pet.render();
         assert!(!art.is_empty());
-        assert!(art.contains(".-.") || art.contains("___"));
+        assert!(art.contains("<(") || art.contains("_"));
     }
 
     #[test]
