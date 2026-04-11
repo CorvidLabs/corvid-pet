@@ -1,7 +1,6 @@
 //! Customizable ASCII art styles for corvid pets.
 //!
-//! This module provides multiple art templates and allows users to
-//! define custom styles for their pets.
+//! This module provides multiple art templates for the crow companion.
 
 /// Available art styles.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
@@ -18,13 +17,13 @@ pub enum ArtStyle {
 }
 
 impl ArtStyle {
-    /// Returns ASCII art for the given species, mood, and style.
-    pub fn render(&self, species: super::Species, mood: super::Mood) -> String {
+    /// Returns ASCII art for the given mood and style.
+    pub fn render(&self, _species: super::Species, mood: super::Mood) -> String {
         match self {
-            ArtStyle::Detailed => detailed::render(species, mood),
-            ArtStyle::Minimal => minimal::render(species, mood),
-            ArtStyle::Blocky => blocky::render(species, mood),
-            ArtStyle::Emoji => emoji::render(species, mood),
+            ArtStyle::Detailed => detailed::render(mood),
+            ArtStyle::Minimal => minimal::render(mood),
+            ArtStyle::Blocky => blocky::render(mood),
+            ArtStyle::Emoji => emoji::render(mood),
         }
     }
 
@@ -59,21 +58,12 @@ impl std::str::FromStr for ArtStyle {
     }
 }
 
-// MARK: - Detailed Style (original)
+// MARK: - Detailed Style
 
 mod detailed {
-    use crate::{Mood, Species};
+    use crate::Mood;
 
-    pub fn render(species: Species, mood: Mood) -> String {
-        match species {
-            Species::Crow => crow_art(mood),
-            Species::Raven => raven_art(mood),
-            Species::Magpie => magpie_art(mood),
-            Species::Jay => jay_art(mood),
-        }
-    }
-
-    fn crow_art(mood: Mood) -> String {
+    pub fn render(mood: Mood) -> String {
         match mood {
             Mood::Happy => r#"        .-.
        /   \
@@ -143,237 +133,6 @@ mod detailed {
                 .to_string(),
         }
     }
-
-    fn raven_art(mood: Mood) -> String {
-        match mood {
-            Mood::Happy => r#"         ___
-        /   \
-       / o o \
-      |   >   |
-      |  \|/  |
-     /|   `-'   |\
-    / |         | \
-   /  |_________|  \
-  (__/         \__)
-   "Quoth: well done.""#
-                .to_string(),
-            Mood::Sad => r#"         ___
-        /   \
-       / o o \
-      |   -   |
-      |  \|/  |
-     /|   `-'   |\
-    / |         | \
-   /  |_________|  \
-  (__/         \__)
-   "Nevermore... errors.""#
-                .to_string(),
-            Mood::Neutral => r#"         ___
-        /   \
-       / o o \
-      |   v   |
-      |  \|/  |
-     /|   `-'   |\
-    / |         | \
-   /  |_________|  \
-  (__/         \__)
-   "Quoth?""#
-                .to_string(),
-            Mood::Confused => r#"         ___
-        /   \
-       / o O \
-      |   ?   |
-      |  \|/  |
-     /|   `-'   |\
-    / |         | \
-   /  |_________|  \
-  (__/         \__)
-   "Quoth the... what?""#
-                .to_string(),
-            Mood::Excited => r#"         ___
-        /   \
-       / o o \
-      |   >   |
-      |  \|/  |
-     /|   `-'   |\
-    / |         | \
-   /  |_________|  \
-  (__/         \__)
-   "Quoth: excellent news!""#
-                .to_string(),
-            Mood::Sleepy => r#"         ___
-        /   \
-       / - - \
-      |   v   |
-      |  \|/  |
-     /|   `-'   |\
-    / |         | \
-   /  |_________|  \
-  (__/         \__)
-   "Nevermore... zzz...""#
-                .to_string(),
-        }
-    }
-
-    fn magpie_art(mood: Mood) -> String {
-        match mood {
-            Mood::Happy => r#"        .---.
-       / o o \
-      |   ^   |
-      |  \|/  |
-     /|   `-'   |\
-   (*|         |*)
-    --|_______|--
-       |     |
-      /       \
-     `-------'
-   "Ooh! Shiny specs!""#
-                .to_string(),
-            Mood::Sad => r#"        .---.
-       / o o \
-      |   -   |
-      |  \|/  |
-     /|   `-'   |\
-   (*|         |*)
-    --|_______|--
-       |     |
-      /       \
-     `-------'
-   "No shiny things found...""#
-                .to_string(),
-            Mood::Neutral => r#"        .---.
-       / o o \
-      |   <   |
-      |  \|/  |
-     /|   `-'   |\
-   (*|         |*)
-    --|_______|--
-       |     |
-      /       \
-     `-------'
-   "Looking for shiny...""#
-                .to_string(),
-            Mood::Confused => r#"        .---.
-       / o O \
-      |   ?   |
-      |  \|/  |
-     /|   `-'   |\
-   (*|         |*)
-    --|_______|--
-       |     |
-      /       \
-     `-------'
-   "Is this shiny?""#
-                .to_string(),
-            Mood::Excited => r#"        .---.
-       / o o \
-      |   >   |
-      |  \|/  |
-     /|   `-'   |\
-   (*|         |*)
-    --|_______|--
-       |     |
-      /       \
-     `-------'
-   "SO MANY SHINY SPECS!""#
-                .to_string(),
-            Mood::Sleepy => r#"        .---.
-       / - - \
-      |   .   |
-      |  \|/  |
-     /|   `-'   |\
-   (*|         |*)
-    --|_______|--
-       |     |
-      /       \
-     `-------'
-   "Zzz... shiny...""#
-                .to_string(),
-        }
-    }
-
-    fn jay_art(mood: Mood) -> String {
-        match mood {
-            Mood::Happy => r#"       ,---.
-      /\  //\
-     / o  o \
-    |   ^    |
-   ~/|  \|/  |\~
-  (_/|   `-'   |\_)
-     |         |
-     |_________|
-        |   |
-       /     \
-      `-------'
-  "HEY! GREAT JOB!""#
-                .to_string(),
-            Mood::Sad => r#"       ,---.
-      /\  //\
-     / o  o \
-    |   -    |
-   ~/|  \|/  |\~
-  (_/|   `-'   |\_)
-     |         |
-     |_________|
-        |   |
-       /     \
-      `-------'
-  "HEY... IT'S BROKEN...""#
-                .to_string(),
-            Mood::Neutral => r#"       ,---.
-      /\  //\
-     / o  o \
-    |   <    |
-   ~/|  \|/  |\~
-  (_/|   `-'   |\_)
-     |         |
-     |_________|
-        |   |
-       /     \
-      `-------'
-  "HEY! LISTEN!""#
-                .to_string(),
-            Mood::Confused => r#"       ,---.
-      /\  //\
-     / o  O \
-    |   ?    |
-   ~/|  \|/  |\~
-  (_/|   `-'   |\_)
-     |         |
-     |_________|
-        |   |
-       /     \
-      `-------'
-  "HEY! WHAT'S THIS?!""#
-                .to_string(),
-            Mood::Excited => r#"       ,---.
-      /\  //\
-     / o  o \
-    |   >    |
-   ~/|  \|/  |\~
-  (_/|   `-'   |\_)
-     |         |
-     |_________|
-        |   |
-       /     \
-      `-------'
-  "HEY! HEY! NEW SPEC!""#
-                .to_string(),
-            Mood::Sleepy => r#"       ,---.
-      /\  //\
-     / -  - \
-    |   .    |
-   ~/|  \|/  |\~
-  (_/|   `-'   |\_)
-     |         |
-     |_________|
-        |   |
-       /     \
-      `-------'
-  "Zzz... hey...""#
-                .to_string(),
-        }
-    }
 }
 
 // MARK: - Minimal Style
@@ -381,7 +140,7 @@ mod detailed {
 mod minimal {
     use crate::Mood;
 
-    pub fn render(_species: crate::Species, mood: Mood) -> String {
+    pub fn render(mood: Mood) -> String {
         let thought = match mood {
             Mood::Happy => "Caw! ✨",
             Mood::Sad => "oh no...",
@@ -405,18 +164,9 @@ mod minimal {
 // MARK: - Blocky Style
 
 mod blocky {
-    use crate::{Mood, Species};
+    use crate::Mood;
 
-    pub fn render(species: Species, mood: Mood) -> String {
-        match species {
-            Species::Crow => crow_art(mood),
-            Species::Raven => raven_art(mood),
-            Species::Magpie => magpie_art(mood),
-            Species::Jay => jay_art(mood),
-        }
-    }
-
-    fn crow_art(mood: Mood) -> String {
+    pub fn render(mood: Mood) -> String {
         let eyes = match mood {
             Mood::Happy | Mood::Excited => "◕ ◕",
             Mood::Sad => "◡ ◡",
@@ -435,78 +185,22 @@ mod blocky {
    "Caw!""#
         )
     }
-
-    fn raven_art(_mood: Mood) -> String {
-        r#"┌───────────┐
-│  ╱╲     ╱╲  │
-│ │ ◕◕ │ │ ◕◕ │ │
-│  ╲╱_____╲╱  │
-│     │ │     │
-└─────┴─┴─────┘
-   "Quoth""#
-            .to_string()
-    }
-
-    fn magpie_art(_mood: Mood) -> String {
-        r#"╔═══════════╗
-║  ╱ ◕◕ ╲   ║
-║ │  ▽   │  ║
-║  ╲_____╱   ║
-║    │ │    ║
-╚════╧═╧════╝
-  "Shiny!""#
-            .to_string()
-    }
-
-    fn jay_art(_mood: Mood) -> String {
-        r#"╭───────────╮
-│ ╱╲     ╱╲ │
-││ ◕◕ │ ◕◕ ││
-│ ╲  ▽▽▽  ╱ │
-│   │   │   │
-╰───┴───┴───╯
- "HEY!""#
-            .to_string()
-    }
 }
 
 // MARK: - Emoji Style
 
 mod emoji {
-    use crate::{Mood, Species};
+    use crate::Mood;
 
-    pub fn render(species: Species, mood: Mood) -> String {
-        let emoji = match (species, mood) {
-            (Species::Crow, Mood::Happy) => "🐦‍⬛ ✨",
-            (Species::Crow, Mood::Sad) => "🐦‍⬛ 😢",
-            (Species::Crow, Mood::Confused) => "🐦‍⬛ ❓",
-            (Species::Crow, Mood::Excited) => "🐦‍⬛ 🎉",
-            (Species::Crow, Mood::Sleepy) => "🐦‍⬛ 💤",
-            (Species::Crow, _) => "🐦‍⬛",
-
-            (Species::Raven, Mood::Happy) => "🐦‍⬛ ✨",
-            (Species::Raven, Mood::Sad) => "🐦‍⬛ 🌧️",
-            (Species::Raven, Mood::Confused) => "🐦‍⬛ ❓",
-            (Species::Raven, Mood::Excited) => "🐦‍⬛ 🎊",
-            (Species::Raven, Mood::Sleepy) => "🐦‍⬛ 🌙",
-            (Species::Raven, _) => "🐦‍⬛",
-
-            (Species::Magpie, Mood::Happy) => "🐦 ✨",
-            (Species::Magpie, Mood::Sad) => "🐦 😔",
-            (Species::Magpie, Mood::Confused) => "🐦 ❓",
-            (Species::Magpie, Mood::Excited) => "🐦 💎",
-            (Species::Magpie, Mood::Sleepy) => "🐦 💤",
-            (Species::Magpie, _) => "🐦",
-
-            (Species::Jay, Mood::Happy) => "🐦 🔵",
-            (Species::Jay, Mood::Sad) => "🐦 😢",
-            (Species::Jay, Mood::Confused) => "🐦 ❓",
-            (Species::Jay, Mood::Excited) => "🐦 🎉",
-            (Species::Jay, Mood::Sleepy) => "🐦 💤",
-            (Species::Jay, _) => "🐦",
-        };
-
-        format!("{}", emoji)
+    pub fn render(mood: Mood) -> String {
+        match mood {
+            Mood::Happy => "🐦‍⬛ ✨".to_string(),
+            Mood::Sad => "🐦‍⬛ 😢".to_string(),
+            Mood::Confused => "🐦‍⬛ ❓".to_string(),
+            Mood::Excited => "🐦‍⬛ 🎉".to_string(),
+            Mood::Sleepy => "🐦‍⬛ 💤".to_string(),
+            Mood::Neutral => "🐦‍⬛".to_string(),
+        }
     }
 }
 
@@ -520,7 +214,7 @@ mod tests {
         let style = ArtStyle::Detailed;
         let art = style.render(Species::Crow, Mood::Happy);
         assert!(!art.is_empty());
-        assert!(art.contains(".-.") || art.contains("Crow"));
+        assert!(art.contains(".-."));
     }
 
     #[test]
@@ -528,6 +222,7 @@ mod tests {
         let style = ArtStyle::Minimal;
         let art = style.render(Species::Crow, Mood::Happy);
         assert!(!art.is_empty());
+        assert!(art.contains("oO"));
     }
 
     #[test]
@@ -535,6 +230,7 @@ mod tests {
         let style = ArtStyle::Blocky;
         let art = style.render(Species::Crow, Mood::Happy);
         assert!(!art.is_empty());
+        assert!(art.contains("◕"));
     }
 
     #[test]
@@ -542,6 +238,7 @@ mod tests {
         let style = ArtStyle::Emoji;
         let art = style.render(Species::Crow, Mood::Happy);
         assert!(!art.is_empty());
+        assert!(art.contains("✨"));
     }
 
     #[test]
@@ -567,14 +264,13 @@ mod tests {
     }
 
     #[test]
-    fn test_all_styles_all_species() {
+    fn test_all_styles_all_moods() {
         let styles = [
             ArtStyle::Detailed,
             ArtStyle::Minimal,
             ArtStyle::Blocky,
             ArtStyle::Emoji,
         ];
-        let species = [Species::Crow, Species::Raven, Species::Magpie, Species::Jay];
         let moods = [
             Mood::Happy,
             Mood::Sad,
@@ -585,11 +281,9 @@ mod tests {
         ];
 
         for style in &styles {
-            for s in &species {
-                for m in &moods {
-                    let art = style.render(*s, *m);
-                    assert!(!art.is_empty(), "Empty art for {:?} {:?} {:?}", style, s, m);
-                }
+            for m in &moods {
+                let art = style.render(Species::Crow, *m);
+                assert!(!art.is_empty(), "Empty art for {:?} {:?}", style, m);
             }
         }
     }
