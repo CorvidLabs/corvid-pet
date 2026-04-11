@@ -1,76 +1,68 @@
-use corvid_pet::{Mood, Pet, Species};
+use corvid_pet::{Event, Mood, Pet, Species};
 
 fn main() {
-    println!("Welcome to corvid-pet!\n");
+    println!("corvid-pet — Meet the flock!\n");
 
-    // Create pets of different species
-    let crow = Pet::new("Corvin".to_string(), Species::Crow);
-    let raven = Pet::new("Nevermore".to_string(), Species::Raven);
-    let magpie = Pet::new("Shiny".to_string(), Species::Magpie);
-    let jay = Pet::new("Jay".to_string(), Species::Jay);
+    // Show all four species side by side
+    for species in [Species::Crow, Species::Raven, Species::Magpie, Species::Jay] {
+        let pet = Pet::new(species.default_name(), species);
+        println!("=== {} ({}) ===", pet.name(), species.personality());
 
-    // Display each pet
-    println!("=== Crow ===");
-    #[cfg(feature = "color")]
-    println!("{}", crow.render_colored());
-    #[cfg(not(feature = "color"))]
-    println!("{}", crow.render());
-    println!();
+        #[cfg(feature = "color")]
+        println!("{}", pet.render_colored());
+        #[cfg(not(feature = "color"))]
+        println!("{}", pet.render());
 
-    println!("=== Raven ===");
-    #[cfg(feature = "color")]
-    println!("{}", raven.render_colored());
-    #[cfg(not(feature = "color"))]
-    println!("{}", raven.render());
-    println!();
+        println!("  \"{}\"", pet.comment());
+        println!();
+    }
 
-    println!("=== Magpie ===");
-    #[cfg(feature = "color")]
-    println!("{}", magpie.render_colored());
-    #[cfg(not(feature = "color"))]
-    println!("{}", magpie.render());
-    println!();
+    // Show one species through all moods
+    println!("=== Mood Changes (Crow) ===\n");
+    let mut crow = Pet::new("Corvin".to_string(), Species::Crow);
 
-    println!("=== Jay ===");
-    #[cfg(feature = "color")]
-    println!("{}", jay.render_colored());
-    #[cfg(not(feature = "color"))]
-    println!("{}", jay.render());
-    println!();
+    for mood in [
+        Mood::Happy,
+        Mood::Sad,
+        Mood::Neutral,
+        Mood::Confused,
+        Mood::Excited,
+        Mood::Sleepy,
+    ] {
+        crow.set_mood(mood);
+        println!("{}:", mood);
 
-    // Show mood variations for crow
-    println!("=== Crow Mood Changes ===\n");
-    let mut pet = Pet::new("Corvin".to_string(), Species::Crow);
+        #[cfg(feature = "color")]
+        println!("{}", crow.render_colored());
+        #[cfg(not(feature = "color"))]
+        println!("{}", crow.render());
 
-    println!("Happy:");
-    pet.set_mood(Mood::Happy);
-    #[cfg(feature = "color")]
-    println!("{}", pet.render_colored());
-    #[cfg(not(feature = "color"))]
-    println!("{}", pet.render());
-    println!("Comment: \"{}\"\n", pet.comment());
+        println!("  \"{}\"", crow.comment());
+        println!();
+    }
 
-    println!("Sad:");
-    pet.set_mood(Mood::Sad);
-    #[cfg(feature = "color")]
-    println!("{}", pet.render_colored());
-    #[cfg(not(feature = "color"))]
-    println!("{}", pet.render());
-    println!("Comment: \"{}\"\n", pet.comment());
+    // Demonstrate event reactions
+    println!("=== Event Reactions ===\n");
+    let mut pet = Pet::new("Nevermore".to_string(), Species::Raven);
 
-    println!("Confused:");
-    pet.set_mood(Mood::Confused);
-    #[cfg(feature = "color")]
-    println!("{}", pet.render_colored());
-    #[cfg(not(feature = "color"))]
-    println!("{}", pet.render());
-    println!("Comment: \"{}\"\n", pet.comment());
+    let events = [
+        (Event::SpecPassed, "Spec passed!"),
+        (Event::SpecFailed, "Spec failed..."),
+        (Event::ValidationWarning, "Warnings found"),
+        (Event::NewSpecGenerated, "New spec generated!"),
+        (Event::Idle, "System idle"),
+    ];
 
-    println!("Excited:");
-    pet.set_mood(Mood::Excited);
-    #[cfg(feature = "color")]
-    println!("{}", pet.render_colored());
-    #[cfg(not(feature = "color"))]
-    println!("{}", pet.render());
-    println!("Comment: \"{}\"\n", pet.comment());
+    for (event, label) in events {
+        pet.react(event);
+        println!("{label} → mood: {}", pet.mood());
+
+        #[cfg(feature = "color")]
+        println!("{}", pet.render_colored());
+        #[cfg(not(feature = "color"))]
+        println!("{}", pet.render());
+
+        println!("  \"{}\"", pet.comment());
+        println!();
+    }
 }
