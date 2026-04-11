@@ -24,21 +24,17 @@ pub fn colorize(art: &str, _species: crate::Species) -> String {
 fn colorize_crow(art: &str) -> String {
     use colored::Colorize as _;
 
-    // Crows are primarily black/dark gray with a subtle sheen
+    // Color the entire crow in dark blue-black with a subtle sheen
     art.lines()
         .map(|line| {
-            if line.contains('o')
-                && (line.contains("|") || line.contains("/") || line.contains("\\"))
-            {
-                // Eye line - highlight eyes
-                line.replace("o", &"o".bright_white().to_string())
-                    .replace("|", &"|".bright_black().to_string())
-            } else if line.contains('\"') || line.contains("Caw") {
-                // Speech bubble - subtle gray
-                line.bright_black().to_string()
+            // Thought bubble gets a different color from the bird body
+            if let (Some(start), Some(end)) = (line.find(".oO("), line.rfind(')')) {
+                let bird_part = line[..start].blue().to_string();
+                let bubble = line[start..=end].cyan().to_string();
+                let after = line[end + 1..].blue().to_string();
+                format!("{bird_part}{bubble}{after}")
             } else {
-                // Body - dark with slight variation
-                line.bright_black().to_string()
+                line.blue().to_string()
             }
         })
         .collect::<Vec<_>>()

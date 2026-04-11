@@ -1,12 +1,17 @@
 [package]
 name = "corvid-pet"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2024"
+rust-version = "1.85"
 description = "ASCII corvid companions for CLI tools"
 license = "MIT"
+readme = "README.md"
+authors = ["CorvidLabs <corvidlabs@proton.me>"]
 repository = "https://github.com/CorvidLabs/corvid-pet"
+homepage = "https://github.com/CorvidLabs/corvid-pet"
 keywords = ["ascii", "art", "cli", "terminal", "pet"]
 categories = ["command-line-utilities", "visualization"]
+exclude = [".github/", ".claude/", "specs/"]
 
 [dependencies]
 rand = "0.8"
