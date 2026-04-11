@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: CorvidLabs/spec-sync@v3
+      - uses: CorvidLabs/spec-sync@v3.8.0
         with:
           strict: 'true'
           comment: 'true'
