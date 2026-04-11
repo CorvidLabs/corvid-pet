@@ -15,6 +15,7 @@
 pub mod animations;
 pub mod color;
 pub mod comments;
+pub mod health;
 pub mod integrations;
 pub mod life_stage;
 pub mod live;
@@ -39,7 +40,8 @@ pub use species::Species;
 pub use stats::Stats;
 pub use styles::ArtStyle;
 
-// Convenient re-exports for spec-sync integration
+// Convenient re-exports
+pub use health::RepoHealth;
 pub use integrations::specsync::{SpecSyncCompanion, ValidationOutcome};
 
 /// Lifecycle events that can trigger pet reactions.
