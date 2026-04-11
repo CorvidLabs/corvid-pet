@@ -106,7 +106,7 @@ mod minimal {
     fn eye(mood: Mood) -> &'static str {
         match mood {
             Mood::Happy => "^",
-            Mood::Sad => "o",
+            Mood::Sad => ";",
             Mood::Neutral => "o",
             Mood::Confused => "?",
             Mood::Excited => "*",
