@@ -6,9 +6,9 @@ Bring a little personality to your command-line tools with animated ASCII pets t
 
 ## Features
 
-- **Four Species**: Crow, Raven, Magpie, Jay — each with unique art and personalities
+- **Crow Companion**: Clever problem-solver with unique art and personality
 - **Six Moods**: Happy, Sad, Neutral, Confused, Excited, Sleepy
-- **Two Art Styles**: Minimal (compact, ~6 lines) and Detailed (full-size, ~12 lines)
+- **Minimal Art Style**: Compact ~6-line silhouettes with thought bubbles
 - **Animations**: Blink and hop animations for bringing pets to life
 - **Progress Spinners**: Animated companions for long-running operations
 - **Life Simulation**: Tamagotchi-like system with stats, life stages, and personalities
@@ -26,29 +26,24 @@ let pet = Pet::new("Corvin".to_string(), Species::Crow);
 println!("{}", pet.render());
 ```
 
-Each species renders differently:
-
 ```
-Crow:         Raven:        Magpie:       Jay:
-   .oO(hmm)     .oO(hmm)     .oO(hmm)     .oO(hmm)
-      _           __            _          /\/\
-    <(o\        (o >          *(o\        (o >
-     |/(o\      (o/|          *(o/        (o|~~
-      \(\\       ||/ |         |/  \~~~~    ||  |
-      "^`".      |/_/          |__/         |/__\
-                 "`"           "`"          "`"
+      _
+    <(o\          .oO(hmm)
+     |/(o\
+      \(\\
+      "^`".
 ```
 
 ## Examples
 
 ```bash
-# Meet all four species + mood showcase
+# Meet the crow + mood showcase
 cargo run --example basic
 
 # With colors
 cargo run --example basic --features color
 
-# Compare Minimal vs Detailed art styles
+# Minimal art style showcase
 cargo run --example styles
 
 # Life simulation (tamagotchi) demo
@@ -70,24 +65,9 @@ cargo run --example live --features live
 cargo run --example spec_buddy
 ```
 
-## Art Styles
-
-### Minimal (default)
-Compact ~6-line species silhouettes with thought bubbles. Each species has a unique shape.
-
-### Detailed
-Larger ~12-line art with distinct body shapes, postures, and mood-specific variations per species.
-
-```rust
-use corvid_pet::{Pet, Species, ArtStyle};
-
-let pet = Pet::new("Nevermore".to_string(), Species::Raven);
-println!("{}", pet.render_with_style(ArtStyle::Detailed));
-```
-
 ## Life Simulation
 
-Optional tamagotchi-like system with hunger, energy, happiness, and health stats. Pets progress through life stages (Egg → Hatchling → Fledgling → Adult → Elder) and have personalities that affect their behavior.
+Optional tamagotchi-like system with hunger, energy, happiness, and health stats. Pets progress through life stages (Egg -> Hatchling -> Fledgling -> Adult -> Elder) and have personalities that affect their behavior.
 
 ```rust
 use corvid_pet::{Pet, Species, Personality};
@@ -95,7 +75,7 @@ use corvid_pet::{Pet, Species, Personality};
 let now = std::time::SystemTime::now()
     .duration_since(std::time::UNIX_EPOCH).unwrap().as_secs();
 
-let mut pet = Pet::new("Pip".to_string(), Species::Magpie)
+let mut pet = Pet::new("Pip".to_string(), Species::Crow)
     .with_simulation(Personality::Curious, now);
 
 pet.tick(now + 300);          // Time passes, egg hatches

@@ -39,7 +39,7 @@ fn main() {
 
     // Alternative: Using react_to_results
     println!("=== Using react_to_results ===\n");
-    let mut companion2 = SpecSyncCompanion::new(Species::Raven);
+    let mut companion2 = SpecSyncCompanion::new(Species::Crow);
 
     companion2.react_to_results(0, 0); // Success
     println!(

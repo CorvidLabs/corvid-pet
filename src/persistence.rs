@@ -82,9 +82,6 @@ impl PetState {
     /// Converts this state back into a pet.
     pub fn to_pet(&self) -> Pet {
         let species = match self.species.as_str() {
-            "Raven" => Species::Raven,
-            "Magpie" => Species::Magpie,
-            "Jay" => Species::Jay,
             _ => Species::Crow,
         };
 
@@ -307,8 +304,8 @@ mod tests {
     #[test]
     fn test_state_to_pet() {
         let state = PetState {
-            name: "Raven".to_string(),
-            species: "Raven".to_string(),
+            name: "Corvin".to_string(),
+            species: "Crow".to_string(),
             mood: "Happy".to_string(),
             interaction_count: 0,
             last_saved: None,
@@ -316,8 +313,8 @@ mod tests {
         };
 
         let pet = state.to_pet();
-        assert_eq!(pet.name(), "Raven");
-        assert_eq!(pet.species(), Species::Raven);
+        assert_eq!(pet.name(), "Corvin");
+        assert_eq!(pet.species(), Species::Crow);
         assert_eq!(pet.mood(), Mood::Happy);
     }
 
@@ -334,7 +331,7 @@ mod tests {
 
     #[test]
     fn test_all_species_round_trip() {
-        for species in [Species::Crow, Species::Raven, Species::Magpie, Species::Jay] {
+        for species in [Species::Crow] {
             for mood in [
                 Mood::Happy,
                 Mood::Sad,

@@ -13,7 +13,6 @@
 //! ```
 
 pub mod animations;
-pub mod art_v2;
 pub mod color;
 pub mod comments;
 pub mod integrations;
@@ -258,8 +257,8 @@ mod tests {
 
     #[test]
     fn test_default_name() {
-        let pet = Pet::new(String::new(), Species::Raven);
-        assert_eq!(pet.name(), "Nevermore");
+        let pet = Pet::new(String::new(), Species::Crow);
+        assert_eq!(pet.name(), "Corvin");
     }
 
     #[test]
@@ -363,9 +362,6 @@ mod tests {
     #[test]
     fn test_species_display() {
         assert_eq!(format!("{}", Species::Crow), "Crow");
-        assert_eq!(format!("{}", Species::Raven), "Raven");
-        assert_eq!(format!("{}", Species::Magpie), "Magpie");
-        assert_eq!(format!("{}", Species::Jay), "Jay");
     }
 
     #[test]

@@ -7,7 +7,7 @@ fn main() {
 
     // Create a pet with simulation
     let mut pet =
-        Pet::new("Pip".to_string(), Species::Magpie).with_simulation(Personality::Mischievous, now);
+        Pet::new("Pip".to_string(), Species::Crow).with_simulation(Personality::Mischievous, now);
 
     println!("A new egg appears...\n");
     show_status(&pet);
