@@ -4,10 +4,10 @@
 //! different stat modifiers and behaviors.
 
 /// Duration constants in seconds.
-const EGG_DURATION: u64 = 300;       // 5 minutes
+const EGG_DURATION: u64 = 300; // 5 minutes
 const HATCHLING_DURATION: u64 = 1800; // 30 minutes
 const FLEDGLING_DURATION: u64 = 7200; // 2 hours
-const ELDER_THRESHOLD: u64 = 86400;   // 24 hours total age
+const ELDER_THRESHOLD: u64 = 86400; // 24 hours total age
 
 /// Life stages a pet progresses through.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]

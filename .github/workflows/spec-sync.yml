@@ -22,10 +22,12 @@ jobs:
 
       - name: Install spec-sync
         run: |
+          export PATH="$HOME/.cargo/bin:$PATH"
           if ! command -v specsync &>/dev/null; then
             cargo install specsync --git https://github.com/CorvidLabs/spec-sync --tag v3.8.0
           fi
           specsync --version
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
 
       - name: Spec check
         run: specsync check --strict

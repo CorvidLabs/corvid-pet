@@ -34,7 +34,9 @@ fn colorize_crow(art: &str) -> String {
     // Crows are primarily black/dark gray with a subtle sheen
     art.lines()
         .map(|line| {
-            if line.contains('o') && (line.contains("|") || line.contains("/") || line.contains("\\")) {
+            if line.contains('o')
+                && (line.contains("|") || line.contains("/") || line.contains("\\"))
+            {
                 // Eye line - highlight eyes
                 line.replace("o", &"o".bright_white().to_string())
                     .replace("|", &"|".bright_black().to_string())
