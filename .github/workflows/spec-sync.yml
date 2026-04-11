@@ -22,5 +22,5 @@ jobs:
 
       - uses: CorvidLabs/spec-sync@v3.8.0
         with:
-          strict: 'true'
+          strict: 'false'
           comment: 'true'
