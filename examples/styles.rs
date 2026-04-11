@@ -1,26 +1,10 @@
-use corvid_pet::{ArtStyle, Mood, Pet, Species};
+use corvid_pet::{Mood, Pet, Species};
 
 fn main() {
-    println!("Corvid Pet Styles Demo\n");
+    println!("Corvid Pet - Minimal Style Demo\n");
 
-    let pet = Pet::new("Corvin".to_string(), Species::Crow);
-
-    // Show all styles
-    let styles = [
-        ArtStyle::Detailed,
-        ArtStyle::Minimal,
-        ArtStyle::Blocky,
-        ArtStyle::Emoji,
-    ];
-
-    for style in &styles {
-        println!("=== {} Style ===", style);
-        println!("{}", pet.render_with_style(*style));
-        println!();
-    }
-
-    // Show moods with minimal style
-    println!("=== Crow Moods (Minimal Style) ===\n");
+    // Show the crow with all moods
+    println!("=== Crow Moods ===\n");
     let mut pet = Pet::new("Corvin".to_string(), Species::Crow);
 
     for mood in [
@@ -32,25 +16,15 @@ fn main() {
         Mood::Sleepy,
     ] {
         pet.set_mood(mood);
-        println!("{:?}:", mood);
-        println!("{}", pet.render_with_style(ArtStyle::Minimal));
-        println!();
+        println!("{}:", mood);
+        println!("{}\n", pet.render());
     }
 
-    // Show all species with blocky style
-    println!("=== All Species (Blocky Style) ===\n");
+    // Show all species render as crow
+    println!("=== All Species (All Render as Crow) ===\n");
     for species in [Species::Crow, Species::Raven, Species::Magpie, Species::Jay] {
-        let pet = Pet::new(String::new(), species);
-        println!("{}:", species);
-        println!("{}", pet.render_with_style(ArtStyle::Blocky));
-        println!();
-    }
-
-    // Parse style from string
-    println!("=== Parsing Style from String ===");
-    let style_str = "minimal";
-    match style_str.parse::<ArtStyle>() {
-        Ok(style) => println!("Parsed '{}' as {:?}", style_str, style),
-        Err(e) => println!("Error parsing '{}': {}", style_str, e),
+        let pet = Pet::new(species.default_name(), species);
+        println!("{} (renders as crow):", species);
+        println!("{}\n", pet.render());
     }
 }
