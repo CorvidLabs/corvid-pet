@@ -9,7 +9,6 @@ files:
   - src/animations.rs
   - src/comments.rs
   - src/styles.rs
-  - src/art_v2.rs
   - src/templates.rs
   - src/color.rs
   - src/persistence.rs
@@ -57,7 +56,6 @@ The crate root re-exports these types for convenience:
 | Module | Description |
 |--------|-------------|
 | `animations` | Animation and spinner types |
-| `art_v2` | Species-differentiated ASCII art |
 | `color` | ANSI color support |
 | `comments` | Random species/mood quips |
 | `integrations` | Third-party integrations |
@@ -195,12 +193,6 @@ The crate root re-exports these types for convenience:
 | `fmt` | (Display trait) | `fmt::Result` | Display as style name |
 | `from_str` | (FromStr trait) | `Result<Self, String>` | Parse from string ("minimal") |
 
-### Art V2 Module Functions
-
-| Function | Parameters | Returns | Description |
-|----------|-----------|---------|-------------|
-| `art_v2::render` | `species: Species, mood: Mood, use_unicode: bool` | `String` | Species-differentiated ASCII art. Unicode support planned |
-
 ### Color Module Functions
 
 | Function | Parameters | Returns | Description |
@@ -324,10 +316,9 @@ Simpler synchronous alternative for interactive pet display.
 
 ### Art Styles
 
-The library ships with two built-in art styles:
+The library ships with one built-in art style:
 
 - **Minimal** (default): Compact ~6-line species silhouettes with thought bubbles. Each species has a unique shape (crow has `<(` beak, raven has `>` beak, magpie has `*` markings with tail feathers, jay has crest `/\/\`).
-- **Detailed**: Larger ~12-line species-differentiated art from the `art_v2` module, with distinct body shapes, postures, and mood-specific variations per species.
 
 Custom art can be provided via the `ArtTemplate` and `TemplateRegistry` types in the `templates` module.
 
@@ -338,7 +329,7 @@ Custom art can be provided via the `ArtTemplate` and `TemplateRegistry` types in
 3. `Pet::react()` maps events to moods consistently: SpecPassed→Happy, SpecFailed→Sad, ValidationWarning→Confused, NewSpecGenerated→Excited, Idle→Sleepy
 4. `Animation` iterator yields at least 2 frames and at most 10 frames per animation
 5. `Spinner::tick()` advances through frames cyclically until `finish()` is called
-6. All ASCII art in the Minimal style uses only printable ASCII characters (no Unicode, no ANSI codes in stored art). The `art_v2` module may use Unicode when `use_unicode: true` is passed
+6. All ASCII art in the Minimal style uses only printable ASCII characters (no Unicode, no ANSI codes in stored art)
 7. `Species::default_name()` returns unique names per species: "Corvin", "Nevermore", "Shiny", "Jay"
 
 ## Behavioral Examples
