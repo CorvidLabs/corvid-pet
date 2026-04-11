@@ -189,10 +189,12 @@ runs:
     - name: Post PR comment
       if: inputs.comment-on-pr == 'true' && (inputs.mode == 'pr-comment' || inputs.mode == 'greet') && github.event_name == 'pull_request'
       uses: actions/github-script@v7
+      env:
+        CORVID_COMMENT: ${{ steps.run.outputs.comment }}
       with:
         github-token: ${{ inputs.github-token }}
         script: |
-          const comment = `${{ steps.run.outputs.comment }}`;
+          const comment = process.env.CORVID_COMMENT;
           if (comment) {
             // Check for existing corvid-pet comment and update it
             const { data: comments } = await github.rest.issues.listComments({
