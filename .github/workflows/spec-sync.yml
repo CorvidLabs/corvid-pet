@@ -20,36 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install spec-sync
-        run: |
-          export PATH="$HOME/.cargo/bin:$PATH"
-          if ! command -v specsync &>/dev/null; then
-            cargo install specsync --git https://github.com/CorvidLabs/spec-sync --tag v3.8.0
-          fi
-          specsync --version
-          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
-
-      - name: Spec check
-        run: specsync check
-
-      - name: Spec coverage
-        run: specsync coverage
-
-      - name: Post spec diff on PR
-        if: github.event_name == 'pull_request'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          DIFF=$(specsync diff 2>/dev/null || echo "")
-          if [ -n "$DIFF" ]; then
-            specsync comment --pr "$PR_NUMBER" 2>/dev/null || \
-            gh pr comment "$PR_NUMBER" --body "$(cat <<EOF
-          ### Spec Sync Report
-
-          \`\`\`
-          $DIFF
-          \`\`\`
-          EOF
-          )"
-          fi
+      - uses: CorvidLabs/spec-sync@v3
+        with:
+          strict: 'true'
+          comment: 'true'
