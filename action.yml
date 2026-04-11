@@ -92,6 +92,8 @@ runs:
         key: corvid-pet-state-${{ github.repository }}-${{ github.run_id }}
         restore-keys: |
           corvid-pet-state-${{ github.repository }}-
+          corvid-pet-state-${{ github.repository }}
+          corvid-pet-state-
 
     - name: Run corvid-pet
       id: run
