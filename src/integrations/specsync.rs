@@ -157,9 +157,9 @@ mod tests {
 
     #[test]
     fn test_companion_with_name() {
-        let companion = SpecSyncCompanion::with_name("Test".to_string(), Species::Raven);
+        let companion = SpecSyncCompanion::with_name("Test".to_string(), Species::Crow);
         assert_eq!(companion.pet().name(), "Test");
-        assert_eq!(companion.pet().species(), Species::Raven);
+        assert_eq!(companion.pet().species(), Species::Crow);
     }
 
     #[test]

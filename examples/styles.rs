@@ -1,30 +1,19 @@
 use corvid_pet::{ArtStyle, Mood, Pet, Species};
 
 fn main() {
-    println!("corvid-pet — Art Style Comparison\n");
+    println!("corvid-pet — Minimal Style Showcase\n");
 
-    let species_list = [Species::Crow, Species::Raven, Species::Magpie, Species::Jay];
-    let styles = [ArtStyle::Minimal, ArtStyle::Detailed];
+    let pet = Pet::new("Corvin".to_string(), Species::Crow);
+    println!("--- Crow (Minimal) ---");
+    println!("{}", pet.render_with_style(ArtStyle::Minimal));
+    println!();
 
-    for style in styles {
-        println!("========================================");
-        println!("  Style: {} ", style.name().to_uppercase());
-        println!("========================================\n");
-
-        for species in species_list {
-            let pet = Pet::new(species.default_name(), species);
-            println!("--- {} ---", species);
-            println!("{}", pet.render_with_style(style));
-            println!();
-        }
-    }
-
-    // Show mood variations in Detailed style
+    // Show mood variations
     println!("========================================");
-    println!("  DETAILED MOOD SHOWCASE (Magpie)");
+    println!("  MOOD SHOWCASE (Crow)");
     println!("========================================\n");
 
-    let mut pet = Pet::new("Shiny".to_string(), Species::Magpie);
+    let mut pet = Pet::new("Corvin".to_string(), Species::Crow);
     for mood in [
         Mood::Happy,
         Mood::Sad,
@@ -35,7 +24,7 @@ fn main() {
     ] {
         pet.set_mood(mood);
         println!("{}:", mood);
-        println!("{}", pet.render_with_style(ArtStyle::Detailed));
+        println!("{}", pet.render_with_style(ArtStyle::Minimal));
         println!();
     }
 }

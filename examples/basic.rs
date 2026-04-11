@@ -1,24 +1,21 @@
 use corvid_pet::{Event, Mood, Pet, Species};
 
 fn main() {
-    println!("corvid-pet — Meet the flock!\n");
+    println!("corvid-pet — Meet the Crow!\n");
 
-    // Show all four species side by side
-    for species in [Species::Crow, Species::Raven, Species::Magpie, Species::Jay] {
-        let pet = Pet::new(species.default_name(), species);
-        println!("=== {} ({}) ===", pet.name(), species.personality());
+    let pet = Pet::new("Corvin".to_string(), Species::Crow);
+    println!("=== {} ({}) ===", pet.name(), Species::Crow.personality());
 
-        #[cfg(feature = "color")]
-        println!("{}", pet.render_colored());
-        #[cfg(not(feature = "color"))]
-        println!("{}", pet.render());
+    #[cfg(feature = "color")]
+    println!("{}", pet.render_colored());
+    #[cfg(not(feature = "color"))]
+    println!("{}", pet.render());
 
-        println!("  \"{}\"", pet.comment());
-        println!();
-    }
+    println!("  \"{}\"", pet.comment());
+    println!();
 
-    // Show one species through all moods
-    println!("=== Mood Changes (Crow) ===\n");
+    // Show all moods
+    println!("=== Mood Changes ===\n");
     let mut crow = Pet::new("Corvin".to_string(), Species::Crow);
 
     for mood in [
@@ -43,7 +40,7 @@ fn main() {
 
     // Demonstrate event reactions
     println!("=== Event Reactions ===\n");
-    let mut pet = Pet::new("Nevermore".to_string(), Species::Raven);
+    let mut pet = Pet::new("Corvin".to_string(), Species::Crow);
 
     let events = [
         (Event::SpecPassed, "Spec passed!"),
