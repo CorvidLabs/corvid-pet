@@ -94,22 +94,11 @@ jobs:
           mode: pr-comment
           event: auto
           pet-name: Corvin
-          random-colors: "true"
           github-token: ${{ secrets.GITHUB_TOKEN }}
         env:
           CORVID_PET_BIN: ./target/debug/corvid-pet
           CORVID_JOB_STATUS: ${{ needs.check.result }}
 
-  review:
-    name: PR Review
-    runs-on: self-hosted
-    needs: [check]
-    if: always() && github.event_name == 'pull_request'
-    permissions:
-      contents: read
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v4
       - name: Approve or request changes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -119,7 +108,7 @@ jobs:
           if [ "$BUILD_RESULT" = "success" ]; then
             gh pr review "$PR_NUMBER" \
               --approve \
-              --body "All CI checks passed (fmt, clippy, build, tests)."
+              --body "All CI checks passed (fmt, clippy, build, tests). 🐦"
           else
             gh pr review "$PR_NUMBER" \
               --request-changes \
