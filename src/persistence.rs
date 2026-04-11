@@ -27,6 +27,14 @@ pub struct SimStateData {
     pub cooldowns: Vec<(String, u64)>,
 }
 
+/// Serializable color scheme data.
+#[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "persistence", derive(serde::Serialize, serde::Deserialize))]
+pub struct ColorSchemeData {
+    pub body: String,
+    pub bubble: String,
+}
+
 /// Serializable state of a pet.
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "persistence", derive(serde::Serialize, serde::Deserialize))]
@@ -43,6 +51,9 @@ pub struct PetState {
     /// Timestamp of last save.
     #[cfg_attr(feature = "persistence", serde(default))]
     pub last_saved: Option<u64>,
+    /// Optional custom color scheme.
+    #[cfg_attr(feature = "persistence", serde(default))]
+    pub color_scheme: Option<ColorSchemeData>,
     /// Optional simulation state.
     #[cfg_attr(feature = "persistence", serde(default))]
     pub sim: Option<SimStateData>,
@@ -69,12 +80,18 @@ impl PetState {
                 .collect(),
         });
 
+        let color_scheme = pet.color_scheme.as_ref().map(|cs| ColorSchemeData {
+            body: cs.body.to_string(),
+            bubble: cs.bubble.to_string(),
+        });
+
         Self {
             name: pet.name().to_string(),
             species: pet.species().to_string(),
             mood: pet.mood().to_string(),
             interaction_count: pet.sim().map_or(0, |s| s.interaction_count),
             last_saved: None,
+            color_scheme,
             sim,
         }
     }
@@ -153,6 +170,16 @@ impl PetState {
             pet.sim_state = Some(sim);
         }
 
+        // Restore color scheme if present.
+        if let Some(ref colors) = self.color_scheme {
+            if let (Ok(body), Ok(bubble)) = (
+                colors.body.parse::<crate::color::PetColor>(),
+                colors.bubble.parse::<crate::color::PetColor>(),
+            ) {
+                pet.color_scheme = Some(crate::color::ColorScheme::new(body, bubble));
+            }
+        }
+
         pet
     }
 }
@@ -165,6 +192,7 @@ impl Default for PetState {
             mood: "Neutral".to_string(),
             interaction_count: 0,
             last_saved: None,
+            color_scheme: None,
             sim: None,
         }
     }
@@ -307,6 +335,7 @@ mod tests {
             mood: "Happy".to_string(),
             interaction_count: 0,
             last_saved: None,
+            color_scheme: None,
             sim: None,
         };
 

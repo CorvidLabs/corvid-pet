@@ -38,6 +38,7 @@ pub use personality::Personality;
 pub use sim::SimState;
 pub use species::Species;
 pub use stats::Stats;
+pub use color::{ColorScheme, PetColor};
 pub use styles::ArtStyle;
 
 // Convenient re-exports
@@ -69,6 +70,8 @@ pub struct Pet {
     name: String,
     species: Species,
     mood: Mood,
+    /// Optional custom color scheme. None = use species default.
+    color_scheme: Option<color::ColorScheme>,
     /// Optional life simulation state. None = static pet (backwards compat).
     sim_state: Option<SimState>,
 }
@@ -88,6 +91,7 @@ impl Pet {
             name,
             species,
             mood: Mood::Neutral,
+            color_scheme: None,
             sim_state: None,
         }
     }
@@ -107,6 +111,30 @@ impl Pet {
         self.mood
     }
 
+    /// Sets a custom color scheme for this pet.
+    pub fn with_colors(mut self, scheme: color::ColorScheme) -> Self {
+        self.color_scheme = Some(scheme);
+        self
+    }
+
+    /// Sets a random color scheme for this pet.
+    pub fn with_random_colors(mut self) -> Self {
+        self.color_scheme = Some(color::ColorScheme::random());
+        self
+    }
+
+    /// Returns the current color scheme (custom or species default).
+    pub fn color_scheme(&self) -> color::ColorScheme {
+        self.color_scheme
+            .clone()
+            .unwrap_or_else(|| color::ColorScheme::default_for(self.species))
+    }
+
+    /// Sets the color scheme.
+    pub fn set_color_scheme(&mut self, scheme: color::ColorScheme) {
+        self.color_scheme = Some(scheme);
+    }
+
     /// Returns ASCII art for the current species and mood.
     /// Uses the clean minimal style by default.
     pub fn render(&self) -> String {
@@ -120,15 +148,18 @@ impl Pet {
 
     /// Returns colored ASCII art when the `color` feature is enabled.
     /// Falls back to plain ASCII art when disabled.
+    /// Uses custom color scheme if set, otherwise species default.
     pub fn render_colored(&self) -> String {
         let art = self.render();
-        color::colorize(&art, self.species)
+        let scheme = self.color_scheme();
+        color::colorize_with_scheme(&art, &scheme)
     }
 
     /// Returns colored ASCII art using a specific style.
     pub fn render_colored_with_style(&self, style: styles::ArtStyle) -> String {
         let art = style.render(self.species, self.mood);
-        color::colorize(&art, self.species)
+        let scheme = self.color_scheme();
+        color::colorize_with_scheme(&art, &scheme)
     }
 
     /// Changes the pet's mood.
