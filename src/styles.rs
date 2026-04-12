@@ -89,6 +89,9 @@ mod minimal {
     fn species_art(species: Species, mood: Mood) -> String {
         match species {
             Species::Crow => crow(mood),
+            Species::Magpie => magpie(mood),
+            Species::Raven => raven(mood),
+            Species::Jackdaw => jackdaw(mood),
         }
     }
 
@@ -100,6 +103,40 @@ mod minimal {
      |/(\
       \(\\
       " "\\"#
+        )
+    }
+
+    fn magpie(mood: Mood) -> String {
+        let eye = eye(mood);
+        format!(
+            r#"     __
+    ({eye}>>
+    /|  \~
+   / |   \
+  ~  ~~~~~"#
+        )
+    }
+
+    fn raven(mood: Mood) -> String {
+        let eye = eye(mood);
+        format!(
+            r#"       _
+     /{eye})\
+    | /  |
+    |/  /
+    /  /
+   /__/"#
+        )
+    }
+
+    fn jackdaw(mood: Mood) -> String {
+        let eye = eye(mood);
+        format!(
+            r#"    _
+  <({eye}\
+   |(|
+    \|\\
+    ~ ~~"#
         )
     }
 
@@ -154,10 +191,13 @@ mod tests {
             Mood::Excited,
             Mood::Sleepy,
         ];
+        let species_list = [Species::Crow, Species::Magpie, Species::Raven, Species::Jackdaw];
 
-        for m in &moods {
-            let art = ArtStyle::Minimal.render(Species::Crow, *m);
-            assert!(!art.is_empty(), "Empty art for {:?}", m);
+        for s in &species_list {
+            for m in &moods {
+                let art = ArtStyle::Minimal.render(*s, *m);
+                assert!(!art.is_empty(), "Empty art for {:?} {:?}", s, m);
+            }
         }
     }
 }

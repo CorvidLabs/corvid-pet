@@ -20,6 +20,10 @@ struct Cli {
     #[arg(long, default_value = "Corvin", global = true)]
     name: String,
 
+    /// Corvid species: crow, magpie, raven, jackdaw
+    #[arg(long, default_value = "crow", global = true)]
+    species: String,
+
     /// Disable colored output
     #[arg(long, global = true)]
     no_color: bool,
@@ -172,7 +176,8 @@ fn load_or_create(path: &Path, name: &str) -> RepoHealth {
 }
 
 fn make_pet(cli: &Cli) -> Pet {
-    let mut pet = Pet::new(cli.name.clone(), Species::Crow);
+    let species: Species = cli.species.parse().unwrap_or_default();
+    let mut pet = Pet::new(cli.name.clone(), species);
     if cli.random_colors {
         pet = pet.with_random_colors();
     } else if let Some(ref body) = cli.color {

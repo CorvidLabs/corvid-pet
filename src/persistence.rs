@@ -98,7 +98,7 @@ impl PetState {
 
     /// Converts this state back into a pet.
     pub fn to_pet(&self) -> Pet {
-        let species = Species::Crow;
+        let species: Species = self.species.parse().unwrap_or_default();
 
         let mut pet = Pet::new(self.name.clone(), species);
 
@@ -358,7 +358,7 @@ mod tests {
 
     #[test]
     fn test_all_species_round_trip() {
-        for species in [Species::Crow] {
+        for species in [Species::Crow, Species::Magpie, Species::Raven, Species::Jackdaw] {
             for mood in [
                 Mood::Happy,
                 Mood::Sad,

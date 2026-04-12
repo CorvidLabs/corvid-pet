@@ -115,7 +115,7 @@ impl TemplateRegistry {
 
         let mut map = HashMap::new();
 
-        for species in [Species::Crow] {
+        for species in [Species::Crow, Species::Magpie, Species::Raven, Species::Jackdaw] {
             let mut moods_map = HashMap::new();
             for mood in [
                 Mood::Happy,

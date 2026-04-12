@@ -119,11 +119,12 @@ impl ColorScheme {
     }
 
     /// Returns the default color scheme for a species.
-    pub fn default_for(_species: crate::Species) -> Self {
-        // Crow default: blue body, cyan bubble
-        Self {
-            body: PetColor::Blue,
-            bubble: PetColor::Cyan,
+    pub fn default_for(species: crate::Species) -> Self {
+        match species {
+            crate::Species::Crow => Self { body: PetColor::Blue, bubble: PetColor::Cyan },
+            crate::Species::Magpie => Self { body: PetColor::BrightWhite, bubble: PetColor::BrightCyan },
+            crate::Species::Raven => Self { body: PetColor::Magenta, bubble: PetColor::BrightBlack },
+            crate::Species::Jackdaw => Self { body: PetColor::BrightBlue, bubble: PetColor::Green },
         }
     }
 

@@ -34,6 +34,8 @@ impl std::fmt::Display for Mood {
 pub fn ascii_art(species: super::Species, mood: Mood) -> String {
     match species {
         super::Species::Crow => crow_art(mood),
+        // Other species reuse the styled renderer via the minimal style module
+        _ => crate::styles::ArtStyle::Minimal.render(species, mood),
     }
 }
 
@@ -41,6 +43,7 @@ pub fn ascii_art(species: super::Species, mood: Mood) -> String {
 pub fn ascii_art_open_eyes(species: super::Species, mood: Mood) -> String {
     match species {
         super::Species::Crow => crow_art_open(mood),
+        _ => ascii_art(species, Mood::Neutral),
     }
 }
 
@@ -48,6 +51,7 @@ pub fn ascii_art_open_eyes(species: super::Species, mood: Mood) -> String {
 pub fn ascii_art_closed_eyes(species: super::Species, mood: Mood) -> String {
     match species {
         super::Species::Crow => crow_art_closed(mood),
+        _ => ascii_art(species, Mood::Sleepy),
     }
 }
 
