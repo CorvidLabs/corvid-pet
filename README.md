@@ -175,6 +175,14 @@ Builds are cached using GitHub Actions cache:
 
 PRs restore cache from `main` branch builds, then create their own for subsequent commits.
 
+## Documentation
+
+Full documentation is available at [corvidlabs.github.io/corvid-pet](https://corvidlabs.github.io/corvid-pet/).
+
+- [Getting Started](https://corvidlabs.github.io/corvid-pet/getting-started.html)
+- [API Reference (rustdoc)](https://corvidlabs.github.io/corvid-pet/rustdoc/corvid_pet/)
+- [Changelog](CHANGELOG.md)
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and contribution guidelines.

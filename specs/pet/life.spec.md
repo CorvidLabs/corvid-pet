@@ -8,8 +8,6 @@ files:
   - src/personality.rs
   - src/needs.rs
   - src/sim.rs
-  - src/lib.rs
-  - src/persistence.rs
 db_tables: []
 depends_on: []
 ---
@@ -28,6 +26,22 @@ Virtual pet life simulation system for corvid-pet. Adds stats that decay over ti
 4. **Graceful degradation**: If persistence is off, the pet starts fresh each session but still functions.
 
 ## Public API
+
+### Exported Structs
+
+| Type | Description |
+|------|-------------|
+| `Stats` | Vital statistics: hunger, energy, happiness, health (all f32, 0-100) |
+| `InteractionResult` | Result of performing an interaction with success flag and stat deltas |
+| `SimState` | Full simulation state coordinating stats, stages, personality, and needs |
+
+### Exported Enums
+
+| Type | Description |
+|------|-------------|
+| `LifeStage` | Life progression: Egg, Hatchling, Fledgling, Adult, Elder |
+| `Personality` | Personality trait: Curious, Shy, Mischievous, Stoic, Affectionate, Greedy |
+| `Need` | Interaction type: Feed, Play, Rest, Clean, Pet |
 
 ### Stats
 

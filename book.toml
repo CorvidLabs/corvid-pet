@@ -1,0 +1,20 @@
+[book]
+title = "corvid-pet"
+description = "ASCII corvid companions for CLI tools"
+authors = ["CorvidLabs"]
+language = "en"
+src = "docs/src"
+
+[build]
+build-dir = "docs/book"
+
+[output.html]
+default-theme = "navy"
+preferred-dark-theme = "navy"
+git-repository-url = "https://github.com/CorvidLabs/corvid-pet"
+edit-url-template = "https://github.com/CorvidLabs/corvid-pet/edit/main/{path}"
+site-url = "/corvid-pet/"
+
+[output.html.fold]
+enable = true
+level = 1
