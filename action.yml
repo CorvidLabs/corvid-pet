@@ -69,6 +69,7 @@ runs:
       if: ${{ !env.CORVID_PET_BIN }}
 
     - name: Cache corvid-pet binary
+      if: ${{ !env.CORVID_PET_BIN }}
       uses: actions/cache@v4
       id: cache-bin
       with:
@@ -79,16 +80,6 @@ runs:
       if: steps.cache-bin.outputs.cache-hit != 'true' && !env.CORVID_PET_BIN
       shell: bash
       run: cargo install corvid-pet --features cli
-
-    - name: Restore health state from cache
-      uses: actions/cache@v4
-      with:
-        path: ${{ inputs.state-file }}
-        key: corvid-pet-state-${{ github.repository }}-${{ github.run_id }}
-        restore-keys: |
-          corvid-pet-state-${{ github.repository }}-
-          corvid-pet-state-${{ github.repository }}
-          corvid-pet-state-
 
     - name: Run corvid-pet
       id: run
