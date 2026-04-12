@@ -176,46 +176,31 @@ pub fn example_crow_template() -> ArtTemplate {
 
     template.set_mood(
         Mood::Happy,
-        r#"
-    .-.
-   /   \
-  |o   o|  [OK]
-  |  ^  |
-   \___/
-    | |
-   /   \
-"#
-        .trim()
-        .to_string(),
+        r#"      __
+    <(^ \  [OK]
+     |/( \
+      \( \\
+      " "\\"#
+            .to_string(),
     );
 
     template.set_mood(
         Mood::Sad,
-        r#"
-    .-.
-   /   \
-  |o   o|  [ERR]
-  |  -  |
-   \___/
-    | |
-   /   \
-"#
-        .trim()
-        .to_string(),
+        r#"      __
+    <(; \  [ERR]
+     |/( \
+      \( \\
+      " "\\"#
+            .to_string(),
     );
 
     template.closed_eyes = Some(
-        r#"
-    .-.
-   /   \
-  |-   -|
-  |  <  |
-   \___/
-    | |
-   /   \
-"#
-        .trim()
-        .to_string(),
+        r#"      __
+    <(- \
+     |/( \
+      \( \\
+      " "\\"#
+            .to_string(),
     );
 
     template

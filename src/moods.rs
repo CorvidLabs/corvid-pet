@@ -71,7 +71,7 @@ fn crow_art(mood: Mood) -> String {
     <({eye}\
      |/(\
       \(\\
-      "^`"."#
+      " "\\"#
     )
 }
 
@@ -84,6 +84,6 @@ fn crow_art_closed(_mood: Mood) -> String {
     <(-\
      |/(\
       \(\\
-      "^`"."#
+      " "\\"#
         .to_string()
 }
