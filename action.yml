@@ -205,7 +205,7 @@ runs:
             // Dismiss any previous corvid-pet review so we don't pile up
             const { data: reviews } = await github.rest.pulls.listReviews({ owner, repo, pull_number });
             for (const r of reviews) {
-              if (r.user?.login === 'github-actions[bot]' && r.body?.includes('corvid-pet')) {
+              if (r.user?.login === 'github-actions[bot]' && r.body?.includes('<!-- corvid-pet-report -->')) {
                 try {
                   await github.rest.pulls.dismissReview({
                     owner, repo, pull_number,
@@ -224,7 +224,7 @@ runs:
             const { data: comments } = await github.rest.issues.listComments({
               owner, repo, issue_number: pull_number,
             });
-            const existing = comments.find(c => c.body && c.body.includes('corvid-pet'));
+            const existing = comments.find(c => c.body && c.body.includes('<!-- corvid-pet-report -->'));
             if (existing) {
               await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body: comment });
             } else {
@@ -236,14 +236,17 @@ runs:
       if: inputs.update-readme == 'true' && inputs.mode == 'badge'
       shell: bash
       run: |
-        BADGE=$(${{ env.CORVID_PET_BIN || 'corvid-pet' }} badge --state "${{ inputs.state-file }}" --name "${{ inputs.pet-name }}")
+        BIN="${CORVID_PET_BIN:-corvid-pet}"
+        BADGE=$($BIN badge --state "${{ inputs.state-file }}" --name "${{ inputs.pet-name }}")
         if grep -q "corvid-pet:start" README.md 2>/dev/null; then
-          # Replace existing badge section
-          sed -i.bak '/<!-- corvid-pet:start -->/,/<!-- corvid-pet:end -->/c\'"$BADGE" README.md
-          rm -f README.md.bak
+          # Replace content between markers using awk (portable across macOS/Linux)
+          awk -v badge="$BADGE" '
+            /<!-- corvid-pet:start -->/{print badge; skip=1; next}
+            /<!-- corvid-pet:end -->/{skip=0; next}
+            !skip{print}
+          ' README.md > README.md.tmp && mv README.md.tmp README.md
         else
           # Append badge section
-          echo "" >> README.md
-          echo "$BADGE" >> README.md
+          printf "\n%s\n" "$BADGE" >> README.md
         fi
 
