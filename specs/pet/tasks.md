@@ -25,6 +25,11 @@ spec: pet.spec.md
 - [x] Write requirements.md with acceptance criteria
 - [x] Write context.md with key decisions
 
+## Cross-References
+
+- CLI spec: `specs/cli/cli.spec.md`
+- GitHub Action spec: `specs/action/action.spec.md`
+
 ## Gaps
 
 - Animation is frame-based, not time-based (design decision)
