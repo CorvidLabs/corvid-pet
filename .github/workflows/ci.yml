@@ -105,14 +105,6 @@ jobs:
       - name: Build corvid-pet CLI
         run: cargo build --features cli
 
-      - name: Restore pet health state
-        uses: actions/cache/restore@v4
-        with:
-          path: .corvid-pet.json
-          key: corvid-pet-health-${{ github.repository }}-${{ github.run_id }}
-          restore-keys: |
-            corvid-pet-health-${{ github.repository }}-
-
       # ── Check Registry ──────────────────────────────────────────────
       # To add a new check to the review:
       #   1. Add a job above with outputs: status (result) and optionally report
@@ -189,9 +181,3 @@ jobs:
           CORVID_PET_BIN: ./target/debug/corvid-pet
           CORVID_JOB_STATUS: ${{ steps.status.outputs.result }}
 
-      - name: Save pet health state
-        if: always()
-        uses: actions/cache/save@v4
-        with:
-          path: .corvid-pet.json
-          key: corvid-pet-health-${{ github.repository }}-${{ github.run_id }}
