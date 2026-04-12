@@ -193,6 +193,19 @@ runs:
       with:
         github-token: ${{ inputs.github-token }}
         script: |
+          async function withRetry(fn, retries = 3) {
+            for (let i = 0; i < retries; i++) {
+              try {
+                return await fn();
+              } catch (e) {
+                if (i === retries - 1) throw e;
+                const delay = Math.pow(2, i) * 1000 + Math.random() * 500;
+                console.log(`Retrying in ${Math.round(delay)}ms (attempt ${i + 2}/${retries}): ${e.message}`);
+                await new Promise(r => setTimeout(r, delay));
+              }
+            }
+          }
+
           const comment = process.env.CORVID_COMMENT;
           if (!comment) return;
 
@@ -203,32 +216,32 @@ runs:
 
           if (useReview) {
             // Dismiss any previous corvid-pet review so we don't pile up
-            const { data: reviews } = await github.rest.pulls.listReviews({ owner, repo, pull_number });
+            const { data: reviews } = await withRetry(() => github.rest.pulls.listReviews({ owner, repo, pull_number }));
             for (const r of reviews) {
               if (r.user?.login === 'github-actions[bot]' && r.body?.includes('<!-- corvid-pet-report -->')) {
                 try {
-                  await github.rest.pulls.dismissReview({
+                  await withRetry(() => github.rest.pulls.dismissReview({
                     owner, repo, pull_number,
                     review_id: r.id,
                     message: 'Superseded by updated review.',
-                  });
+                  }));
                 } catch { /* may fail if already dismissed */ }
               }
             }
 
             // Submit the pet comment as a PR review
             const event = process.env.CORVID_EVENT === 'success' ? 'APPROVE' : 'REQUEST_CHANGES';
-            await github.rest.pulls.createReview({ owner, repo, pull_number, body: comment, event });
+            await withRetry(() => github.rest.pulls.createReview({ owner, repo, pull_number, body: comment, event }));
           } else {
             // Plain issue comment (original behavior)
-            const { data: comments } = await github.rest.issues.listComments({
+            const { data: comments } = await withRetry(() => github.rest.issues.listComments({
               owner, repo, issue_number: pull_number,
-            });
+            }));
             const existing = comments.find(c => c.body && c.body.includes('<!-- corvid-pet-report -->'));
             if (existing) {
-              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body: comment });
+              await withRetry(() => github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body: comment }));
             } else {
-              await github.rest.issues.createComment({ owner, repo, issue_number: pull_number, body: comment });
+              await withRetry(() => github.rest.issues.createComment({ owner, repo, issue_number: pull_number, body: comment }));
             }
           }
 
