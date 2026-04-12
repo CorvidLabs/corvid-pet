@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/CorvidLabs/corvid-pet/actions/workflows/ci.yml/badge.svg)](https://github.com/CorvidLabs/corvid-pet/actions/workflows/ci.yml)
 [![Crates.io](https://img.shields.io/crates/v/corvid-pet)](https://crates.io/crates/corvid-pet)
+[![Downloads](https://img.shields.io/crates/d/corvid-pet.svg)](https://crates.io/crates/corvid-pet)
 [![docs.rs](https://img.shields.io/docsrs/corvid-pet)](https://docs.rs/corvid-pet)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
