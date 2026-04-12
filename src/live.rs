@@ -1,9 +1,22 @@
 //! Live pet mode with real-time TUI.
 //!
-//! This module provides an interactive, real-time pet experience
-//! using ratatui for the terminal UI.
+//! **This feature is experimental.** The API may change or be removed in future
+//! releases without following semver guarantees.
 //!
-//! Requires the `live` feature to be enabled.
+//! This module provides an interactive, real-time pet experience rendered in the
+//! terminal using [ratatui](https://crates.io/crates/ratatui). When running, it
+//! takes over the terminal with a 30 FPS loop that displays your pet's ASCII art
+//! and lets you change its mood with keyboard shortcuts. Two entry-points are
+//! available:
+//!
+//! - [`LivePetApp`] -- async TUI built on ratatui with a status/help panel.
+//! - [`SimpleLivePet`] -- lighter synchronous loop using raw crossterm output.
+//!
+//! Requires the `live` feature to be enabled:
+//!
+//! ```toml
+//! corvid-pet = { version = "1", features = ["live"] }
+//! ```
 //!
 //! # Example
 //!
