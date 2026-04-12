@@ -1,7 +1,7 @@
 ---
 module: life
 version: 2
-status: draft
+status: active
 files:
   - src/stats.rs
   - src/life_stage.rs
