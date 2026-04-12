@@ -173,6 +173,29 @@ Use corvid-pet as a GitHub Action to get an ASCII crow companion that reacts to 
 
 See [action.yml](action.yml) for all inputs and options.
 
+## Health Scoring
+
+Your corvid companion tracks repository health as a score from 0 to 100 (starting at 100). The score is a weighted average of your last 50 CI/CD events, with the 10 most recent events counting at 2x weight so that current activity matters more than ancient history.
+
+### Event Values
+
+| Event | Value | Example triggers |
+|-------|------:|------------------|
+| `success` | 100 | Tests pass, build succeeds |
+| `progress` | 80 | Step completed, deploy in progress |
+| `idle` | 70 | Waiting for input |
+| `warning` | 50 | Lint warnings, deprecations |
+| `failure` | 0 | Tests fail, build broken |
+
+### Mood Thresholds
+
+- **90--100** — Happy (or Excited if 5+ consecutive successes)
+- **70--89** — Neutral
+- **50--69** — Confused
+- **0--49** — Sad
+
+**Tips:** Consistent passing builds keep health high. Failures drag the score down quickly because of the 2x recency weight on the last 10 events — a single failure among recent events has an outsized impact.
+
 ## Feature Flags
 
 | Feature | Description | Dependencies |
