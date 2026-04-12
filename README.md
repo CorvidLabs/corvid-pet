@@ -1,5 +1,10 @@
 # corvid-pet
 
+[![CI](https://github.com/CorvidLabs/corvid-pet/actions/workflows/ci.yml/badge.svg)](https://github.com/CorvidLabs/corvid-pet/actions/workflows/ci.yml)
+[![Crates.io](https://img.shields.io/crates/v/corvid-pet)](https://crates.io/crates/corvid-pet)
+[![docs.rs](https://img.shields.io/docsrs/corvid-pet)](https://docs.rs/corvid-pet)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 ASCII corvid companions for CLI tools.
 
 Bring a little personality to your command-line tools with animated ASCII pets that react to events, display mood-appropriate art, and provide charming commentary.
