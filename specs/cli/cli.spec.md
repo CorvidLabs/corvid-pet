@@ -5,7 +5,7 @@ status: active
 files:
   - src/bin/corvid-pet.rs
 db_tables: []
-depends_on: []
+depends_on: [pet]
 ---
 
 # CLI Binary

@@ -5,7 +5,7 @@ status: active
 files:
   - action.yml
 db_tables: []
-depends_on: []
+depends_on: [pet]
 ---
 
 # GitHub Action
