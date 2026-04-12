@@ -171,13 +171,13 @@ impl PetState {
         }
 
         // Restore color scheme if present.
-        if let Some(ref colors) = self.color_scheme {
-            if let (Ok(body), Ok(bubble)) = (
+        if let Some(ref colors) = self.color_scheme
+            && let (Ok(body), Ok(bubble)) = (
                 colors.body.parse::<crate::color::PetColor>(),
                 colors.bubble.parse::<crate::color::PetColor>(),
-            ) {
-                pet.color_scheme = Some(crate::color::ColorScheme::new(body, bubble));
-            }
+            )
+        {
+            pet.color_scheme = Some(crate::color::ColorScheme::new(body, bubble));
         }
 
         pet
