@@ -186,7 +186,7 @@ runs:
             // Dismiss any previous corvid-pet review so we don't pile up
             const { data: reviews } = await github.rest.pulls.listReviews({ owner, repo, pull_number });
             for (const r of reviews) {
-              if (r.user?.login === 'github-actions[bot]' && r.body?.includes('corvid-pet')) {
+              if (r.user?.login === 'github-actions[bot]' && r.body?.includes('<!-- corvid-pet-report -->')) {
                 try {
                   await github.rest.pulls.dismissReview({
                     owner, repo, pull_number,
@@ -205,7 +205,7 @@ runs:
             const { data: comments } = await github.rest.issues.listComments({
               owner, repo, issue_number: pull_number,
             });
-            const existing = comments.find(c => c.body && c.body.includes('corvid-pet'));
+            const existing = comments.find(c => c.body && c.body.includes('<!-- corvid-pet-report -->'));
             if (existing) {
               await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body: comment });
             } else {
