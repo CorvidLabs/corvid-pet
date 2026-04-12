@@ -21,6 +21,8 @@ Bring a little personality to your command-line tools with animated ASCII pets t
 - **Color Support**: ANSI colors (optional feature)
 - **Persistence**: Save/load pet state (optional feature)
 - **Live TUI Mode**: Interactive real-time pet experience (optional feature)
+- **CLI Tool**: Command-line binary for interacting with your pet
+- **GitHub Action**: Track repo health and post pet-powered PR reviews
 - **Custom Templates**: Define your own ASCII art
 
 ## Quick Start
@@ -111,6 +113,65 @@ pet.play(now + 400);          // Play together
 println!("{}", pet.render()); // Mood reflects stats
 ```
 
+## CLI
+
+Install the CLI binary with:
+
+```bash
+cargo install corvid-pet --features cli
+```
+
+Commands:
+
+| Command | Description |
+|---------|-------------|
+| `show` | Display the pet's current ASCII art |
+| `status` | Show pet stats and life stage |
+| `feed` | Feed your pet |
+| `play` | Play with your pet |
+| `react <event>` | Record a CI/CD event (success, failure, warning, progress, idle) |
+| `comment <event>` | Generate a PR comment for an event |
+| `health` | Show repo health score (supports `--json`) |
+| `badge` | Generate a health badge |
+| `sim` | Run a life simulation tick |
+
+Common flags: `--name`, `--state <path>`, `--no-color`, `--context`.
+
+## GitHub Action
+
+Use corvid-pet as a GitHub Action to get an ASCII crow companion that reacts to your CI results:
+
+```yaml
+- uses: CorvidLabs/corvid-pet@v1
+  with:
+    mode: pr-comment    # pr-comment | health-check | greet | release | badge
+    event: auto         # auto-detects from job status
+    pet-name: Corvin
+    review-on-pr: "true"
+```
+
+### Modes
+
+| Mode | Description |
+|------|-------------|
+| `pr-comment` | Post a mood-reactive comment on PRs based on CI results |
+| `health-check` | Track repo health score over time |
+| `greet` | Welcome new contributors |
+| `release` | Celebrate new releases |
+| `badge` | Generate and update a health badge in your README |
+
+### Outputs
+
+| Output | Description |
+|--------|-------------|
+| `mood` | The pet's current mood |
+| `score` | Repo health score (0–100) |
+| `comment` | Generated comment markdown |
+| `art` | ASCII art output |
+| `event` | Resolved event type |
+
+See [action.yml](action.yml) for all inputs and options.
+
 ## Feature Flags
 
 | Feature | Description | Dependencies |
@@ -118,6 +179,7 @@ println!("{}", pet.render()); // Mood reflects stats
 | `color` | ANSI color support | [colored](https://crates.io/crates/colored) |
 | `persistence` | Save/load pet state to disk | serde, serde_json, dirs |
 | `live` | Real-time TUI mode | ratatui, crossterm, tokio |
+| `cli` | CLI binary with all commands | clap, chrono, color, persistence |
 
 ```toml
 [dependencies]
@@ -156,24 +218,15 @@ Define your own ASCII art via JSON templates:
 
 ## CI/CD
 
-We use GitHub Actions with `ubuntu-latest` runners for fast, consistent builds.
+We use GitHub Actions with `ubuntu-latest` runners. Every PR and push to `main` triggers:
 
-### Workflow
+| Job | What it does |
+|-----|-------------|
+| **Check & Test** | `cargo fmt --check`, `cargo clippy` (default + all features), build, `cargo test --all-features`, build examples |
+| **Spec Validation** | Runs [spec-sync](https://github.com/CorvidLabs/spec-sync) to verify specs match the source |
+| **Corvid Pet** | Posts a PR review (APPROVE / REQUEST_CHANGES) with ASCII art and a CI summary table |
 
-Every PR and push to `main` triggers:
-- **Format check** (`cargo fmt --check`)
-- **Linting** (`cargo clippy` with all features)
-- **Build & test** (`cargo build` and `cargo test --all-features`)
-- **Examples** (`cargo build --examples --all-features`)
-
-### Caching
-
-Builds are cached using GitHub Actions cache:
-- `~/.cargo/registry` - Dependencies
-- `~/.cargo/git` - Git sources
-- `target` - Build artifacts
-
-PRs restore cache from `main` branch builds, then create their own for subsequent commits.
+Rust dependencies are cached via [Swatinem/rust-cache](https://github.com/Swatinem/rust-cache). Duplicate CI runs on the same PR are automatically cancelled.
 
 ## Documentation
 

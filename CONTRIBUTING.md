@@ -25,23 +25,13 @@ The CI runs on:
 
 | Job | Purpose | Runner |
 |-----|---------|--------|
-| `check` | Format check, clippy, build, tests | `ubuntu-latest` |
-| `corvid-pet` | PR comments and auto-approval | `ubuntu-latest` |
+| `check` | Format check, clippy (default + all features), build, tests, examples | `ubuntu-latest` |
+| `spec-check` | Spec validation via [spec-sync](https://github.com/CorvidLabs/spec-sync) | `ubuntu-latest` |
+| `corvid-pet` | PR review (APPROVE/REQUEST_CHANGES) with ASCII art and CI summary | `ubuntu-latest` |
 
-### Caching Strategy
+### Caching
 
-We cache the following paths:
-- `~/.cargo/registry` - Downloaded dependencies
-- `~/.cargo/git` - Git dependencies
-- `target` - Build artifacts
-
-**Cache Key:** `${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}`
-
-**Cache Behavior:**
-- `main` branch builds create the base cache
-- PRs restore from `main` cache first, then create their own
-- Fork PRs can read from `main` cache but write to their own scope
-- Cache retention: 7 days
+Rust dependencies are cached via [Swatinem/rust-cache](https://github.com/Swatinem/rust-cache) with a shared key. Duplicate CI runs on the same PR are automatically cancelled.
 
 ### Running Checks Locally
 
