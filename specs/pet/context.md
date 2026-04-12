@@ -29,7 +29,7 @@ v1.0.0 release candidate. Single species (Crow), single art style (Minimal). All
 - **Life simulation**: Stats decay, life stages (Egg→Elder), 6 personality traits, 5 need interactions with cooldowns
 - **Persistence**: Save/load pet state to disk (feature-gated)
 - **Color**: ANSI color schemes with custom body/bubble colors (feature-gated)
-- **Health**: CI/CD repo health tracking with PR comments and badge generation
+- **Health**: CI/CD repo health tracking with badge generation
 - **Live TUI**: Interactive terminal display with ratatui (feature-gated)
 - **Integrations**: SpecSync companion for spec validation feedback
 - **CLI**: Binary with show/feed/play/status/sim/health commands

@@ -356,7 +356,7 @@ Simpler synchronous alternative for interactive pet display.
 | `record` | `&mut self, event: Event, timestamp: u64, context: Option<String>` | `()` | Record a CI/CD event, update score and streak |
 | `mood` | `&self` | `Mood` | Derive mood from health score (90+: Happy/Excited, 70-89: Neutral, 50-69: Confused, <50: Sad) |
 | `summary` | `&self` | `String` | Human-readable health summary line |
-| `pr_comment` | `&self, event: Event, context: &str` | `String` | Markdown PR comment with pet art, quote, and health stats |
+| `pr_comment` | `&self, event: Event, context: &str` | `String` | Markdown PR comment with pet art, quote, and context |
 | `badge_line` | `&self` | `String` | Short status line with emoji for badges |
 | `readme_badge` | `&self` | `String` | Markdown block for README embedding (between corvid-pet:start/end comments) |
 | `default` | (Default trait) | `Self` | Default health (pet name "Corvin", score 100) |
