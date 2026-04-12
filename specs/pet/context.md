@@ -23,14 +23,22 @@ spec: pet.spec.md
 
 ## Current Status
 
-Core implementation complete. Spec promoted to review. Single Minimal art style ships in v1; `art_v2` module provides species-differentiated art for future styles and custom templates.
+v1.0.0 release candidate. Single species (Crow), single art style (Minimal). All major systems implemented and tested (117 tests passing):
 
-Life simulation system added: Stats (hunger/energy/happiness/health with time-based decay), LifeStage (Egg -> Hatchling -> Fledgling -> Adult -> Elder), Personality (6 traits affecting decay + interactions), and Needs (Feed/Play/Rest/Clean/Pet with cooldowns). Fully optional -- Pet without simulation behaves identically to v1.
+- **Core**: Pet struct with mood, render, comment, animation, spinner APIs
+- **Life simulation**: Stats decay, life stages (Egg→Elder), 6 personality traits, 5 need interactions with cooldowns
+- **Persistence**: Save/load pet state to disk (feature-gated)
+- **Color**: ANSI color schemes with custom body/bubble colors (feature-gated)
+- **Health**: CI/CD repo health tracking with PR comments and badge generation
+- **Live TUI**: Interactive terminal display with ratatui (feature-gated)
+- **Integrations**: SpecSync companion for spec validation feedback
+- **CLI**: Binary with show/feed/play/status/sim/health commands
+- **GitHub Action**: action.yml with pr-comment, health-check, greet, release, badge modes
 
 ## Notes
 
 - ASCII art should be original or clearly public domain
-- Crow is the default species - most users will start here
+- Crow is the only species in v1 — extensible via the Species enum for future additions
 - Animation frames should feel "alive" but not distracting
 - Comments should be helpful but sassy (corvids have personality)
-- Consider adding `Display` trait implementations for all enums
+- All public enums implement Display

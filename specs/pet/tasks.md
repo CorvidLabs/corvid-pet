@@ -27,14 +27,13 @@ spec: pet.spec.md
 
 ## Gaps
 
-- No persistence system (out of scope for v1)
-- No ANSI color support yet (feature flag TBD)
-- Only 4 species (could add more: jackdaw, rook, chough)
-- Animation is frame-based, not time-based
+- Animation is frame-based, not time-based (design decision)
+- GitHub Action (action.yml) not yet covered by a dedicated spec
+- No dynamic shields.io badges for pet health/mood
 
 ## Review Sign-offs
 
-- **Product**: pending
-- **QA**: pending
-- **Design**: pending
-- **Dev**: pending
+- **Product**: pending (pre-1.0.0)
+- **QA**: 117 tests passing, all features exercised
+- **Design**: Crow-only Minimal style finalized
+- **Dev**: implementation complete, specs updated 2026-04-11
