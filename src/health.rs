@@ -202,7 +202,7 @@ impl RepoHealth {
         };
 
         format!(
-            "## {status_emoji} {name} says...\n\n```\n{art}\n```\n\n> *\"{comment}\"*\n\n{context}\n\n---\n<sub>Powered by [corvid-pet](https://github.com/CorvidLabs/corvid-pet)</sub>",
+            "## {status_emoji} {name} says...\n\n```\n{art}\n```\n\n> *\"{comment}\"*\n\n{context}\n\n---\n<sub>Powered by [corvid-pet](https://github.com/CorvidLabs/corvid-pet)</sub>\n<!-- corvid-pet-report -->",
             name = pet.name(),
         )
     }
