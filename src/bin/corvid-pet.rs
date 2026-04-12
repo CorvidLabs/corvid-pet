@@ -4,7 +4,8 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use clap::{Parser, Subcommand, ValueEnum};
 use corvid_pet::color::{ColorScheme, PetColor};
 use corvid_pet::health::{self, RepoHealth};
-use corvid_pet::{Event, Mood, Pet, Species};
+use corvid_pet::persistence::{self, PetState};
+use corvid_pet::{Event, Mood, Personality, Pet, Species};
 
 /// ASCII corvid companion for your terminal and CI/CD pipelines.
 ///
@@ -111,6 +112,22 @@ enum Commands {
         #[arg()]
         who: Option<String>,
     },
+
+    /// Feed your pet.
+    Feed,
+
+    /// Play with your pet.
+    Play,
+
+    /// Show pet stats and life stage.
+    Status,
+
+    /// Run a life simulation tick.
+    Sim {
+        /// Personality for a new pet (curious, shy, mischievous, stoic, affectionate, greedy).
+        #[arg(long, value_enum, default_value = "curious")]
+        personality: PersonalityArg,
+    },
 }
 
 #[derive(Clone, ValueEnum)]
@@ -157,6 +174,29 @@ impl From<EventArg> for Event {
     }
 }
 
+#[derive(Clone, ValueEnum)]
+enum PersonalityArg {
+    Curious,
+    Shy,
+    Mischievous,
+    Stoic,
+    Affectionate,
+    Greedy,
+}
+
+impl From<PersonalityArg> for Personality {
+    fn from(p: PersonalityArg) -> Personality {
+        match p {
+            PersonalityArg::Curious => Personality::Curious,
+            PersonalityArg::Shy => Personality::Shy,
+            PersonalityArg::Mischievous => Personality::Mischievous,
+            PersonalityArg::Stoic => Personality::Stoic,
+            PersonalityArg::Affectionate => Personality::Affectionate,
+            PersonalityArg::Greedy => Personality::Greedy,
+        }
+    }
+}
+
 fn now_secs() -> u64 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -173,6 +213,45 @@ fn load_or_create(path: &Path, name: &str) -> RepoHealth {
     } else {
         RepoHealth::new(name.to_string())
     }
+}
+
+/// Loads the pet from persistent storage, or creates a new one with simulation enabled.
+fn load_sim_pet(cli: &Cli, personality: Personality) -> Pet {
+    let mut pet = match persistence::load_pet(&cli.name) {
+        Ok(state) => {
+            let mut p = state.to_pet();
+            // Apply CLI color overrides.
+            if cli.random_colors {
+                p = p.with_random_colors();
+            } else if let Some(ref body) = cli.color {
+                let body_color: PetColor = body.parse().unwrap_or(PetColor::Blue);
+                let bubble_color: PetColor = cli
+                    .bubble_color
+                    .as_deref()
+                    .and_then(|s| s.parse().ok())
+                    .unwrap_or(PetColor::Cyan);
+                p.set_color_scheme(ColorScheme::new(body_color, bubble_color));
+            }
+            p
+        }
+        Err(_) => {
+            let p = make_pet(cli);
+            p.with_simulation(personality, now_secs())
+        }
+    };
+
+    // Tick the simulation to the current time.
+    pet.tick(now_secs());
+    pet
+}
+
+/// Saves the pet to persistent storage.
+fn save_sim_pet(pet: &Pet, name: &str) {
+    let mut state = PetState::from_pet(pet);
+    state.last_saved = Some(now_secs());
+    persistence::save_pet(&state, name).unwrap_or_else(|e| {
+        eprintln!("Warning: could not save pet state: {}", e);
+    });
 }
 
 fn make_pet(cli: &Cli) -> Pet {
@@ -374,5 +453,128 @@ fn main() {
                 }
             }
         }
+
+        Some(Commands::Feed) => {
+            let mut pet = load_sim_pet(&cli, Personality::Curious);
+            let result = pet.feed(now_secs());
+            save_sim_pet(&pet, &cli.name);
+
+            if json_output {
+                let j = serde_json::json!({
+                    "action": "feed",
+                    "success": result.as_ref().is_some_and(|r| r.success),
+                    "message": result.as_ref().map_or("No simulation active".to_string(), |r| r.message.clone()),
+                    "mood": pet.mood().to_string(),
+                });
+                println!("{}", serde_json::to_string_pretty(&j).expect("serialize"));
+            } else {
+                render_pet(&pet, cli.no_color);
+                match result {
+                    Some(r) => println!("\n  {}", r.message),
+                    None => println!("\n  No simulation active. Run `corvid-pet sim` first."),
+                }
+            }
+        }
+
+        Some(Commands::Play) => {
+            let mut pet = load_sim_pet(&cli, Personality::Curious);
+            let result = pet.play(now_secs());
+            save_sim_pet(&pet, &cli.name);
+
+            if json_output {
+                let j = serde_json::json!({
+                    "action": "play",
+                    "success": result.as_ref().is_some_and(|r| r.success),
+                    "message": result.as_ref().map_or("No simulation active".to_string(), |r| r.message.clone()),
+                    "mood": pet.mood().to_string(),
+                });
+                println!("{}", serde_json::to_string_pretty(&j).expect("serialize"));
+            } else {
+                render_pet(&pet, cli.no_color);
+                match result {
+                    Some(r) => println!("\n  {}", r.message),
+                    None => println!("\n  No simulation active. Run `corvid-pet sim` first."),
+                }
+            }
+        }
+
+        Some(Commands::Status) => {
+            let pet = load_sim_pet(&cli, Personality::Curious);
+
+            if json_output {
+                let j = serde_json::json!({
+                    "name": pet.name(),
+                    "species": pet.species().to_string(),
+                    "mood": pet.mood().to_string(),
+                    "life_stage": pet.life_stage().map(|s| s.to_string()),
+                    "age": pet.age_display(),
+                    "stats": pet.stats().map(|s| serde_json::json!({
+                        "hunger": s.hunger,
+                        "energy": s.energy,
+                        "happiness": s.happiness,
+                        "health": s.health,
+                        "overall": s.overall(),
+                    })),
+                });
+                println!("{}", serde_json::to_string_pretty(&j).expect("serialize"));
+            } else {
+                render_pet(&pet, cli.no_color);
+                if let (Some(stats), Some(stage), Some(age)) =
+                    (pet.stats(), pet.life_stage(), pet.age_display())
+                {
+                    println!();
+                    println!("  {} — {} ({})", pet.name(), stage, age);
+                    println!("  Mood: {}", pet.mood());
+                    println!();
+                    println!("  Hunger:    {:>5.1}%  {}", stats.hunger, bar(stats.hunger));
+                    println!("  Energy:    {:>5.1}%  {}", stats.energy, bar(stats.energy));
+                    println!("  Happiness: {:>5.1}%  {}", stats.happiness, bar(stats.happiness));
+                    println!("  Health:    {:>5.1}%  {}", stats.health, bar(stats.health));
+                    println!("  Overall:   {:>5.1}%", stats.overall());
+
+                    let critical = stats.critical_needs();
+                    if !critical.is_empty() {
+                        let names: Vec<_> = critical.iter().map(|n| n.description()).collect();
+                        println!("\n  Needs attention: {}", names.join(", "));
+                    }
+                } else {
+                    println!("\n  No simulation active. Run `corvid-pet sim` to start.");
+                }
+            }
+        }
+
+        Some(Commands::Sim { personality }) => {
+            let personality: Personality = personality.clone().into();
+            let mut pet = load_sim_pet(&cli, personality);
+            pet.tick(now_secs());
+            save_sim_pet(&pet, &cli.name);
+
+            if json_output {
+                let j = serde_json::json!({
+                    "name": pet.name(),
+                    "life_stage": pet.life_stage().map(|s| s.to_string()),
+                    "mood": pet.mood().to_string(),
+                    "personality": pet.pet_personality().map(|p| format!("{:?}", p)),
+                    "age": pet.age_display(),
+                });
+                println!("{}", serde_json::to_string_pretty(&j).expect("serialize"));
+            } else {
+                render_pet(&pet, cli.no_color);
+                if let Some(stage) = pet.life_stage() {
+                    println!("\n  {} is a {} {}", pet.name(), stage, pet.species());
+                    if let Some(age) = pet.age_display() {
+                        println!("  Age: {}", age);
+                    }
+                    println!("  Simulation ticked. State saved.");
+                }
+            }
+        }
     }
+}
+
+/// Renders a simple bar chart for a stat value (0-100).
+fn bar(value: f32) -> String {
+    let filled = (value / 5.0).round() as usize;
+    let empty = 20_usize.saturating_sub(filled);
+    format!("[{}{}]", "█".repeat(filled), "░".repeat(empty))
 }
