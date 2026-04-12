@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 
 ## [1.0.0] - 2026-04-11
 
+### Security
+
+- Upgraded transitive `time` crate dependency from 0.3.45 to 0.3.47 to fix CVE-2026-25727 (stack exhaustion DoS via RFC 2822 parsing)
+
+### Changed
+
+- Minimum supported Rust version (MSRV) bumped from 1.86 to 1.88 (required by `time` 0.3.47 security patch)
+
 ### Added
 
 - **Core library**: `Pet`, `Species` (Crow), `Mood` (6 moods), `Event` (5 events)

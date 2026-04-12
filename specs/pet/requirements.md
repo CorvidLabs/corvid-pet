@@ -36,7 +36,7 @@ spec: pet.spec.md
 - No Unicode in ASCII art (portability)
 - No async/await in core library (sync API)
 - Terminal colors are optional (via feature flag or separate method)
-- Library must compile on stable Rust 1.86+ (edition 2024)
+- Library must compile on stable Rust 1.88+ (edition 2024)
 
 ## Out of Scope
 
