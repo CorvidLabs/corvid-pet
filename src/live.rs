@@ -116,7 +116,7 @@ impl LivePetApp {
         self.frame_count += 1;
 
         // Auto-blur eyes every 5 seconds (at 30 FPS)
-        if self.auto_blink && self.frame_count % 150 == 0 {
+        if self.auto_blink && self.frame_count.is_multiple_of(150) {
             // Trigger a temporary blink state
         }
 
