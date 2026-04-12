@@ -5,8 +5,7 @@ status: active
 files:
   - src/bin/corvid-pet.rs
 db_tables: []
-depends_on:
-  - pet
+depends_on: []
 ---
 
 # CLI Binary
@@ -14,6 +13,20 @@ depends_on:
 ## Purpose
 
 Command-line interface for interacting with corvid-pet. Provides subcommands for displaying the pet, reacting to CI/CD events, managing health state, generating PR comments and README badges, and greeting users. Built with clap, requires the `cli` feature flag.
+
+## Public API
+
+The CLI exposes the following subcommands as its public interface. All commands accept global flags (`--name`, `--no-color`, `--color`, `--bubble-color`, `--random-colors`).
+
+| Subcommand | Summary |
+|------------|---------|
+| `show` (default) | Display ASCII art with a random quip |
+| `react <EVENT>` | Record a CI/CD event in the health state file |
+| `health` | Display health summary (text or `--json`) |
+| `comment <EVENT>` | Generate a markdown PR comment |
+| `badge` | Generate a README badge section |
+| `init` | Initialize a new health state file |
+| `greet [NAME]` | Greet with a random corvid message |
 
 ## Installation
 
@@ -193,6 +206,36 @@ State files are created automatically by `react` and `init`. The `health`, `comm
 4. State file operations are atomic — partial writes don't corrupt existing state
 5. Unknown/invalid color names produce a warning and fall back to defaults, never error
 6. `init` refuses to overwrite an existing state file
+
+## Behavioral Examples
+
+### Record a CI success and view health
+
+```bash
+$ corvid-pet react success --state .corvid-pet.json --context "PR #42"
+# Records event, displays pet reacting with happy mood, prints health summary
+
+$ corvid-pet health --state .corvid-pet.json --json
+# Outputs full RepoHealth struct as JSON (used by the GitHub Action)
+```
+
+### Generate a PR comment for a failed build
+
+```bash
+$ corvid-pet comment failure --state .corvid-pet.json --context "Tests failed: 3 errors"
+# Outputs markdown with ASCII art, sad mood quip, health stats, and context
+```
+
+### Initialize and display
+
+```bash
+$ corvid-pet init --state .corvid-pet.json
+# Creates fresh state file (score 100, no events), shows welcome message
+# Exits with code 1 if file already exists
+
+$ corvid-pet --name Rook --color bright-magenta
+# Displays pet named "Rook" in bright magenta with a random neutral quip
+```
 
 ## Error Cases
 

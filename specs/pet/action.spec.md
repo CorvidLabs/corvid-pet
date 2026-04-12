@@ -5,8 +5,7 @@ status: active
 files:
   - action.yml
 db_tables: []
-depends_on:
-  - pet
+depends_on: []
 ---
 
 # GitHub Action
@@ -15,12 +14,14 @@ depends_on:
 
 Composite GitHub Action that brings corvid-pet into CI/CD pipelines. Installs the CLI, runs it against the repo's health state, and optionally posts PR comments, PR reviews, README badges, or health reports. Published to the GitHub Marketplace as `corvid-pet`.
 
-## Branding
+## Public API
+
+### Branding
 
 - **Icon**: heart
 - **Color**: purple
 
-## Inputs
+### Inputs
 
 | Input | Required | Default | Description |
 |-------|----------|---------|-------------|
@@ -32,11 +33,12 @@ Composite GitHub Action that brings corvid-pet into CI/CD pipelines. Installs th
 | `comment-on-pr` | no | `true` | Post a comment on the PR (requires `github-token`) |
 | `review-on-pr` | no | `false` | Submit as a PR review (APPROVE/REQUEST_CHANGES) instead of a plain comment |
 | `update-readme` | no | `false` | Update the README badge section (for `badge` mode) |
+| `job-status` | no | `""` | Override job status for event auto-detection (falls back to `job.status`) |
 | `github-token` | no | `${{ github.token }}` | GitHub token for posting comments/reviews |
 
 ### Event Auto-Detection
 
-When `event` is `auto` (default), the action detects the event from `job.status`:
+When `event` is `auto` (default), the action detects the event from `job-status` (or `job.status` if unset):
 
 | Job Status | Resolved Event |
 |------------|----------------|
@@ -47,7 +49,7 @@ When `event` is `auto` (default), the action detects the event from `job.status`
 
 The resolved event is available in the `event` output.
 
-## Outputs
+### Outputs
 
 | Output | Description |
 |--------|-------------|
@@ -192,6 +194,48 @@ Set the `CORVID_PET_BIN` environment variable to skip the Rust install/cache/bui
   env:
     CORVID_PET_BIN: ./target/debug/corvid-pet
 ```
+
+## Behavioral Examples
+
+### PR comment on successful CI
+
+```yaml
+- uses: CorvidLabs/corvid-pet@v1
+  if: always()
+  with:
+    mode: pr-comment
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+Event auto-detects as `success` from `job.status`. The action runs `react success` to record the event, then `comment success` to generate markdown. Since `comment-on-pr` defaults to `true` and this is a `pull_request` event, the comment is posted (or updated if one already exists).
+
+### Overriding job status with combined check result
+
+```yaml
+- uses: CorvidLabs/corvid-pet@v1
+  if: always()
+  with:
+    mode: pr-comment
+    job-status: ${{ steps.status.outputs.result }}
+    review-on-pr: "true"
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+The `job-status` input overrides `job.status` for event detection, allowing a combined check result to drive the pet's reaction. With `review-on-pr`, the action submits a PR review (APPROVE on success, REQUEST_CHANGES on failure) instead of a plain comment.
+
+### Self-CI with pre-built binary
+
+```yaml
+- run: cargo build --features cli
+- uses: ./
+  if: always()
+  with:
+    mode: pr-comment
+  env:
+    CORVID_PET_BIN: ./target/debug/corvid-pet
+```
+
+Setting `CORVID_PET_BIN` skips the Rust toolchain install, cargo cache, and `cargo install` steps entirely.
 
 ## Error Cases
 
