@@ -60,12 +60,24 @@ jobs:
     name: Spec Validation
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    outputs:
+      report: ${{ steps.report.outputs.report }}
     steps:
       - uses: actions/checkout@v4
       - uses: CorvidLabs/spec-sync@v4.1.2
         with:
           strict: 'true'
           comment: 'false'
+      - name: Capture spec-sync report
+        id: report
+        if: always()
+        run: |
+          REPORT=$(specsync comment --strict 2>/dev/null) || REPORT=""
+          {
+            echo "report<<SPECSYNC_EOF"
+            echo "$REPORT"
+            echo "SPECSYNC_EOF"
+          } >> "$GITHUB_OUTPUT"
 
   corvid-pet:
     name: Corvid Pet
@@ -91,26 +103,43 @@ jobs:
 
       - name: Determine combined status
         id: status
+        env:
+          SPEC_REPORT: ${{ needs.spec-check.outputs.report }}
         run: |
-          # Build context with all job results
-          CONTEXT=""
-          if [ "${{ needs.spec-check.result }}" = "success" ]; then
-            CONTEXT="Spec validation: passed"
-          else
-            CONTEXT="Spec validation: ${{ needs.spec-check.result }}"
-          fi
-          if [ "${{ needs.check.result }}" = "success" ]; then
-            CONTEXT="${CONTEXT}. CI (fmt, clippy, build, test): passed"
-          else
-            CONTEXT="${CONTEXT}. CI (fmt, clippy, build, test): ${{ needs.check.result }}"
-          fi
+          CI_RESULT="${{ needs.check.result }}"
+          SPEC_RESULT="${{ needs.spec-check.result }}"
 
-          if [ "${{ needs.check.result }}" = "success" ] && [ "${{ needs.spec-check.result }}" = "success" ]; then
+          # Status icons
+          if [ "$CI_RESULT" = "success" ]; then CI_ICON="✅ Passed"; else CI_ICON="❌ ${CI_RESULT}"; fi
+          if [ "$SPEC_RESULT" = "success" ]; then SPEC_ICON="✅ Passed"; else SPEC_ICON="❌ ${SPEC_RESULT}"; fi
+
+          # Overall result
+          if [ "$CI_RESULT" = "success" ] && [ "$SPEC_RESULT" = "success" ]; then
             echo "result=success" >> "$GITHUB_OUTPUT"
           else
             echo "result=failure" >> "$GITHUB_OUTPUT"
           fi
-          echo "context=$CONTEXT" >> "$GITHUB_OUTPUT"
+
+          # Build multi-line context with summary table + raw report
+          {
+            echo "context<<CONTEXT_EOF"
+            echo "### CI Summary"
+            echo ""
+            echo "| Check | Status |"
+            echo "|-------|--------|"
+            echo "| **CI** (fmt, clippy, build, test) | ${CI_ICON} |"
+            echo "| **Spec Validation** | ${SPEC_ICON} |"
+            if [ -n "$SPEC_REPORT" ]; then
+              echo ""
+              echo "<details>"
+              echo "<summary>📋 Spec Validation Details</summary>"
+              echo ""
+              echo "$SPEC_REPORT"
+              echo ""
+              echo "</details>"
+            fi
+            echo "CONTEXT_EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Run corvid-pet
         uses: ./
