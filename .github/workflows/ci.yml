@@ -13,6 +13,10 @@ on:
       - "LICENSE"
   workflow_dispatch:
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -100,6 +104,12 @@ jobs:
 
       - name: Build corvid-pet CLI
         run: cargo build --features cli
+
+      - name: Restore pet health state
+        uses: actions/cache@v4
+        with:
+          path: .corvid-pet.json
+          key: corvid-pet-health-${{ github.repository }}
 
       - name: Determine combined status
         id: status
