@@ -370,18 +370,19 @@ Simpler synchronous alternative for interactive pet display.
 
 ### CLI Binary (`src/bin/corvid-pet.rs`)
 
-Command-line interface for interacting with corvid pets. Built with clap.
+Command-line interface for interacting with corvid pets. Built with clap. See `cli.spec.md` for the full CLI specification including all flags, arguments, and behavior.
 
 | Command | Description |
 |---------|-------------|
 | `show` | Display the pet's ASCII art (default command) |
-| `feed` | Feed the pet |
-| `play` | Play with the pet |
-| `status` | Show pet status and stats |
-| `sim` | Run interactive simulation |
-| `health` | Show repo health or record events |
+| `react` | Record a CI/CD event and update health state |
+| `health` | Show repo health summary (text or JSON) |
+| `comment` | Generate a markdown PR comment |
+| `badge` | Generate a README badge section |
+| `init` | Initialize a new health state file |
+| `greet` | Greet with a random corvid message |
 
-Global flags: `--name`, `--no-color`, `--color`, `--bubble-color`.
+Global flags: `--name`, `--no-color`, `--color`, `--bubble-color`, `--random-colors`.
 
 ### Art Styles
 

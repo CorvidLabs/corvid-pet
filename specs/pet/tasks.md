@@ -28,7 +28,6 @@ spec: pet.spec.md
 ## Gaps
 
 - Animation is frame-based, not time-based (design decision)
-- GitHub Action (action.yml) not yet covered by a dedicated spec
 - No dynamic shields.io badges for pet health/mood
 
 ## Review Sign-offs
