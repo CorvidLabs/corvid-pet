@@ -29,9 +29,13 @@ fn main() {
         println!("  Mood: {:?} -> {:?}", old_mood, new_mood);
 
         #[cfg(feature = "color")]
-        println!("  {}", companion.pet().render_colored());
+        for line in companion.pet().render_colored().lines() {
+            println!("  {}", line);
+        }
         #[cfg(not(feature = "color"))]
-        println!("  {}", companion.pet().render());
+        for line in companion.pet().render().lines() {
+            println!("  {}", line);
+        }
 
         println!("  \"{}\"", companion.pet().comment());
         println!("  {}\n", companion.summary());

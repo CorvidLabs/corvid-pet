@@ -13,6 +13,10 @@ on:
       - "LICENSE"
   workflow_dispatch:
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -101,42 +105,65 @@ jobs:
       - name: Build corvid-pet CLI
         run: cargo build --features cli
 
+      # ── Check Registry ──────────────────────────────────────────────
+      # To add a new check to the review:
+      #   1. Add a job above with outputs: status (result) and optionally report
+      #   2. Add the job name to `needs:` on this corvid-pet job
+      #   3. Add one CHECK_* env var below: CHECK_<name>=<label>=<result>
+      #   4. Optionally add REPORT_<name> for expandable details
+      # That's it — the summary table and overall status build automatically.
+      # ─────────────────────────────────────────────────────────────────
       - name: Determine combined status
         id: status
         env:
-          SPEC_REPORT: ${{ needs.spec-check.outputs.report }}
+          # ── Register checks here (one line each) ──
+          CHECK_CI: "CI (fmt, clippy, build, test)=${{ needs.check.result }}"
+          CHECK_SPEC: "Spec Validation=${{ needs.spec-check.result }}"
+          # CHECK_SECURITY: "Security Audit=${{ needs.security.result }}"
+          # CHECK_COVERAGE: "Test Coverage=${{ needs.coverage.result }}"
+
+          # ── Register detail reports here (optional, matched by name) ──
+          REPORT_SPEC: ${{ needs.spec-check.outputs.report }}
+          # REPORT_SECURITY: ${{ needs.security.outputs.report }}
         run: |
-          CI_RESULT="${{ needs.check.result }}"
-          SPEC_RESULT="${{ needs.spec-check.result }}"
+          OVERALL="success"
+          TABLE="| Check | Status |\n|-------|--------|\n"
+          DETAILS=""
 
-          # Status icons
-          if [ "$CI_RESULT" = "success" ]; then CI_ICON="✅ Passed"; else CI_ICON="❌ ${CI_RESULT}"; fi
-          if [ "$SPEC_RESULT" = "success" ]; then SPEC_ICON="✅ Passed"; else SPEC_ICON="❌ ${SPEC_RESULT}"; fi
+          # Iterate over all CHECK_* env vars
+          while IFS= read -r line; do
+            VAR_NAME="${line%%=*}"
+            VAR_VALUE="${!VAR_NAME}"
+            LABEL="${VAR_VALUE%%=*}"
+            RESULT="${VAR_VALUE##*=}"
 
-          # Overall result
-          if [ "$CI_RESULT" = "success" ] && [ "$SPEC_RESULT" = "success" ]; then
-            echo "result=success" >> "$GITHUB_OUTPUT"
-          else
-            echo "result=failure" >> "$GITHUB_OUTPUT"
-          fi
+            # Status icon
+            if [ "$RESULT" = "success" ]; then
+              ICON="✅ Passed"
+            else
+              ICON="❌ ${RESULT}"
+              OVERALL="failure"
+            fi
+            TABLE+="| **${LABEL}** | ${ICON} |\n"
 
-          # Build multi-line context with summary table + raw report
+            # Check for matching REPORT_* var
+            SUFFIX="${VAR_NAME#CHECK_}"
+            REPORT_VAR="REPORT_${SUFFIX}"
+            REPORT_VALUE="${!REPORT_VAR}"
+            if [ -n "$REPORT_VALUE" ]; then
+              DETAILS+="\n<details>\n<summary>📋 ${LABEL} Details</summary>\n\n${REPORT_VALUE}\n\n</details>\n"
+            fi
+          done < <(env | grep '^CHECK_' | sort)
+
+          echo "result=${OVERALL}" >> "$GITHUB_OUTPUT"
+
           {
             echo "context<<CONTEXT_EOF"
             echo "### CI Summary"
             echo ""
-            echo "| Check | Status |"
-            echo "|-------|--------|"
-            echo "| **CI** (fmt, clippy, build, test) | ${CI_ICON} |"
-            echo "| **Spec Validation** | ${SPEC_ICON} |"
-            if [ -n "$SPEC_REPORT" ]; then
-              echo ""
-              echo "<details>"
-              echo "<summary>📋 Spec Validation Details</summary>"
-              echo ""
-              echo "$SPEC_REPORT"
-              echo ""
-              echo "</details>"
+            echo -e "$TABLE"
+            if [ -n "$DETAILS" ]; then
+              echo -e "$DETAILS"
             fi
             echo "CONTEXT_EOF"
           } >> "$GITHUB_OUTPUT"
@@ -153,3 +180,4 @@ jobs:
         env:
           CORVID_PET_BIN: ./target/debug/corvid-pet
           CORVID_JOB_STATUS: ${{ steps.status.outputs.result }}
+
