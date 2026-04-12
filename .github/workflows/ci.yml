@@ -176,8 +176,8 @@ jobs:
           pet-name: Corvin
           review-on-pr: "true"
           context: ${{ steps.status.outputs.context }}
+          job-status: ${{ steps.status.outputs.result }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
         env:
           CORVID_PET_BIN: ./target/debug/corvid-pet
-          CORVID_JOB_STATUS: ${{ steps.status.outputs.result }}
 

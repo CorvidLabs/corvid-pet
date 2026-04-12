@@ -88,7 +88,7 @@ Generates a status badge line for README embedding.
 | `comment-on-pr` | `true` | Whether to post a comment on the PR |
 | `review-on-pr` | `false` | Submit as a PR review (APPROVE/REQUEST_CHANGES) instead of a plain comment |
 | `update-readme` | `false` | Update the README badge (for badge mode) |
-| `persist-health` | `true` | Persist health state across CI runs using GitHub Actions cache |
+| `job-status` | `""` | Override job status for event auto-detection (e.g. from a combined check result) |
 | `github-token` | `${{ github.token }}` | GitHub token for posting comments |
 
 ## Outputs
@@ -111,10 +111,6 @@ Set `review-on-pr: "true"` to submit the pet comment as a formal PR review. The 
     mode: pr-comment
     review-on-pr: "true"
 ```
-
-## Health Persistence
-
-By default (`persist-health: "true"`), the action uses GitHub Actions cache to persist health state across CI runs. Each run saves state with a run-specific key and restores from the most recent prior run via prefix matching.
 
 ## Auto Event Detection
 
