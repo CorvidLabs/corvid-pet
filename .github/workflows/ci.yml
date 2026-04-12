@@ -92,16 +92,25 @@ jobs:
       - name: Determine combined status
         id: status
         run: |
+          # Build context with all job results
+          CONTEXT=""
+          if [ "${{ needs.spec-check.result }}" = "success" ]; then
+            CONTEXT="Spec validation: passed"
+          else
+            CONTEXT="Spec validation: ${{ needs.spec-check.result }}"
+          fi
+          if [ "${{ needs.check.result }}" = "success" ]; then
+            CONTEXT="${CONTEXT}. CI (fmt, clippy, build, test): passed"
+          else
+            CONTEXT="${CONTEXT}. CI (fmt, clippy, build, test): ${{ needs.check.result }}"
+          fi
+
           if [ "${{ needs.check.result }}" = "success" ] && [ "${{ needs.spec-check.result }}" = "success" ]; then
             echo "result=success" >> "$GITHUB_OUTPUT"
-            echo "context=" >> "$GITHUB_OUTPUT"
           else
-            FAILED=""
-            [ "${{ needs.check.result }}" != "success" ] && FAILED="CI (${{ needs.check.result }})"
-            [ "${{ needs.spec-check.result }}" != "success" ] && FAILED="${FAILED:+$FAILED, }Spec validation (${{ needs.spec-check.result }})"
             echo "result=failure" >> "$GITHUB_OUTPUT"
-            echo "context=Failed: $FAILED" >> "$GITHUB_OUTPUT"
           fi
+          echo "context=$CONTEXT" >> "$GITHUB_OUTPUT"
 
       - name: Run corvid-pet
         uses: ./
