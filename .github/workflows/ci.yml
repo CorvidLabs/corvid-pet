@@ -84,23 +84,8 @@ jobs:
           mode: pr-comment
           event: auto
           pet-name: Corvin
+          review-on-pr: "true"
           github-token: ${{ secrets.GITHUB_TOKEN }}
         env:
           CORVID_PET_BIN: ./target/debug/corvid-pet
           CORVID_JOB_STATUS: ${{ needs.check.result }}
-
-      - name: Approve or request changes
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          BUILD_RESULT: ${{ needs.check.result }}
-        run: |
-          if [ "$BUILD_RESULT" = "success" ]; then
-            gh pr review "$PR_NUMBER" \
-              --approve \
-              --body "All CI checks passed (fmt, clippy, build, tests). 🐦"
-          else
-            gh pr review "$PR_NUMBER" \
-              --request-changes \
-              --body "CI checks failed. Please review the build logs and fix the issues before merging."
-          fi
