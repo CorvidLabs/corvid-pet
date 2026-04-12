@@ -528,7 +528,11 @@ fn main() {
                     println!();
                     println!("  Hunger:    {:>5.1}%  {}", stats.hunger, bar(stats.hunger));
                     println!("  Energy:    {:>5.1}%  {}", stats.energy, bar(stats.energy));
-                    println!("  Happiness: {:>5.1}%  {}", stats.happiness, bar(stats.happiness));
+                    println!(
+                        "  Happiness: {:>5.1}%  {}",
+                        stats.happiness,
+                        bar(stats.happiness)
+                    );
                     println!("  Health:    {:>5.1}%  {}", stats.health, bar(stats.health));
                     println!("  Overall:   {:>5.1}%", stats.overall());
 
