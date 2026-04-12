@@ -16,17 +16,24 @@ Command-line interface for interacting with corvid-pet. Provides subcommands for
 
 ## Public API
 
-The CLI exposes the following subcommands as its public interface. All commands accept global flags (`--name`, `--no-color`, `--color`, `--bubble-color`, `--random-colors`).
+This module is a CLI binary (`src/bin/corvid-pet.rs`), not a library. It has no public Rust exports — its public interface is the command-line itself.
 
-| Subcommand | Summary |
-|------------|---------|
-| `show` (default) | Display ASCII art with a random quip |
-| `react <EVENT>` | Record a CI/CD event in the health state file |
-| `health` | Display health summary (text or `--json`) |
-| `comment <EVENT>` | Generate a markdown PR comment |
-| `badge` | Generate a README badge section |
-| `init` | Initialize a new health state file |
-| `greet [NAME]` | Greet with a random corvid message |
+### Internal Types
+
+The binary defines the following private types for argument parsing:
+
+| Type | Kind | Description |
+|------|------|-------------|
+| `Cli` | struct (clap Parser) | Top-level argument parser with global flags |
+| `Commands` | enum (clap Subcommand) | Subcommand dispatch: Show, React, Health, Comment, Badge, Init, Greet |
+| `MoodArg` | enum (clap ValueEnum) | Mood argument values: Happy, Sad, Neutral, Confused, Excited, Sleepy |
+| `EventArg` | enum (clap ValueEnum) | Event argument values: Success, Failure, Warning, Progress, Idle |
+
+### CLI Interface
+
+The binary exposes the following subcommands. All commands accept global flags (`--name`, `--no-color`, `--color`, `--bubble-color`, `--random-colors`). See the Subcommands section below for full details.
+
+Subcommands: show (default), react, health, comment, badge, init, greet.
 
 ## Installation
 
