@@ -12,7 +12,7 @@ Bring a little personality to your command-line tools with animated ASCII pets t
 
 ## Features
 
-- **Crow Companion**: Clever problem-solver with unique art and personality
+- **Crow Companion**: Clever problem-solver with unique art and personality (more species coming soon)
 - **Six Moods**: Happy, Sad, Neutral, Confused, Excited, Sleepy
 - **Generic Events**: Success, Failure, Warning, Progress, Idle — works with any tool
 - **Minimal Art Style**: Compact ~6-line silhouettes with thought bubbles
