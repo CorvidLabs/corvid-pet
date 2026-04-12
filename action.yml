@@ -39,10 +39,10 @@ inputs:
     description: "Whether to update the README badge (for badge mode)"
     required: false
     default: "false"
-  persist-health:
-    description: "Persist pet health state across CI runs using GitHub Actions cache (per-repo, lifetime)"
+  job-status:
+    description: "Override job status for event auto-detection (e.g. from a combined check result). Falls back to job.status."
     required: false
-    default: "true"
+    default: ""
   github-token:
     description: "GitHub token for posting comments"
     required: false
@@ -85,15 +85,6 @@ runs:
       shell: bash
       run: cargo install corvid-pet --features cli
 
-    - name: Restore pet health state
-      if: inputs.persist-health == 'true'
-      uses: actions/cache/restore@v4
-      with:
-        path: ${{ inputs.state-file }}
-        key: corvid-pet-health-${{ github.repository }}-${{ github.run_id }}
-        restore-keys: |
-          corvid-pet-health-${{ github.repository }}-
-
     - name: Run corvid-pet
       id: run
       shell: bash
@@ -103,7 +94,7 @@ runs:
         CORVID_NAME: ${{ inputs.pet-name }}
         CORVID_STATE: ${{ inputs.state-file }}
         CORVID_CONTEXT: ${{ inputs.context }}
-        CORVID_JOB_STATUS: ${{ job.status }}
+        CORVID_JOB_STATUS: ${{ inputs.job-status || job.status }}
       run: |
         BIN="${CORVID_PET_BIN:-corvid-pet}"
 
@@ -237,9 +228,3 @@ runs:
           echo "$BADGE" >> README.md
         fi
 
-    - name: Save pet health state
-      if: always() && inputs.persist-health == 'true'
-      uses: actions/cache/save@v4
-      with:
-        path: ${{ inputs.state-file }}
-        key: corvid-pet-health-${{ github.repository }}-${{ github.run_id }}
