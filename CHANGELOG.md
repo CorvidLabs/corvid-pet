@@ -4,6 +4,24 @@ All notable changes to corvid-pet are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] - 2026-04-11
+
+### Fixed
+
+- Replace fragile JSON parsing with `jq` in GitHub Action ([#68](https://github.com/CorvidLabs/corvid-pet/pull/68))
+- Use hidden HTML marker for PR comment deduplication ([#65](https://github.com/CorvidLabs/corvid-pet/pull/65))
+- Replace fragile `sed -i` with portable `awk` in badge mode ([#63](https://github.com/CorvidLabs/corvid-pet/pull/63))
+- Download pre-built binary in GitHub Action instead of compiling from source ([#64](https://github.com/CorvidLabs/corvid-pet/pull/64))
+
+### Changed
+
+- Live TUI feature marked as experimental — API may change without notice ([#67](https://github.com/CorvidLabs/corvid-pet/pull/67))
+
+### Docs
+
+- Add crate downloads badge to README ([#62](https://github.com/CorvidLabs/corvid-pet/pull/62))
+- Clarify Crow is the current species with more coming soon
+
 ## [1.0.0] - 2026-04-11
 
 ### Security
@@ -40,4 +58,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 - **spec-sync integration**: `SpecSyncCompanion` for visual validation feedback
 - **CI/CD**: GitHub Actions workflow with fmt, clippy, tests, and pet review comments
 
+[1.1.0]: https://github.com/CorvidLabs/corvid-pet/releases/tag/v1.1.0
 [1.0.0]: https://github.com/CorvidLabs/corvid-pet/releases/tag/v1.0.0
