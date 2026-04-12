@@ -20,6 +20,10 @@ struct Cli {
     #[arg(long, default_value = "Corvin", global = true)]
     name: String,
 
+    /// Output format: text (default) or json
+    #[arg(long, default_value = "text", global = true)]
+    format: String,
+
     /// Disable colored output
     #[arg(long, global = true)]
     no_color: bool,
@@ -211,18 +215,38 @@ fn main() {
         colored::control::set_override(false);
     }
 
+    let json_output = cli.format == "json";
+
     match &cli.command {
         None | Some(Commands::Show { mood: None }) => {
             let pet = make_pet(&cli);
-            render_pet(&pet, cli.no_color);
-            println!("\n  {}", pet.comment());
+            if json_output {
+                let j = serde_json::json!({
+                    "art": pet.render(),
+                    "mood": pet.mood().to_string(),
+                    "species": pet.species().to_string(),
+                });
+                println!("{}", serde_json::to_string_pretty(&j).expect("serialize"));
+            } else {
+                render_pet(&pet, cli.no_color);
+                println!("\n  {}", pet.comment());
+            }
         }
 
         Some(Commands::Show { mood: Some(mood) }) => {
             let mut pet = make_pet(&cli);
             pet.set_mood(mood.clone().into());
-            render_pet(&pet, cli.no_color);
-            println!("\n  {}", pet.comment());
+            if json_output {
+                let j = serde_json::json!({
+                    "art": pet.render(),
+                    "mood": pet.mood().to_string(),
+                    "species": pet.species().to_string(),
+                });
+                println!("{}", serde_json::to_string_pretty(&j).expect("serialize"));
+            } else {
+                render_pet(&pet, cli.no_color);
+                println!("\n  {}", pet.comment());
+            }
         }
 
         Some(Commands::React {
@@ -241,14 +265,23 @@ fn main() {
             // Show the bird reacting.
             let mut pet = make_pet(&cli);
             pet.react(event);
-            render_pet(&pet, cli.no_color);
-            println!("\n  {}", pet.comment());
-            println!("\n{}", health.summary());
+            if json_output {
+                let j = serde_json::json!({
+                    "event": format!("{:?}", event),
+                    "mood": pet.mood().to_string(),
+                    "score": health.score,
+                });
+                println!("{}", serde_json::to_string_pretty(&j).expect("serialize"));
+            } else {
+                render_pet(&pet, cli.no_color);
+                println!("\n  {}", pet.comment());
+                println!("\n{}", health.summary());
+            }
         }
 
         Some(Commands::Health { state, json }) => {
             let health = load_or_create(state, &cli.name);
-            if *json {
+            if *json || json_output {
                 let j = serde_json::to_string_pretty(&health).expect("serialize");
                 println!("{}", j);
             } else {
@@ -268,12 +301,30 @@ fn main() {
             let health = load_or_create(state, &cli.name);
             let event: Event = event.clone().into();
             let comment = health.pr_comment(event, context);
-            println!("{}", comment);
+            if json_output {
+                let j = serde_json::json!({
+                    "comment": comment,
+                    "mood": health.mood().to_string(),
+                    "event": format!("{:?}", event),
+                });
+                println!("{}", serde_json::to_string_pretty(&j).expect("serialize"));
+            } else {
+                println!("{}", comment);
+            }
         }
 
         Some(Commands::Badge { state }) => {
             let health = load_or_create(state, &cli.name);
-            println!("{}", health.readme_badge());
+            if json_output {
+                let j = serde_json::json!({
+                    "badge": health.readme_badge(),
+                    "score": health.score,
+                    "mood": health.mood().to_string(),
+                });
+                println!("{}", serde_json::to_string_pretty(&j).expect("serialize"));
+            } else {
+                println!("{}", health.readme_badge());
+            }
         }
 
         Some(Commands::Init { state }) => {
@@ -289,20 +340,38 @@ fn main() {
                 eprintln!("Error creating state: {}", e);
                 std::process::exit(1);
             });
-            println!("Initialized corvid-pet state at {}", state.display());
-
-            let pet = make_pet(&cli);
-            render_pet(&pet, cli.no_color);
-            println!("\n  Ready to watch over your repo!");
+            if json_output {
+                let j = serde_json::json!({
+                    "state": state.display().to_string(),
+                    "message": "Initialized corvid-pet state",
+                });
+                println!("{}", serde_json::to_string_pretty(&j).expect("serialize"));
+            } else {
+                println!("Initialized corvid-pet state at {}", state.display());
+                let pet = make_pet(&cli);
+                render_pet(&pet, cli.no_color);
+                println!("\n  Ready to watch over your repo!");
+            }
         }
 
         Some(Commands::Greet { who }) => {
             let mut pet = make_pet(&cli);
             pet.set_mood(Mood::Happy);
-            render_pet(&pet, cli.no_color);
-            match who {
-                Some(name) => println!("\n  Caw! Welcome, {}! 🐦", name),
-                None => println!("\n  Caw! Welcome! 🐦"),
+            if json_output {
+                let j = serde_json::json!({
+                    "greeting": match who {
+                        Some(name) => format!("Caw! Welcome, {}!", name),
+                        None => "Caw! Welcome!".to_string(),
+                    },
+                    "mood": "Happy",
+                });
+                println!("{}", serde_json::to_string_pretty(&j).expect("serialize"));
+            } else {
+                render_pet(&pet, cli.no_color);
+                match who {
+                    Some(name) => println!("\n  Caw! Welcome, {}! 🐦", name),
+                    None => println!("\n  Caw! Welcome! 🐦"),
+                }
             }
         }
     }
