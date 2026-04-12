@@ -4,6 +4,12 @@ All notable changes to corvid-pet are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.1] - 2026-04-12
+
+### Fixed
+
+- Wire up missing `feed`, `play`, `status`, and `sim` CLI commands ([#75](https://github.com/CorvidLabs/corvid-pet/pull/75))
+
 ## [1.1.0] - 2026-04-11
 
 ### Fixed
@@ -50,5 +56,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 - **spec-sync integration**: `SpecSyncCompanion` for visual validation feedback
 - **CI/CD**: GitHub Actions workflow with fmt, clippy, tests, and pet review comments
 
+[1.1.1]: https://github.com/CorvidLabs/corvid-pet/releases/tag/v1.1.1
 [1.1.0]: https://github.com/CorvidLabs/corvid-pet/releases/tag/v1.1.0
 [1.0.0]: https://github.com/CorvidLabs/corvid-pet/releases/tag/v1.0.0
