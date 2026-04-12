@@ -11,7 +11,7 @@ repository = "https://github.com/CorvidLabs/corvid-pet"
 homepage = "https://github.com/CorvidLabs/corvid-pet"
 keywords = ["ascii", "art", "cli", "terminal", "pet"]
 categories = ["command-line-utilities", "visualization"]
-exclude = [".github/", ".claude/", "specs/"]
+exclude = [".github/", ".claude/", "specs/", "docs/"]
 
 [dependencies]
 rand = "0.8"
