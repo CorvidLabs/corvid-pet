@@ -172,8 +172,8 @@ runs:
 
         # Extract mood and score for outputs
         HEALTH_JSON=$($BIN health --state "$CORVID_STATE" --name "$CORVID_NAME" --json 2>/dev/null || echo '{}')
-        MOOD=$(echo "$HEALTH_JSON" | grep -o '"mood":"[^"]*"' | head -1 | cut -d'"' -f4 || echo "neutral")
-        SCORE=$(echo "$HEALTH_JSON" | grep -o '"score":[0-9.]*' | head -1 | cut -d: -f2 || echo "100")
+        MOOD=$(echo "$HEALTH_JSON" | jq -r '.mood // "neutral"')
+        SCORE=$(echo "$HEALTH_JSON" | jq -r '.score // 100')
         echo "mood=$MOOD" >> "$GITHUB_OUTPUT"
         echo "score=$SCORE" >> "$GITHUB_OUTPUT"
 

@@ -88,7 +88,7 @@ cargo run --example template --features persistence
 # Progress spinner animation
 cargo run --example progress
 
-# Interactive live mode
+# Interactive live mode (experimental)
 cargo run --example live --features live
 
 # spec-sync integration
@@ -179,7 +179,7 @@ See [action.yml](action.yml) for all inputs and options.
 |---------|-------------|--------------|
 | `color` | ANSI color support | [colored](https://crates.io/crates/colored) |
 | `persistence` | Save/load pet state to disk | serde, serde_json, dirs |
-| `live` | Real-time TUI mode | ratatui, crossterm, tokio |
+| `live` | Real-time interactive TUI mode (**experimental**) | ratatui, crossterm, tokio |
 | `cli` | CLI binary with all commands | clap, chrono, color, persistence |
 
 ```toml

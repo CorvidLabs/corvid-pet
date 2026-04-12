@@ -29,6 +29,7 @@ chrono = { version = "0.4", optional = true }
 default = []
 color = ["dep:colored"]
 persistence = ["dep:serde", "dep:serde_json", "dep:dirs"]
+# Experimental: real-time interactive TUI mode — API may change without notice.
 live = ["dep:ratatui", "dep:crossterm", "dep:tokio", "dep:serde", "dep:serde_json"]
 cli = ["dep:clap", "dep:chrono", "color", "persistence"]
 
