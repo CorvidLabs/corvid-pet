@@ -3,6 +3,12 @@ name: Deploy docs to GitHub Pages
 on:
   push:
     branches: [main]
+    paths:
+      - "docs/src/**"
+      - "src/**"
+      - "book.toml"
+      - "Cargo.toml"
+      - ".github/workflows/pages.yml"
   workflow_dispatch:
 
 permissions:
@@ -18,7 +24,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install mdbook
         uses: peaceiris/actions-mdbook@v2
