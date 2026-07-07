@@ -11,25 +11,48 @@ on:
       - "Cargo.toml"
       - ".atlasignore"
       - ".github/workflows/pages.yml"
+  # Build-only validation on PRs that touch the same paths, so the mdbook build
+  # and Atlas badge generation are exercised before merge. The deploy job is
+  # gated to non-PR events, so PRs never publish to Pages.
+  pull_request:
+    paths:
+      - "docs/src/**"
+      - "src/**"
+      - "specs/**"
+      - "book.toml"
+      - "Cargo.toml"
+      - ".atlasignore"
+      - ".github/workflows/pages.yml"
   workflow_dispatch:
 
 # Run the bundled Node-20 JavaScript actions on Node 24 to silence GitHub's
 # Node-20 end-of-life deprecation warnings.
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  # fledge-plugin-atlas pinned to a full commit SHA (tag v1.3.1) so the executed
+  # action code and the installed CLI cannot drift when the mutable v1 tag moves.
+  # The literal SHA is repeated in the `uses:` refs below because GitHub does not
+  # allow expressions in `uses:`; keep all three in sync when bumping.
+  ATLAS_REF: bfae900492615c6263c5ef431d1326eabb8b0406
 
+# Least-privilege default: the build job only reads the repo. Deploy-scoped
+# permissions (pages: write, id-token: write) are granted on the deploy job.
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
+# Scope concurrency per ref so PR validation runs never cancel an in-progress
+# production Pages deployment on main.
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    # The build job runs third-party/composite action code (fledge-plugin-atlas),
+    # so it is held to read-only access; it needs no deploy permissions.
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
         with:
@@ -53,12 +76,8 @@ jobs:
           mv target/doc docs/book/rustdoc
 
       # Cache the compiled fledge-atlas CLI so this is a fast no-op on a cache
-      # hit instead of a ~3-5 min cargo build. Keyed to the exact commit the `v1`
-      # tag resolves to, so moving v1 invalidates the cache automatically.
-      - name: Resolve pinned atlas commit (cache key)
-        id: atlasref
-        run: echo "sha=$(git ls-remote https://github.com/CorvidLabs/fledge-plugin-atlas v1 | cut -f1)" >> "$GITHUB_OUTPUT"
-
+      # hit instead of a ~3-5 min cargo build. Keyed to the pinned atlas commit
+      # SHA, so bumping ATLAS_REF invalidates the cache automatically.
       - name: Cache the fledge-atlas CLI
         uses: actions/cache@v4
         with:
@@ -66,14 +85,18 @@ jobs:
             ~/.cargo/bin/fledge-atlas
             ~/.cargo/.crates.toml
             ~/.cargo/.crates2.json
-          key: fledge-atlas-${{ runner.os }}-${{ steps.atlasref.outputs.sha }}
+          key: fledge-atlas-${{ runner.os }}-${{ env.ATLAS_REF }}
 
+      # Pinned to a full commit SHA (v1.3.1). The `version` input pins the
+      # installed CLI to the same SHA so neither the action code nor the CLI can
+      # change under us if the v1 tag moves.
       - name: Render atlas coverage badges
-        uses: CorvidLabs/fledge-plugin-atlas@v1
+        uses: CorvidLabs/fledge-plugin-atlas@bfae900492615c6263c5ef431d1326eabb8b0406 # v1.3.1
         with:
           path: .
           output-dir: docs/book/badges
           components: "coverage langmix treemap sunburst"
+          version: ${{ env.ATLAS_REF }}
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
@@ -82,7 +105,13 @@ jobs:
 
   deploy:
     needs: build
+    # Never deploy from a PR: PRs run build-only validation.
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    # Deploy-only permissions live here, not at workflow scope.
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
