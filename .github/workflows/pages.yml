@@ -6,10 +6,17 @@ on:
     paths:
       - "docs/src/**"
       - "src/**"
+      - "specs/**"
       - "book.toml"
       - "Cargo.toml"
+      - ".atlasignore"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
+
+# Run the bundled Node-20 JavaScript actions on Node 24 to silence GitHub's
+# Node-20 end-of-life deprecation warnings.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 permissions:
   contents: read
@@ -25,6 +32,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # atlas reads git history for spec activity
 
       - name: Install mdbook
         uses: peaceiris/actions-mdbook@v2
@@ -42,6 +51,29 @@ jobs:
           cargo doc --all-features --no-deps
           # Move rustdoc output into the book directory
           mv target/doc docs/book/rustdoc
+
+      # Cache the compiled fledge-atlas CLI so this is a fast no-op on a cache
+      # hit instead of a ~3-5 min cargo build. Keyed to the exact commit the `v1`
+      # tag resolves to, so moving v1 invalidates the cache automatically.
+      - name: Resolve pinned atlas commit (cache key)
+        id: atlasref
+        run: echo "sha=$(git ls-remote https://github.com/CorvidLabs/fledge-plugin-atlas v1 | cut -f1)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache the fledge-atlas CLI
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/fledge-atlas
+            ~/.cargo/.crates.toml
+            ~/.cargo/.crates2.json
+          key: fledge-atlas-${{ runner.os }}-${{ steps.atlasref.outputs.sha }}
+
+      - name: Render atlas coverage badges
+        uses: CorvidLabs/fledge-plugin-atlas@v1
+        with:
+          path: .
+          output-dir: docs/book/badges
+          components: "coverage langmix treemap sunburst"
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
