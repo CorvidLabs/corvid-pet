@@ -2,7 +2,7 @@
 # not the build output or the runnable demos.
 
 # Build output
-/target/
+target/
 docs/book/
 
 # Runnable examples are verified against the specs, not governed by them.
