@@ -3,14 +3,28 @@ name: CI
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - "**/*.md"
-      - "LICENSE"
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "benches/**"
+      - "examples/**"
+      - "build.rs"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "action.yml"
+      - ".github/workflows/ci.yml"
   pull_request:
     branches: [main]
-    paths-ignore:
-      - "**/*.md"
-      - "LICENSE"
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "benches/**"
+      - "examples/**"
+      - "build.rs"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "action.yml"
+      - ".github/workflows/ci.yml"
   workflow_dispatch:
 
 concurrency:
@@ -27,7 +41,7 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
@@ -67,9 +81,10 @@ jobs:
     outputs:
       report: ${{ steps.report.outputs.report }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: CorvidLabs/spec-sync@v4.1.2
         with:
+          version: '4.1.2'
           strict: 'true'
           comment: 'false'
       - name: Capture spec-sync report
@@ -92,7 +107,7 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
