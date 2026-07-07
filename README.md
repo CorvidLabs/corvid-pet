@@ -5,6 +5,7 @@
 [![Downloads](https://img.shields.io/crates/d/corvid-pet.svg)](https://crates.io/crates/corvid-pet)
 [![docs.rs](https://img.shields.io/docsrs/corvid-pet)](https://docs.rs/corvid-pet)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![spec coverage](https://img.shields.io/endpoint?url=https://corvidlabs.github.io/corvid-pet/badges/coverage.json)](https://corvidlabs.github.io/corvid-pet/)
 
 ASCII corvid companions for CLI tools.
 

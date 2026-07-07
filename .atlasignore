@@ -1,0 +1,13 @@
+# corvid-pet atlas coverage scope: the specs govern the library source (src/),
+# not the build output or the runnable demos.
+
+# Build output
+target/
+docs/book/
+
+# Runnable examples are verified against the specs, not governed by them.
+examples/
+
+# Minified / generated
+*.min.js
+*.min.css
