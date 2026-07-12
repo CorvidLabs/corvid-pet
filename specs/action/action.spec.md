@@ -16,6 +16,33 @@ Composite GitHub Action that brings corvid-pet into CI/CD pipelines. Installs th
 
 ## Public API
 
+### Exported YAML Symbols
+
+| Symbol | Description |
+|--------|-------------|
+| `name` | Marketplace action name |
+| `description` | Marketplace action description |
+| `author` | Marketplace action author |
+| `branding` | Marketplace presentation metadata |
+| `inputs` | Action input map |
+| `outputs` | Action output map |
+| `runs` | Composite action implementation |
+| `inputs.mode` | Operating mode |
+| `inputs.event` | Explicit or automatic event |
+| `inputs.pet-name` | Display name for the pet |
+| `inputs.state-file` | Health-state path |
+| `inputs.context` | Additional rendered context |
+| `inputs.comment-on-pr` | PR comment toggle |
+| `inputs.review-on-pr` | PR review toggle |
+| `inputs.update-readme` | README update toggle |
+| `inputs.job-status` | Job-status override |
+| `inputs.github-token` | GitHub API token |
+| `outputs.mood` | Current pet mood |
+| `outputs.score` | Repository health score |
+| `outputs.comment` | Generated Markdown comment |
+| `outputs.art` | Generated ASCII art |
+| `outputs.event` | Resolved event type |
+
 ### Branding
 
 - **Icon**: heart
