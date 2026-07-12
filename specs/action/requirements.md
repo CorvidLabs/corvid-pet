@@ -12,17 +12,89 @@ spec: action.spec.md
 
 ## Acceptance Criteria
 
+### REQ-action-001
+
+The implementation SHALL satisfy this requirement.
+
+Acceptance Criteria
+
 - Action runs as a composite action (`runs: using: composite`)
+### REQ-action-002
+
+The implementation SHALL satisfy this requirement.
+
+Acceptance Criteria
+
 - All 5 modes produce the expected outputs: `mood`, `score`, `art`, `event`
+### REQ-action-003
+
+The implementation SHALL satisfy this requirement.
+
+Acceptance Criteria
+
 - `pr-comment` mode posts/updates a single comment on the PR (no duplicates)
+### REQ-action-004
+
+The implementation SHALL satisfy this requirement.
+
+Acceptance Criteria
+
 - `review-on-pr` mode submits APPROVE on success, REQUEST_CHANGES on failure
+### REQ-action-005
+
+The implementation SHALL satisfy this requirement.
+
+Acceptance Criteria
+
 - `health-check` mode outputs JSON health data without posting comments
+### REQ-action-006
+
+The implementation SHALL satisfy this requirement.
+
+Acceptance Criteria
+
 - `greet` mode generates a welcome message with success mood
+### REQ-action-007
+
+The implementation SHALL satisfy this requirement.
+
+Acceptance Criteria
+
 - `release` mode generates a celebration message incorporating the `context` input
+### REQ-action-008
+
+The implementation SHALL satisfy this requirement.
+
+Acceptance Criteria
+
 - `badge` mode generates markdown between `corvid-pet:start`/`corvid-pet:end` markers
+### REQ-action-009
+
+The implementation SHALL satisfy this requirement.
+
+Acceptance Criteria
+
 - `event: auto` correctly maps job.status to event types
+### REQ-action-010
+
+The implementation SHALL satisfy this requirement.
+
+Acceptance Criteria
+
 - `CORVID_PET_BIN` env var skips Rust install, cache, and build steps
+### REQ-action-011
+
+The implementation SHALL satisfy this requirement.
+
+Acceptance Criteria
+
 - Binary caching works (cache hit skips `cargo install`)
+### REQ-action-012
+
+The implementation SHALL satisfy this requirement.
+
+Acceptance Criteria
+
 - Missing state file is created automatically (no setup required)
 
 ## Constraints

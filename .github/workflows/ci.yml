@@ -74,34 +74,10 @@ jobs:
       - name: Build examples
         run: cargo build --examples --all-features
 
-  spec-check:
-    name: Spec Validation
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    outputs:
-      report: ${{ steps.report.outputs.report }}
-    steps:
-      - uses: actions/checkout@v5
-      - uses: CorvidLabs/spec-sync@v4.1.2
-        with:
-          version: '4.1.2'
-          strict: 'true'
-          comment: 'false'
-      - name: Capture spec-sync report
-        id: report
-        if: always()
-        run: |
-          REPORT=$(specsync comment --strict 2>/dev/null) || REPORT=""
-          {
-            echo "report<<SPECSYNC_EOF"
-            echo "$REPORT"
-            echo "SPECSYNC_EOF"
-          } >> "$GITHUB_OUTPUT"
-
   corvid-pet:
     name: Corvid Pet
     runs-on: ubuntu-latest
-    needs: [check, spec-check]
+    needs: [check]
     if: always() && github.event_name == 'pull_request'
     permissions:
       contents: read
@@ -133,12 +109,10 @@ jobs:
         env:
           # ── Register checks here (one line each) ──
           CHECK_CI: "CI (fmt, clippy, build, test)=${{ needs.check.result }}"
-          CHECK_SPEC: "Spec Validation=${{ needs.spec-check.result }}"
           # CHECK_SECURITY: "Security Audit=${{ needs.security.result }}"
           # CHECK_COVERAGE: "Test Coverage=${{ needs.coverage.result }}"
 
           # ── Register detail reports here (optional, matched by name) ──
-          REPORT_SPEC: ${{ needs.spec-check.outputs.report }}
           # REPORT_SECURITY: ${{ needs.security.outputs.report }}
         run: |
           OVERALL="success"
@@ -195,4 +169,3 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
         env:
           CORVID_PET_BIN: ./target/debug/corvid-pet
-

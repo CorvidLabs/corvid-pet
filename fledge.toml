@@ -1,0 +1,9 @@
+[tasks]
+build = "cargo build"
+test = "cargo test"
+lint = "cargo clippy -- -D warnings"
+fmt = "cargo fmt --check"
+
+[lanes.verify]
+description = "The single project verification gate"
+steps = ["build", "test", "lint", "fmt"]
