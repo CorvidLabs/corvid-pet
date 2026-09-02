@@ -14,12 +14,6 @@ files:
   - src/persistence.rs
   - src/health.rs
   - src/live.rs
-  - src/stats.rs
-  - src/life_stage.rs
-  - src/personality.rs
-  - src/needs.rs
-  - src/sim.rs
-  - src/bin/corvid-pet.rs
   - src/integrations/mod.rs
   - src/integrations/specsync.rs
 db_tables: []
@@ -33,28 +27,6 @@ depends_on: []
 ASCII corvid companion library for CLI tools. Provides animated ASCII pets that react to events and display mood-appropriate art and commentary. Designed to integrate with developer tools to provide charming, helpful feedback during long-running operations.
 
 ## Public API
-
-### Re-exports (lib.rs)
-
-The crate root re-exports these types for convenience:
-
-| Type | Source Module |
-|------|--------------|
-| `Animation` | `animations` |
-| `Spinner` | `animations` |
-| `ColorScheme` | `color` |
-| `PetColor` | `color` |
-| `LifeStage` | `life_stage` |
-| `Mood` | `moods` |
-| `InteractionResult` | `needs` |
-| `Need` | `needs` |
-| `PetState` | `persistence` |
-| `Personality` | `personality` |
-| `SimState` | `sim` |
-| `Species` | `species` |
-| `Stats` | `stats` |
-| `ArtStyle` | `styles` |
-| `RepoHealth` | `health` |
 
 ### Exported Modules
 
@@ -102,12 +74,6 @@ The crate root re-exports these types for convenience:
 | `ArtStyle` | Art rendering style enum (`Minimal`). Default: Minimal |
 | `Animation` | Iterator over animation frames |
 | `Spinner` | Progress indicator with animated pet |
-| `Stats` | Vital statistics: hunger, energy, happiness, health |
-| `LifeStage` | Life progression: Egg, Hatchling, Fledgling, Adult, Elder |
-| `Personality` | Trait affecting behavior: Curious, Shy, Mischievous, Stoic, Affectionate, Greedy |
-| `Need` | Interactions: Feed, Play, Rest, Clean, Pet |
-| `SimState` | Full simulation state coordinating stats, stages, personality, needs |
-| `InteractionResult` | Result of performing an interaction |
 | `ArtTemplate` | Custom art template with mood-specific ASCII art |
 | `TemplateRegistry` | Registry of art templates for rendering |
 | `PetState` | Serializable snapshot of pet state for persistence |
